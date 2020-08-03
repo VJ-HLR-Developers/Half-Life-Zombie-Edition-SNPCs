@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/hl_resurgence/hlze/scientist/scientist_glasschrome"
+	"$alphatest" 1
+}

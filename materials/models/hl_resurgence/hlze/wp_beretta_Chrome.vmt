@@ -1,0 +1,14 @@
+"VertexLitGeneric"
+{
+	"$envmap" "models/hl_resurgence/hlze/wp_beretta_Chrome"
+	"$color2" "[0.6 0.6 0.6]"
+	"$envmapmode" 1
+	"$multipass" 1
+	
+	"VertexLitGeneric_HDR_DX9"
+	{
+		"$envmaptint" "[.15 .15 .15]"
+		"$envmapcontrast" .8
+		"$envmapsaturation" 1.5
+	}
+}
