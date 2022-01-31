@@ -37,6 +37,11 @@ ENT.HitGroupFlinching_Values = {
 	{HitGroup={HITGROUP_RIGHTARM},IsSchedule=false,Animation={ACT_FLINCH_RIGHTARM}},
 	{HitGroup={HITGROUP_RIGHTLEG},IsSchedule=false,Animation={ACT_FLINCH_RIGHTLEG}}
 } -- if "IsSchedule" is set to true, "Animation" needs to be a schedule
+
+	-- ====== Velocity Variables ====== --
+ENT.LeapAttackVelocityForward = 0 -- How much forward force should it apply?
+ENT.LeapAttackVelocityUp = 0 -- How much upward force should it apply?
+
 	-- ====== Sound File Paths ====== --
 -- Leave blank if you don't want any sounds to play
 ENT.SoundTbl_FootStep = {"vj_hlr/pl_step1.wav","vj_hlr/pl_step2.wav","vj_hlr/pl_step3.wav","vj_hlr/pl_step4.wav"}
@@ -246,6 +251,11 @@ end
 
 function ENT:Controller_IntMsg(ply)
 	ply:ChatPrint("JUMP: Detach Headcrab")
+end
+local gibs1 = {"models/vj_hlr/gibs/agib1.mdl", "models/vj_hlr/gibs/agib2.mdl", "models/vj_hlr/gibs/agib3.mdl", "models/vj_hlr/gibs/agib4.mdl","models/vj_hlr/gibs/agib5.mdl","models/vj_hlr/gibs/agib6.mdl","models/vj_hlr/gibs/agib7.mdl","models/vj_hlr/gibs/agib8.mdl","models/vj_hlr/gibs/agib9.mdl","models/vj_hlr/gibs/agib10.mdl"}
+--
+function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo, hitgroup, corpseEnt)
+	VJ_HLR_ApplyCorpseEffects(self, corpseEnt, gibs1)
 end
 
 /*-----------------------------------------------

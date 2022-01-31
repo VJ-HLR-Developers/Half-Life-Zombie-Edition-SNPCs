@@ -38,13 +38,16 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:Explode()
 	self.GrenadePulled = false
-	local grenent = ents.Create("obj_vj_grenade")
+	local grenent = ents.Create("obj_vj_hlr1_grenade")
 	grenent:SetPos(self:GetPos() +self:OBBCenter())
 	--grenent:SetOwner(self)
 	--grenent:SetParent(self)
 	grenent.FussTime = 0
+	grenent.RadiusDamageRadius = 300
+	grenent.RadiusDamage = 100
 	grenent:Spawn()
 	grenent:Activate()
+	grenent.PrintName = "Zombie Grenade"
 	grenent.FussTime = 0
 	self:SetUpGibesOnDeath(dmginfo,hitgroup)
 	gamemode.Call("OnNPCKilled",self,self,self,dmginfo)
@@ -78,14 +81,17 @@ end
 function ENT:CustomOnKilled(dmginfo,hitgroup)
 	if self.GrenadePulled == true then
 		self:SetBodygroup(2,0)
-		local grenent = ents.Create("obj_vj_grenade")
+		local grenent = ents.Create("obj_vj_hlr1_grenade")
 		grenent:SetPos(self:GetPos() +self:OBBCenter())
 		--grenent:SetOwner(self)
 		--grenent:SetParent(self)
-		grenent.FussTime = 1.5
+		--grenent.FussTime = 1.5
+		grenent.RadiusDamageRadius = 300
+		grenent.RadiusDamage = 100
 		grenent:Spawn()
 		grenent:Activate()
-		grenent.FussTime = 1.5
+		grenent.PrintName = "Zombie Grenade"
+		--grenent.FussTime = 1.5
 	end
 end
 function ENT:CustomRangeAttackCode() 

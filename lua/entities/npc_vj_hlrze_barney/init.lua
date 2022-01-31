@@ -30,7 +30,7 @@ ENT.DeathAnimationTime = false -- Time until the SNPC spawns its corpse and gets
 ENT.AnimTbl_TakingCover = {"cover_stand"} -- The animation it plays when hiding in a covered position, leave empty to let the base decide
 ENT.AnimTbl_AlertFriendsOnDeath = {"vjseq_idle2"} -- Animations it plays when an ally dies that also has AlertFriendsOnDeath set to true
 --ENT.CanCrouchOnWeaponAttack = false -- Can it crouch while shooting?
-ENT.HasLostWeaponSightAnimation = true -- Set to true if you would like the SNPC to play a different animation when it has lost sight of the enemy and can't fire at it
+ENT.HasLostWeaponSightAnimation = false -- Set to true if you would like the SNPC to play a different animation when it has lost sight of the enemy and can't fire at it
 ENT.BecomeEnemyToPlayer = true -- Should the friendly SNPC become enemy towards the player if it's damaged by a player?
 ENT.HasItemDropsOnDeath = false -- Should it drop items on death?
 ENT.HasOnPlayerSight = true -- Should do something when it sees the enemy? Example: Play a sound
@@ -155,8 +155,8 @@ function ENT:Security_CustomOnInitialize()
 		"weapon_vj_hlrze_spas12",
 		"weapon_vj_hlrze_m16",
 	}
---	self:Give(VJ_PICK(tbl))
-	self:Give("weapon_vj_hlrze_beretta")
+	self:Give(VJ_PICK(tbl))
+--	self:Give("weapon_vj_hlrze_beretta")
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnInitialize()
@@ -182,6 +182,12 @@ function ENT:CustomOnAcceptInput(key,activator,caller,data)
 			wep:NPCShoot_Primary(ShootPos,ShootDir)
 		end
 	end
+	if key == "shell" then
+		VJ_EmitSound(self,{"vj_hlr/hl1_weapon/reload1.wav","vj_hlr/hl1_weapon/reload2.wav","vj_hlr/hl1_weapon/reload3.wav"},80,100)
+	end
+	if key == "cock" then --and ball torture
+		VJ_EmitSound(self,{"vj_hlr/hl1_weapon/shotgun/scock1.wav"},80,100)
+	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnThink()
@@ -206,22 +212,24 @@ function ENT:OnPlayCreateSound(SoundData,SoundFile)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnAlert(argent)
-	if math.random(1,2) == 1 then
+	if self.VJ_IsBeingControlled == true then return end
+	
+	if math.random(1, 2) == 1 then
 		if self.Security_Type == 0 then
 			if argent:GetClass() == "npc_vj_hlr1_bullsquid" then
-				self:AlertSoundCode({"vj_hlr/hl1_npc/barney/c1a4_ba_octo1.wav"})
-				self.NextAlertSoundT = CurTime() + math.Rand(self.NextSoundTime_Alert1,self.NextSoundTime_Alert2)
+				self:PlaySoundSystem("Alert", {"vj_hlr/hl1_npc/barney/c1a4_ba_octo1.wav"})
+				self.NextAlertSoundT = CurTime() + math.Rand(self.NextSoundTime_Alert.a, self.NextSoundTime_Alert.b)
 			elseif argent.IsVJBaseSNPC_Creature == true then
-				self:AlertSoundCode({"vj_hlr/hl1_npc/barney/diebloodsucker.wav"})
-				self.NextAlertSoundT = CurTime() + math.Rand(self.NextSoundTime_Alert1,self.NextSoundTime_Alert2)
+				self:PlaySoundSystem("Alert", {"vj_hlr/hl1_npc/barney/diebloodsucker.wav"})
+				self.NextAlertSoundT = CurTime() + math.Rand(self.NextSoundTime_Alert.a, self.NextSoundTime_Alert.b)
 			end
 		elseif self.Security_Type == 1 && argent.IsVJBaseSNPC_Creature == true then
-			self:AlertSoundCode({"vj_hlr/hl1_npc/otis/aliens.wav"})
-			self.NextAlertSoundT = CurTime() + math.Rand(self.NextSoundTime_Alert1,self.NextSoundTime_Alert2)
+			self:PlaySoundSystem("Alert", {"vj_hlr/hl1_npc/otis/aliens.wav"})
+			self.NextAlertSoundT = CurTime() + math.Rand(self.NextSoundTime_Alert.a, self.NextSoundTime_Alert.b)
 		end
 	end
 	
-	if self.Security_GunHolstered == true then
+	if self:GetWeaponState() == VJ_WEP_STATE_HOLSTERED then
 		self:Security_UnHolsterGun()
 	end
 end
@@ -247,7 +255,7 @@ end
 function ENT:CustomOnThink_AIEnabled()
 	if self.Security_GunHolstered == true && IsValid(self:GetEnemy()) then
 		self:Security_UnHolsterGun()
-	elseif self.Security_GunHolstered == false && !IsValid(self:GetEnemy()) && self.TimeSinceLastSeenEnemy > 5 && self.IsReloadingWeapon == false && self:Health() > 0 then
+	elseif self.Security_GunHolstered == false && !IsValid(self:GetEnemy()) && self.TimeSinceLastSeenEnemy > 5 && self.IsReloadingWeapon == false && self:Health() > 0 && self:GetActiveWeapon() == weapon_vj_hlrze_beretta then
 		self:VJ_ACT_PLAYACTIVITY(ACT_DISARM,true,false,true)
 		self.Security_GunHolstered = true
 		timer.Simple(1.5,function() if IsValid(self) then self:SetBodygroup(1,0) end end)
@@ -316,6 +324,39 @@ end
 function ENT:CustomOnDropWeapon_AfterWeaponSpawned(dmginfo,hitgroup,GetWeapon)
 	GetWeapon.WorldModel_Invisible = false
 	GetWeapon:SetNWBool("VJ_WorldModel_Invisible",false)
+end
+
+function ENT:CustomOnSetupWeaponHoldTypeAnims(htype) 
+
+self.WeaponAnimTranslations = {}
+--print(htype)
+if htype == "smg" then
+	self.Security_GunHolstered = false
+	self:SetBodygroup(1,3)
+	self.WeaponAnimTranslations[ACT_IDLE] 							= ACT_IDLE_RPG
+	self.WeaponAnimTranslations[ACT_RANGE_ATTACK1] 					= ACT_CROUCHIDLE
+	self.WeaponAnimTranslations[ACT_WALK] 							= ACT_WALK_RPG
+	self.WeaponAnimTranslations[ACT_RELOAD] 						= ACT_RELOAD_SMG1
+	self.WeaponAnimTranslations[ACT_RUN] 							= ACT_RUN_RPG
+	self.WeaponAnimTranslations[ACT_MELEE_ATTACK1] 					= ACT_GESTURE_MELEE_ATTACK1
+elseif htype == "shotgun" then
+	self.Security_GunHolstered = false
+	self:SetBodygroup(1,4)
+	self.WeaponAnimTranslations[ACT_IDLE] 							= ACT_SHOTGUN_IDLE4
+	self.WeaponAnimTranslations[ACT_RANGE_ATTACK1] 					= ACT_RANGE_ATTACK_SHOTGUN
+	self.WeaponAnimTranslations[ACT_WALK] 							= ACT_WALK_AIM_SHOTGUN
+	self.WeaponAnimTranslations[ACT_RELOAD] 						= ACT_RELOAD_SHOTGUN
+	self.WeaponAnimTranslations[ACT_RUN] 							= ACT_RUN_RIFLE
+	self.WeaponAnimTranslations[ACT_MELEE_ATTACK1] 					= ACT_GESTURE_MELEE_ATTACK1
+end
+
+return true
+
+end
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo, hitgroup, corpseEnt)
+	VJ_HLR_ApplyCorpseEffects(self, corpseEnt)
 end
 /*-----------------------------------------------
 	*** Copyright (c) 2012-2019 by DrVrej, All rights reserved. ***

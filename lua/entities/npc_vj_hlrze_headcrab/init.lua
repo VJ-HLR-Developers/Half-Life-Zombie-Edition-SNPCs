@@ -152,6 +152,7 @@ function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity)
 			victim:SetSkin(2)
 			victim:SetBodygroup(1,4)
 			victim.IsMedicSNPC = false
+			if victim:GetActiveWeapon() then victim:DropWeaponOnDeathCode(fakedamage,1) victim:SetBodygroup(3,0) end
 		elseif victim:GetClass() == "npc_vj_hlrze_hgrunt" then
 			victim:SetBodygroup(2,3)
 			zAnimT = 1.61
@@ -214,6 +215,12 @@ function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity)
 			end
 		end)
 	end
+end
+
+local gibs1 = {"models/vj_hlr/gibs/agib1.mdl", "models/vj_hlr/gibs/agib2.mdl", "models/vj_hlr/gibs/agib3.mdl", "models/vj_hlr/gibs/agib4.mdl","models/vj_hlr/gibs/agib5.mdl","models/vj_hlr/gibs/agib6.mdl","models/vj_hlr/gibs/agib7.mdl","models/vj_hlr/gibs/agib8.mdl","models/vj_hlr/gibs/agib9.mdl","models/vj_hlr/gibs/agib10.mdl"}
+--
+function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo, hitgroup, corpseEnt)
+	VJ_HLR_ApplyCorpseEffects(self, corpseEnt, gibs1)
 end
 /*-----------------------------------------------
 	*** Copyright (c) 2012-2019 by DrVrej, All rights reserved. ***

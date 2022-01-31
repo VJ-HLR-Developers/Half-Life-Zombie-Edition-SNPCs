@@ -36,7 +36,8 @@ ENT.HitGroupFlinching_Values = {{HitGroup = {HITGROUP_LEFTLEG}, Animation = {ACT
 	-- Leave blank if you don't want any sounds to play
 ENT.SoundTbl_FootStep = {"vj_hlr/pl_step1.wav","vj_hlr/pl_step2.wav","vj_hlr/pl_step3.wav","vj_hlr/pl_step4.wav"}
 
-ENT.AnimTbl_WeaponAttack = {ACT_IDLE} -- Animation played when the SNPC does weapon attack
+ENT.AnimTbl_WeaponAim = {ACT_CROUCHIDLE} -- Animations played when the NPC is supposed to raise/aim its weapon | EX: Gun is out of ammo, combat idle, etc.| DEFAULT: {ACT_IDLE_ANGRY}
+--ENT.AnimTbl_WeaponAttack = {ACT_IDLE} -- Animation played when the SNPC does weapon attack
 ENT.AnimTbl_AlertFriendsOnDeath = {ACT_IDLE} -- Animations it plays when an ally dies that also has AlertFriendsOnDeath set to true
 ENT.Weapon_NoSpawnMenu = true -- If set to true, the NPC weapon setting in the spawnmenu will not be applied for this SNPC
 ENT.DisableWeaponFiringGesture = true -- If set to true, it will disable the weapon firing gestures
@@ -163,18 +164,64 @@ function ENT:CustomOnInitialize()
 		self.SCI_Type = 3
 	end
 	self:SCI_CustomOnInitialize()
+
+	local tbl = {
+		"",
+		"",
+		"",
+		"",
+		"weapon_vj_hlrze_beretta",
+		"weapon_vj_hlrze_beretta",
+		"weapon_vj_hlrze_beretta",
+		"weapon_vj_hlrze_spas12",
+		"weapon_vj_hlrze_m16",
+	}
+	self:Give(VJ_PICK(tbl))
 	
 	--self:Give("weapon_vj_hlrze_beretta")
+	
 	if IsValid(self:GetActiveWeapon()) then 
 		self.Behavior = VJ_BEHAVIOR_AGGRESSIVE
 		self.IsMedicSNPC = false
 		self.DisableWeapons = false
-		self:SetBodygroup(3,1)
-		ENT.AnimTbl_IdleStand = {"beretta_idle"}
-		ENT.AnimTbl_Walk = {"vjseq_beretta_walk"}
-		ENT.AnimTbl_Run = {"vjseq_beretta_run"}
+		--self:SetBodygroup(3,1)
 	end
 end
+
+function ENT:CustomOnSetupWeaponHoldTypeAnims(htype) 
+
+self.WeaponAnimTranslations = {}
+--print(htype)
+if htype == "smg" then
+	self:SetBodygroup(3,3)
+	self.WeaponAnimTranslations[ACT_IDLE] 							= ACT_IDLE_RPG
+	self.WeaponAnimTranslations[ACT_CROUCHIDLE] 					= ACT_IDLE_RPG
+	self.WeaponAnimTranslations[ACT_RANGE_ATTACK1] 					= ACT_RANGE_ATTACK_SMG1
+	self.WeaponAnimTranslations[ACT_WALK] 							= ACT_WALK_RPG
+	self.WeaponAnimTranslations[ACT_RELOAD] 						= ACT_RELOAD_SMG1
+	self.WeaponAnimTranslations[ACT_RUN] 							= ACT_RUN_RPG
+	self.WeaponAnimTranslations[ACT_MELEE_ATTACK1] 					= ACT_GESTURE_MELEE_ATTACK1
+elseif htype == "shotgun" then
+	self:SetBodygroup(3,2)
+	self.WeaponAnimTranslations[ACT_IDLE] 							= ACT_SHOTGUN_IDLE4
+	self.WeaponAnimTranslations[ACT_CROUCHIDLE] 					= ACT_SHOTGUN_IDLE4
+	self.WeaponAnimTranslations[ACT_RANGE_ATTACK1] 					= ACT_RANGE_ATTACK_SHOTGUN
+	self.WeaponAnimTranslations[ACT_WALK] 							= ACT_WALK_AIM_SHOTGUN
+	self.WeaponAnimTranslations[ACT_RELOAD] 						= ACT_RELOAD_SHOTGUN
+	self.WeaponAnimTranslations[ACT_RUN] 							= ACT_RUN_RIFLE
+	self.WeaponAnimTranslations[ACT_MELEE_ATTACK1] 					= ACT_GESTURE_MELEE_ATTACK1
+elseif htype == "pistol" then
+	self:SetBodygroup(3,1)
+	self.WeaponAnimTranslations[ACT_IDLE] 							= ACT_IDLE_PISTOL
+	self.WeaponAnimTranslations[ACT_CROUCHIDLE] 					= ACT_IDLE_PISTOL
+	self.WeaponAnimTranslations[ACT_WALK] 							= ACT_WALK_PISTOL
+	self.WeaponAnimTranslations[ACT_RUN] 							= ACT_RUN_PISTOL
+end
+
+return true
+
+end
+
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:SCI_CustomOnInitialize()
 	self.SoundTbl_Idle = {"vj_hlr/hl1_npc/scientist/administrator.wav","vj_hlr/hl1_npc/scientist/c1a0_sci_stall.wav","vj_hlr/hl1_npc/scientist/c1a1_sci_3scan.wav","vj_hlr/hl1_npc/scientist/c1a1_sci_2scan.wav","vj_hlr/hl1_npc/scientist/c1a1_sci_1scan.wav","vj_hlr/hl1_npc/scientist/c1a4_sci_trainend.wav","vj_hlr/hl1_npc/scientist/containfail.wav","vj_hlr/hl1_npc/scientist/cough.wav","vj_hlr/hl1_npc/scientist/fusionshunt.wav","vj_hlr/hl1_npc/scientist/hopenominal.wav","vj_hlr/hl1_npc/scientist/hideglasses.wav","vj_hlr/hl1_npc/scientist/howinteresting.wav","vj_hlr/hl1_npc/scientist/ipredictedthis.wav","vj_hlr/hl1_npc/scientist/needsleep.wav","vj_hlr/hl1_npc/scientist/neverseen.wav","vj_hlr/hl1_npc/scientist/nogrant.wav","vj_hlr/hl1_npc/scientist/organicmatter.wav","vj_hlr/hl1_npc/scientist/peculiarmarks.wav","vj_hlr/hl1_npc/scientist/peculiarodor.wav","vj_hlr/hl1_npc/scientist/reportflux.wav","vj_hlr/hl1_npc/scientist/runtest.wav","vj_hlr/hl1_npc/scientist/shutdownchart.wav","vj_hlr/hl1_npc/scientist/somethingfoul.wav","vj_hlr/hl1_npc/scientist/sneeze.wav","vj_hlr/hl1_npc/scientist/sniffle.wav","vj_hlr/hl1_npc/scientist/stench.wav","vj_hlr/hl1_npc/scientist/thatsodd.wav","vj_hlr/hl1_npc/scientist/thatsmell.wav","vj_hlr/hl1_npc/scientist/allnominal.wav","vj_hlr/hl1_npc/scientist/importantspecies.wav","vj_hlr/hl1_npc/scientist/yawn.wav","vj_hlr/hl1_npc/scientist/whoresponsible.wav","vj_hlr/hl1_npc/scientist/uselessphd.wav"}
@@ -224,20 +271,23 @@ function ENT:CustomOnAcceptInput(key,activator,caller,data)
 			wep:NPCShoot_Primary(ShootPos,ShootDir)
 		end
 	end
+	if key == "shell" then
+		VJ_EmitSound(self,{"vj_hlr/hl1_weapon/reload1.wav","vj_hlr/hl1_weapon/reload2.wav","vj_hlr/hl1_weapon/reload3.wav"},80,100)
+	end
+	if key == "cock" then --and ball torture
+		VJ_EmitSound(self,{"vj_hlr/hl1_weapon/shotgun/scock1.wav"},80,100)
+	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnMedic_BeforeHeal()
-	if self:Health() > 0 then
-		self:VJ_ACT_PLAYACTIVITY("pull_needle",true,VJ_GetSequenceDuration(self,"pull_needle") + 0.1,false,0,{},function(vsched)
-			vsched.RunCode_OnFinish = function()
-				if self:Health() > 0 then self:VJ_ACT_PLAYACTIVITY("give_shot",true,VJ_GetSequenceDuration(self,"give_shot") + 0.1,false,0,{},function(vsched)
-					vsched.RunCode_OnFinish = function()
-						if self:Health() > 0 then self:VJ_ACT_PLAYACTIVITY("return_needle",true,false)
-					end end
-				end) end
-			end
-		end)
-	end
+	-- Healing routine
+	self:VJ_ACT_PLAYACTIVITY("pull_needle", true, false, false, 0, {OnFinish=function(interrupted, anim)
+		if interrupted then return end
+		self:VJ_ACT_PLAYACTIVITY("give_shot", true, false, false, 0, {OnFinish=function(interrupted2, anim2)
+			if interrupted2 then return end
+			self:VJ_ACT_PLAYACTIVITY("return_needle", true, false)
+		end})
+	end})
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnMedic_OnReset()
@@ -252,7 +302,7 @@ function ENT:CustomOnAlert(argent)
 				self.NextAlertSoundT = CurTime() + math.Rand(self.NextSoundTime_Alert1,self.NextSoundTime_Alert2)
 			end
 		end
-		if argent:GetPos():Distance(self:GetPos()) >= 300 && math.random(1,2) == 1 then
+		if argent:GetPos():Distance(self:GetPos()) >= 300 && math.random(1,2) == 1 && self.Behavior == VJ_BEHAVIOR_PASSIVE then
 			self:VJ_ACT_PLAYACTIVITY({"vjseq_eye_wipe","vjseq_fear1","vjseq_fear2"},true,false,true)
 		end
 	end
@@ -267,7 +317,7 @@ function ENT:CustomOnThink()
 		end
 		self.AnimTbl_Run = {ACT_RUN_SCARED}
 	else
-		if math.random(1,25) == 1 && self.SCI_Type == 1 then
+		if math.random(1,25) == 1 && self.SCI_Type == 1 && self.Behavior == VJ_BEHAVIOR_PASSIVE then
 			self.AnimTbl_IdleStand = {ACT_VM_IDLE_1}
 		else
 			self.AnimTbl_IdleStand = {ACT_IDLE}
@@ -294,9 +344,15 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnPriorToKilled(dmginfo,hitgroup)
 	self:SetBodygroup(2,0)
+--	self:SetBodygroup(3,0)
 end
 function ENT:CustomOnDeath_BeforeCorpseSpawned(dmginfo,hitgroup)
 	self:SetBodygroup(3,0)
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:CustomOnDropWeapon_AfterWeaponSpawned(dmginfo,hitgroup,GetWeapon)
+	GetWeapon.WorldModel_Invisible = false
+	GetWeapon:SetNWBool("VJ_WorldModel_Invisible",false)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
@@ -365,6 +421,11 @@ function ENT:CustomDeathAnimationCode(dmginfo,hitgroup)
 	elseif hitgroup == HITGROUP_STOMACH && self.SCI_Type != 2 then
 		self.AnimTbl_Death = {ACT_DIE_GUTSHOT}
 	end
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
+local gibs1 = {"models/vj_hlr/gibs/hgib_b_bone.mdl", "models/vj_hlr/gibs/hgib_b_gib.mdl", "models/vj_hlr/gibs/hgib_guts.mdl", "models/vj_hlr/gibs/hgib_hmeat.mdl","models/vj_hlr/gibs/hgib_lung.mdl","models/vj_hlr/gibs/hgib_skull.mdl","models/vj_hlr/gibs/hgib_legbone.mdl"}
+function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo, hitgroup, corpseEnt)
+	VJ_HLR_ApplyCorpseEffects(self, corpseEnt, gibs1)
 end
 /*-----------------------------------------------
 	*** Copyright (c) 2012-2019 by DrVrej, All rights reserved. ***
