@@ -255,7 +255,7 @@ end
 function ENT:CustomOnThink_AIEnabled()
 	if self.Security_GunHolstered == true && IsValid(self:GetEnemy()) then
 		self:Security_UnHolsterGun()
-	elseif self.Security_GunHolstered == false && !IsValid(self:GetEnemy()) && self.TimeSinceLastSeenEnemy > 5 && self.IsReloadingWeapon == false && self:Health() > 0 && self:GetActiveWeapon() == weapon_vj_hlrze_beretta then
+	elseif self.Security_GunHolstered == false && !IsValid(self:GetEnemy()) && self.TimeSinceLastSeenEnemy > 5 && self.IsReloadingWeapon == false && self:Health() > 0 && self:GetActiveWeapon():GetClass() == "weapon_vj_hlrze_beretta" && self:GetActiveWeapon():Clip1() == self:GetActiveWeapon():GetMaxClip1() then
 		self:VJ_ACT_PLAYACTIVITY(ACT_DISARM,true,false,true)
 		self.Security_GunHolstered = true
 		timer.Simple(1.5,function() if IsValid(self) then self:SetBodygroup(1,0) end end)
