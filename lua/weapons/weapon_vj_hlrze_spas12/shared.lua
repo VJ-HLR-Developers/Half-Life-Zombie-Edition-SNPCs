@@ -57,7 +57,15 @@ function SWEP:CustomOnInitialize()
 	end)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-
+function SWEP:CustomOnDrawWorldModel() -- This is client only!
+    if IsValid(self.Owner) then
+        self.WorldModel_Invisible = true
+        return false
+    else
+        self.WorldModel_Invisible = false
+        return true -- return false to not draw the world model
+    end
+end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function SWEP:CustomOnPrimaryAttackEffects()
 	self.PrimaryEffects_MuzzleFlash = false
