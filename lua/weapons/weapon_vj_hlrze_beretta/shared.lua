@@ -49,7 +49,6 @@ function SWEP:CustomOnInitialize()
 				self:Remove()
 			else
 				self.NPC_NextPrimaryFire = false
-				
 			end
 		end
 	end)

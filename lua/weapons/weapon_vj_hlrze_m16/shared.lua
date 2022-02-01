@@ -18,6 +18,11 @@ SWEP.Spawnable					= false
 SWEP.AdminSpawnable				= false
 	-- World Model ---------------------------------------------------------------------------------------------------------------------------------------------
 //SWEP.PrimaryEffects_MuzzleParticles = {"vj_hl_muz3"}
+SWEP.WorldModel_Invisible = true -- Should the world model be invisible?
+SWEP.WorldModel_UseCustomPosition = true -- Should the gun use custom position? This can be used to fix guns that are in the crotch
+SWEP.WorldModel_CustomPositionAngle = Vector(2,2,0)
+SWEP.WorldModel_CustomPositionOrigin = Vector(0,0,0)
+SWEP.WorldModel_CustomPositionBone = "Bip01 R Hand" -- The bone it will use as the main point
 	-- Primary Fire ---------------------------------------------------------------------------------------------------------------------------------------------
 SWEP.Primary.Damage				= 5 -- Damage
 SWEP.Primary.ClipSize			= 50 -- Max amount of bullets per clip
@@ -30,11 +35,6 @@ SWEP.NPC_SecondaryFireSoundLevel = 85
 SWEP.NPC_SecondaryFireNext = {6,10}
 SWEP.NPC_SecondaryFireNextT = CurTime() +3
 
-SWEP.WorldModel_Invisible = false -- Should the world model be invisible?
-SWEP.WorldModel_UseCustomPosition = true -- Should the gun use custom position? This can be used to fix guns that are in the crotch
-SWEP.WorldModel_CustomPositionAngle = Vector(90,180,90)
-SWEP.WorldModel_CustomPositionOrigin = Vector(10,-2,-2)
-SWEP.WorldModel_CustomPositionBone = "Bip01 R Hand" -- The bone it will use as the main point
 
 -- Custom
 SWEP.HLR_ValidModels = {"models/vj_hlr/hlze/hgrunt.mdl","models/vj_hlr/hlze/barney.mdl","models/vj_hlr/hlze/scientist.mdl"}
@@ -42,6 +42,10 @@ SWEP.HLR_ValidModels = {"models/vj_hlr/hlze/hgrunt.mdl","models/vj_hlr/hlze/barn
 function SWEP:CustomOnInitialize()
 	timer.Simple(0.1,function() -- Minag mikani modelner tske, yete ooresh model-e, serpe as zenke
 		if IsValid(self) && IsValid(self.Owner) then
+			if self:GetOwner():GetModel() == "models/vj_hlr/hlze/scientist.mdl" then
+				self.WorldModel_CustomPositionAngle = Vector(2,2,-10)
+				self.WorldModel_CustomPositionOrigin = Vector(-2,-2,-2)
+			end
 			if !VJ_HasValue(self.HLR_ValidModels,self.Owner:GetModel()) then
 				if IsValid(self.Owner:GetCreator()) then
 					self.Owner:GetCreator():PrintMessage(HUD_PRINTTALK,self.PrintName.." removed! It's made for specific NPCs only!")
@@ -71,13 +75,13 @@ function SWEP:NPC_SecondaryFire()
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function SWEP:CustomOnDrawWorldModel() -- This is client only!
-	if IsValid(self.Owner) then
-		self.WorldModel_Invisible = true
-		return false
-	else
-		self.WorldModel_Invisible = false
-		return true -- return false to not draw the world model
-	end
+    if IsValid(self.Owner) then
+        self.WorldModel_Invisible = true
+        return false
+    else
+        self.WorldModel_Invisible = false
+        return true -- return false to not draw the world model
+    end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function SWEP:CustomOnPrimaryAttackEffects()
