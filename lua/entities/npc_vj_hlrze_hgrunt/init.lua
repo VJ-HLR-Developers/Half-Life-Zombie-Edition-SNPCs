@@ -9,7 +9,7 @@ ENT.Model = {"models/vj_hlr/hlze/hgrunt.mdl"} -- The game will pick a random mod
 ENT.StartHealth = 90
 ENT.HullType = HULL_HUMAN
 ---------------------------------------------------------------------------------------------------------------------------------------------
-ENT.CustomBlood_Particle = {"vj_hl_blood_red"}
+ENT.CustomBlood_Particle = {"vj_hlr_blood_red"}
 ENT.CustomBlood_Decal = {"VJ_HLR_Blood_Red"} -- Decals to spawn when it's damaged
 ENT.HasBloodPool = false -- Does it have a blood pool?
 ENT.VJ_NPC_Class = {"CLASS_UNITED_STATES"} -- NPCs with the same class with be allied to each other

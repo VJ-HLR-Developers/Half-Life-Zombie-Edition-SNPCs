@@ -9,7 +9,7 @@ ENT.Model = {"models/vj_hlr/hlze/crasher.mdl"} -- The game will pick a random mo
 ENT.StartHealth = 300
 ENT.HullType = HULL_HUMAN
 ---------------------------------------------------------------------------------------------------------------------------------------------
-ENT.CustomBlood_Particle = {"vj_hl_blood_yellow"}
+ENT.CustomBlood_Particle = {"vj_hlr_blood_yellow"}
 ENT.CustomBlood_Decal = {"VJ_HLR_Blood_Yellow"} -- Decals to spawn when it's damaged
 ENT.HasBloodPool = false -- Does it have a blood pool?
 ENT.VJ_NPC_Class = {"CLASS_ZOMBIE"} -- NPCs with the same class with be allied to each other
