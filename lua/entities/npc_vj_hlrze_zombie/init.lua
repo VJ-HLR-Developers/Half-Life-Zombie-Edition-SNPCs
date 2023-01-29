@@ -42,6 +42,9 @@ ENT.HitGroupFlinching_Values = {
 ENT.LeapAttackVelocityForward = 0 -- How much forward force should it apply?
 ENT.LeapAttackVelocityUp = 0 -- How much upward force should it apply?
 
+	-- ====== Eating Variables ====== --
+ENT.CanEat = true -- Should it search and eat organic stuff when idle?
+
 	-- ====== Sound File Paths ====== --
 -- Leave blank if you don't want any sounds to play
 ENT.SoundTbl_FootStep = {"vj_hlr/pl_step1.wav","vj_hlr/pl_step2.wav","vj_hlr/pl_step3.wav","vj_hlr/pl_step4.wav"}

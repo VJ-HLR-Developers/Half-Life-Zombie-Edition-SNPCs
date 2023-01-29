@@ -252,13 +252,21 @@ function ENT:Security_UnHolsterGun()
 	timer.Simple(0.55,function() if IsValid(self) then self:SetBodygroup(1,1) end end)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomOnThink_AIEnabled()
-	if self.Security_GunHolstered == true && IsValid(self:GetEnemy()) then
+function ENT:CustomOnThink_AIEnabled() --pistol holstering code
+	if self.Security_GunHolstered == true && IsValid(self:GetEnemy()) then --unholster our gun when seeing an enemy
 		self:Security_UnHolsterGun()
-	elseif self.Security_GunHolstered == false && !IsValid(self:GetEnemy()) && self.TimeSinceLastSeenEnemy > 5 && self.IsReloadingWeapon == false && self:Health() > 0 && self:GetActiveWeapon():GetClass() == "weapon_vj_hlrze_beretta" && self:GetActiveWeapon():Clip1() == self:GetActiveWeapon():GetMaxClip1() then
+	elseif self.Security_GunHolstered == false 
+	&& !IsValid(self:GetEnemy()) --do we NOT have an enemy? 
+	&& (CurTime() - self.EnemyData.LastVisibleTime) < 5 --has it been 5 seconds since we last saw an enemy?
+	&& !self.IsReloadingWeapon  --are we NOT reloading?
+	&& self:Health() > 0 --check of we're dead or not, otherwise we'll holster while getting 'crabbed
+	&& !self.VJ_PlayingSequence --are we NOT already playing a sequence?
+	&& self.CurrentWeaponEntity.HoldType == "pistol" --are we using a pistol weapon?
+	&& self.CurrentWeaponEntity:GetMaxClip1() == self.CurrentWeaponEntity:Clip1() --is our magazine full?
+	then
 		self:VJ_ACT_PLAYACTIVITY(ACT_DISARM,true,false,true)
 		self.Security_GunHolstered = true
-		timer.Simple(1.5,function() if IsValid(self) then self:SetBodygroup(1,0) end end)
+		timer.Simple(1.5,function() if IsValid(self) then self:SetBodygroup(1,0) self.Security_GunHolstered = true end end)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
