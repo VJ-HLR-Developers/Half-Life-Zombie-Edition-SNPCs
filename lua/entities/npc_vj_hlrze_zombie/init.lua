@@ -211,6 +211,7 @@ function ENT:CustomOnTakeDamage_OnBleed(dmginfo,hitgroup)
 		end
 	end
 	if (hitgroup == 6 || hitgroup == 7) && !self.Crippled then
+		print("g")
 		self.LegHealth = self.LegHealth -dmginfo:GetDamage()
 		if self.LegHealth <= 0 then
 			self:Cripple(true)
@@ -260,9 +261,3 @@ local gibs1 = {"models/vj_hlr/gibs/agib1.mdl", "models/vj_hlr/gibs/agib2.mdl", "
 function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo, hitgroup, corpseEnt)
 	VJ_HLR_ApplyCorpseEffects(self, corpseEnt, gibs1)
 end
-
-/*-----------------------------------------------
-	*** Copyright (c) 2012-2019 by DrVrej, All rights reserved. ***
-	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
-	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
------------------------------------------------*/

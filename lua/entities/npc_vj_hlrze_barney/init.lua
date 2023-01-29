@@ -127,6 +127,13 @@ ENT.Security_GunHolstered = true
 ENT.Security_Type = 0
 	-- 0 = Security Guard
 ---------------------------------------------------------------------------------------------------------------------------------------------
+local weps = {
+	"weapon_vj_hlrze_beretta",
+	"weapon_vj_hlrze_beretta",
+	"weapon_vj_hlrze_spas12",
+	"weapon_vj_hlrze_m16",
+}
+--
 function ENT:Security_CustomOnInitialize()
 	self.SoundTbl_Idle = {"vj_hlr/hl1_npc/barney/whatisthat.wav","vj_hlr/hl1_npc/barney/somethingstinky.wav","vj_hlr/hl1_npc/barney/somethingdied.wav","vj_hlr/hl1_npc/barney/guyresponsible.wav","vj_hlr/hl1_npc/barney/coldone.wav","vj_hlr/hl1_npc/barney/ba_gethev.wav","vj_hlr/hl1_npc/barney/badfeeling.wav","vj_hlr/hl1_npc/barney/bigmess.wav","vj_hlr/hl1_npc/barney/bigplace.wav"}
 	self.SoundTbl_IdleDialogue = {"vj_hlr/hl1_npc/barney/youeverseen.wav","vj_hlr/hl1_npc/barney/workingonstuff.wav","vj_hlr/hl1_npc/barney/whatsgoingon.wav","vj_hlr/hl1_npc/barney/thinking.wav","vj_hlr/hl1_npc/barney/survive.wav","vj_hlr/hl1_npc/barney/stench.wav","vj_hlr/hl1_npc/barney/somethingmoves.wav","vj_hlr/hl1_npc/barney/of1a5_ba01.wav","vj_hlr/hl1_npc/barney/nodrill.wav","vj_hlr/hl1_npc/barney/missingleg.wav","vj_hlr/hl1_npc/barney/luckwillturn.wav","vj_hlr/hl1_npc/barney/gladof38.wav","vj_hlr/hl1_npc/barney/gettingcloser.wav","vj_hlr/hl1_npc/barney/crewdied.wav","vj_hlr/hl1_npc/barney/ba_idle0.wav","vj_hlr/hl1_npc/barney/badarea.wav","vj_hlr/hl1_npc/barney/beertopside.wav"}
@@ -148,19 +155,13 @@ function ENT:Security_CustomOnInitialize()
 	self.SoundTbl_Death = {"vj_hlr/hl1_npc/barney/ba_ht06_02_alt.wav","vj_hlr/hl1_npc/barney/ba_ht06_02.wav","vj_hlr/hl1_npc/barney/ba_die1.wav","vj_hlr/hl1_npc/barney/ba_die2.wav","vj_hlr/hl1_npc/barney/ba_die3.wav"}
 
 	self.AnimTbl_Death = {ACT_DIEBACKWARD,ACT_DIEFORWARD,ACT_DIE_GUTSHOT,ACT_DIE_HEADSHOT,ACT_DIESIMPLE} -- Death Animations
-	
-	local tbl = {
-		"weapon_vj_hlrze_beretta",
-		"weapon_vj_hlrze_beretta",
-		"weapon_vj_hlrze_spas12",
-		"weapon_vj_hlrze_m16",
-	}
-	self:Give(VJ_PICK(tbl))
+
+	self:Give(VJ_PICK(weps))
 --	self:Give("weapon_vj_hlrze_beretta")
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnInitialize()
-	self:SetCollisionBounds(Vector(13, 13, 76), Vector(-13, -13, 0))
+	//self:SetCollisionBounds(Vector(13, 13, 76), Vector(-13, -13, 0))
 	self:SetBodygroup(1,0)
 	self:Security_CustomOnInitialize()
 end
@@ -172,7 +173,6 @@ function ENT:OnPlayCreateSound(SoundData,SoundFile)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnAcceptInput(key,activator,caller,data)
-
 	if key == "step" then
 		self:FootStepSoundCode()
 	end
@@ -366,8 +366,3 @@ end
 function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo, hitgroup, corpseEnt)
 	VJ_HLR_ApplyCorpseEffects(self, corpseEnt)
 end
-/*-----------------------------------------------
-	*** Copyright (c) 2012-2019 by DrVrej, All rights reserved. ***
-	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
-	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
------------------------------------------------*/
