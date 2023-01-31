@@ -9,6 +9,7 @@ ENT.Model = {"models/vj_hlr/hlze/zombie.mdl"} -- The game will pick a random mod
 ENT.StartHealth = 50
 ENT.HullType = HULL_HUMAN
 ---------------------------------------------------------------------------------------------------------------------------------------------
+ENT.BloodColor = "Yellow" -- The blood type, this will determine what it should use (decal, particle, etc.)
 ENT.CustomBlood_Particle = {"vj_hlr_blood_yellow"}
 ENT.CustomBlood_Decal = {"VJ_HLR_Blood_Yellow"} -- Decals to spawn when it's damaged
 ENT.HasBloodPool = false -- Does it have a blood pool?
@@ -82,6 +83,7 @@ function ENT:Cripple(crip)
 		self.AnimTbl_Run = {VJ_SequenceToActivity(self,"limp_leg_run")}
 		self.CanFlinch = 0
 		self.MaxJumpLegalDistance = VJ_Set(0,0)
+		self.CanEat = false
 	else
 		self.LegHealth = 20
 		self:VJ_ACT_PLAYACTIVITY(ACT_ROLL_LEFT,true,false,false)
@@ -92,6 +94,7 @@ function ENT:Cripple(crip)
 		self.AnimTbl_Run = {ACT_RUN}
 		self.CanFlinch = 1
 		self.MaxJumpLegalDistance = VJ_Set(400,550)
+		self.CanEat = true
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -193,11 +196,11 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnTakeDamage_OnBleed(dmginfo,hitgroup)
 	if !self.Crippled then
-		if hitgroup == 6 then
+		if hitgroup == 6 && !self.IsHEVZombie then
 			self.AnimTbl_Walk = {ACT_STRAFE_LEFT}
 			self.AnimTbl_Run = {ACT_STRAFE_LEFT}
 		end
-		if hitgroup == 7 then
+		if hitgroup == 7 && !self.IsHEVZombie then
 			self.AnimTbl_Walk = {ACT_STRAFE_RIGHT}
 			self.AnimTbl_Run = {ACT_STRAFE_RIGHT}
 		end
@@ -206,12 +209,11 @@ function ENT:CustomOnTakeDamage_OnBleed(dmginfo,hitgroup)
 			if headcrabdropchance == 3 then
 				self.AnimTbl_Death = {ACT_DIE_HEADSHOT}
 				self:Dropheadcrab()
-				self:TakeDamage(100,self,self)
+				self:TakeDamage(self:Health() + 100,self,self)
 			end
 		end
 	end
-	if (hitgroup == 6 || hitgroup == 7) && !self.Crippled then
-		print("g")
+	if (hitgroup == 6 || hitgroup == 7) && !self.Crippled && !self.IsHEVZombie then
 		self.LegHealth = self.LegHealth -dmginfo:GetDamage()
 		if self.LegHealth <= 0 then
 			self:Cripple(true)
@@ -242,7 +244,7 @@ function ENT:CustomOnLeapAttackVelocityCode()
 	if self.VJ_IsBeingControlled == true then
 		self.AnimTbl_Death = {ACT_DIE_HEADSHOT}
 		self:Dropheadcrab()
-		self:TakeDamage(100,self,self)
+		self:TakeDamage(self:Health() + 100,self,self)
 	end
 	return false
 end
@@ -260,4 +262,44 @@ local gibs1 = {"models/vj_hlr/gibs/agib1.mdl", "models/vj_hlr/gibs/agib2.mdl", "
 --
 function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo, hitgroup, corpseEnt)
 	VJ_HLR_ApplyCorpseEffects(self, corpseEnt, gibs1)
+end
+
+local vecZ50 = Vector(0, 0, -50)
+function ENT:CustomOnEat(status, statusInfo)
+	-- The following code is a ideal example based on Half-Life 1 Zombie
+	//print(self, "Eating Status: ", status, statusInfo)
+	if status == "CheckFood" then
+		return (statusInfo.owner.BloodData && statusInfo.owner.BloodData.Color == "Red" && self:Health() != self:GetMaxHealth()) -- only start eating if the corpse is a human, and we're not at full health - epicplayer
+	elseif status == "BeginEating" then
+		self:SetIdleAnimation({ACT_GESTURE_RANGE_ATTACK1}, true)
+		return self:VJ_ACT_PLAYACTIVITY(ACT_ARM, true, false)
+	elseif status == "Eat" then
+		VJ_EmitSound(self, "vj_hlr/hl1_npc/bullchicken/bc_bite"..math.random(1, 3)..".wav", 100) --more accurate to the mod - epicplayer
+		-- Health changes
+		local food = self.EatingData.Ent
+		local damage = 15 -- How much damage food will receive
+		local foodHP = food:Health() -- Food's health
+		self:SetHealth(math.Clamp(self:Health() + ((damage > foodHP and foodHP) or damage), self:Health(), self:GetMaxHealth())) -- Give health to the NPC
+		food:SetHealth(foodHP - damage) -- Decrease corpse health
+		-- Blood effects
+		local bloodData = food.BloodData
+		if bloodData then
+			local bloodPos = food:GetPos() + food:OBBCenter()
+			local bloodParticle = VJ_PICK(bloodData.Particle)
+			if bloodParticle then
+				ParticleEffect(bloodParticle, bloodPos, self:GetAngles())
+			end
+			local bloodDecal = VJ_PICK(bloodData.Decal)
+			if bloodDecal then
+				local tr = util.TraceLine({start = bloodPos, endpos = bloodPos + vecZ50, filter = {food, self}})
+				util.Decal(bloodDecal, tr.HitPos + tr.HitNormal + Vector(math.random(-45, 45), math.random(-45, 45), 0), tr.HitPos - tr.HitNormal, food)
+			end
+		end
+		return 1 -- Changed to match the speed of the HLZE mod - epicplayer
+	elseif status == "StopEating" then
+		if statusInfo != "Dead" && self.EatingData.AnimStatus != "None" then -- Do NOT play anim while dead or has NOT prepared to eat
+			return self:VJ_ACT_PLAYACTIVITY(ACT_DISARM, true, false)
+		end
+	end
+	return 0
 end
