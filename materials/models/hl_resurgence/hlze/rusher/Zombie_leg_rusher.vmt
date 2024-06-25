@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/hl_resurgence/hlze/rusher/Zombie_leg_rusher"
+	"$surfaceprop" "Flesh"
+}
