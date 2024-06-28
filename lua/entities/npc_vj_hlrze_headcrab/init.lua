@@ -156,6 +156,7 @@ function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity)
 			if victim:GetActiveWeapon() then victim:DropWeaponOnDeathCode(fakedamage,1) victim:SetBodygroup(3,0) end
 		elseif victim:GetClass() == "npc_vj_hlrze_hgrunt" then
 			victim:SetBodygroup(2,3)
+			victim:SetSkin(2)
 			zAnimT = 1.61
 			zOffset = 30
 			zClass = "npc_vj_hlrze_zsoldier"

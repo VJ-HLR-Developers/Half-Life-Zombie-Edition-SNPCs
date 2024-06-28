@@ -1,7 +1,7 @@
 AddCSLuaFile("shared.lua")
 include('shared.lua')
 /*-----------------------------------------------
-	*** Copyright (c) 2012-2019 by DrVrej, All rights reserved. ***
+	*** Copyright (c) 2012-2024 by DrVrej, All rights reserved. ***
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 -----------------------------------------------*/
@@ -59,6 +59,8 @@ ENT.HECU_WepBG = 2 -- The bodygroup that the weapons are in (Ourish e amen model
 ENT.HECU_LastBodyGroup = 99
 ENT.AnimTbl_WeaponAttackSecondary = {ACT_SPECIAL_ATTACK1} -- Animations played when the SNPC fires a secondary weapon attack
 ENT.WeaponAttackSecondaryTimeUntilFire = 1 -- The weapon uses this integer to set the time until the firing code is ran
+ENT.HECU_WillBecomeBloody = false -- Will we use our bloody skin if we are heavily injured?
+
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:HECU_CustomOnInitialize()
 	self.SoundTbl_Idle = {"vj_hlr/hl1_npc/hgrunt/gr_idle1.wav","vj_hlr/hl1_npc/hgrunt/gr_idle2.wav","vj_hlr/hl1_npc/hgrunt/gr_idle3.wav"}
@@ -82,6 +84,8 @@ function ENT:HECU_CustomOnInitialize()
 	if randweapon == 4 then self:SetBodygroup(2,1) if randhead != 4 then self:SetBodygroup(1,2) end end --shotgunner
 	if randweapon == 5 && randhead < 5 then self:SetBodygroup(2,2) end --SAW gunner
 	
+	local randombloody = (math.random(0,2)) --It used to be that all grunts get bloody when hurt, but now it's a random chance determined from spawn
+	if randombloody == 2 then self.HECU_WillBecomeBloody = true end
 	--self:SetBodygroup(2,math.random(0,2))
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -125,7 +129,7 @@ function ENT:CustomOnThink()
 		self.AnimTbl_Run = {ACT_RUN_HURT}
 		self.AnimTbl_ShootWhileMovingWalk = {ACT_WALK_HURT}
 		self.AnimTbl_ShootWhileMovingRun = {ACT_RUN_HURT}
-		self:SetSkin(2)
+		if self.HECU_WillBecomeBloody then self:SetSkin(2) end --If our spawn randomisation said we should be bloody, then do it 
 	else
 		if self:GetBodygroup(2) != 2 then
 			self.AnimTbl_Run = {ACT_SPRINT}
