@@ -190,7 +190,7 @@ function ENT:CustomOnInitialize()
 end
 
 function ENT:CustomOnSetupWeaponHoldTypeAnims(htype) 
-
+	local wep = self:GetActiveWeapon()
 self.WeaponAnimTranslations = {}
 --print(htype)
 if htype == "smg" then
@@ -202,6 +202,7 @@ if htype == "smg" then
 	self.WeaponAnimTranslations[ACT_RELOAD] 						= ACT_RELOAD_SMG1
 	self.WeaponAnimTranslations[ACT_RUN] 							= ACT_RUN_RPG
 	self.WeaponAnimTranslations[ACT_MELEE_ATTACK1] 					= ACT_GESTURE_MELEE_ATTACK1
+	wep.NPC_ReloadSound = {"vj_hlr/hla_npc/hgrunt/gr_reload1.wav"}
 elseif htype == "shotgun" then
 	self:SetBodygroup(3,2)
 	self.WeaponAnimTranslations[ACT_IDLE] 							= ACT_SHOTGUN_IDLE4
@@ -211,6 +212,7 @@ elseif htype == "shotgun" then
 	self.WeaponAnimTranslations[ACT_RELOAD] 						= ACT_RELOAD_SHOTGUN
 	self.WeaponAnimTranslations[ACT_RUN] 							= ACT_RUN_RIFLE
 	self.WeaponAnimTranslations[ACT_MELEE_ATTACK1] 					= ACT_GESTURE_MELEE_ATTACK1
+	wep.NPC_HasReloadSound = false
 elseif htype == "pistol" then
 	self:SetBodygroup(3,1)
 	self.WeaponAnimTranslations[ACT_IDLE] 							= ACT_IDLE_PISTOL
@@ -327,20 +329,21 @@ function ENT:CustomOnThink()
 		self.AnimTbl_Run = {ACT_RUN}
 	end
 	
+	-- Mouth animation when talking
 	if CurTime() < self.SCI_NextMouthMove then
 		if self.SCI_NextMouthDistance == 0 then
-			self.SCI_NextMouthDistance = math.random(10,70)
+			self.SCI_NextMouthDistance = math.random(10, 70)
 		else
 			self.SCI_NextMouthDistance = 0
 		end
-		self:SetPoseParameter("m",self.SCI_NextMouthDistance)
+		self:SetPoseParameter("mouth", self.SCI_NextMouthDistance)
 	else
-		self:SetPoseParameter("m",0)
+		self:SetPoseParameter("mouth", 0)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:OnPlayCreateSound(SoundData,SoundFile)
-	self.SCI_NextMouthMove = CurTime() + SoundDuration(SoundFile)
+function ENT:OnPlayCreateSound(sdData, sdFile)
+	self.SCI_NextMouthMove = CurTime() + SoundDuration(sdFile)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnPriorToKilled(dmginfo,hitgroup)

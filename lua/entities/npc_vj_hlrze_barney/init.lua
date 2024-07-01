@@ -158,6 +158,7 @@ function ENT:Security_CustomOnInitialize()
 
 	self:Give(VJ_PICK(weps))
 --	self:Give("weapon_vj_hlrze_beretta")
+
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnInitialize()
@@ -335,7 +336,8 @@ function ENT:CustomOnDropWeapon_AfterWeaponSpawned(dmginfo,hitgroup,GetWeapon)
 end
 
 function ENT:CustomOnSetupWeaponHoldTypeAnims(htype) 
-
+	local wep = self:GetActiveWeapon()
+	
 self.WeaponAnimTranslations = {}
 --print(htype)
 if htype == "smg" then
@@ -347,6 +349,7 @@ if htype == "smg" then
 	self.WeaponAnimTranslations[ACT_RELOAD] 						= ACT_RELOAD_SMG1
 	self.WeaponAnimTranslations[ACT_RUN] 							= ACT_RUN_RPG
 	self.WeaponAnimTranslations[ACT_MELEE_ATTACK1] 					= ACT_GESTURE_MELEE_ATTACK1
+	wep.NPC_ReloadSound = {"vj_hlr/hla_npc/hgrunt/gr_reload1.wav"}
 elseif htype == "shotgun" then
 	self.Security_GunHolstered = false
 	self:SetBodygroup(1,4)
@@ -356,6 +359,7 @@ elseif htype == "shotgun" then
 	self.WeaponAnimTranslations[ACT_RELOAD] 						= ACT_RELOAD_SHOTGUN
 	self.WeaponAnimTranslations[ACT_RUN] 							= ACT_RUN_RIFLE
 	self.WeaponAnimTranslations[ACT_MELEE_ATTACK1] 					= ACT_GESTURE_MELEE_ATTACK1
+	wep.NPC_HasReloadSound = false
 end
 
 return true
