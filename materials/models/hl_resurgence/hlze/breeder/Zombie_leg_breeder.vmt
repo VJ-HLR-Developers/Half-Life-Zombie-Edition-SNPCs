@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/hl_resurgence/hlze/breeder/Zombie_leg_breeder"
+	"$surfaceprop" "AlienFlesh"
+}

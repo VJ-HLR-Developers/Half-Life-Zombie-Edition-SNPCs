@@ -1,0 +1,13 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/hl_resurgence/hlze/breeder/tube"
+	$phong 1
+	$basemapalphaphongmask 1
+	"$phongexponenttexture" "models/hl_resurgence/hlze/breeder/tube_exponent"
+	$phongexponent		3		
+	$phongboost		8.0
+	$phongfresnelranges	"[1 0 0]"
+	$phongtint	"[1 0.85 0.6]"
+	$phongalbedotint 1
+	//$phongbasetint 1
+}
