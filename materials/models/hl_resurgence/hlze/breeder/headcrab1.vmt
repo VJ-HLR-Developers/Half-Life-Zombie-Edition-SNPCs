@@ -2,4 +2,5 @@
 {
     $basetexture "models/hl_resurgence/hlze/headcrab"
 	$surfaceprop "AlienFlesh"
+	$nodecal 1
 }

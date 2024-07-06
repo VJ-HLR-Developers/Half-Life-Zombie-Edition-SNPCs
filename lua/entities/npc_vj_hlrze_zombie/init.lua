@@ -22,6 +22,9 @@ ENT.MeleeAttackDamageDistance = 80 -- How far does the damage go?
 ENT.DisableLeapAttackAnimation = true -- if true, it will disable the animation code
 ENT.LeapAttackUseCustomVelocity = true -- Should it disable the default velocity system?
 
+ENT.BringFriendsOnDeath = false
+ENT.CallForHelp = false
+
 ENT.HasExtraMeleeAttackSounds = true -- Set to true to use the extra melee attack sounds
 ENT.DisableFootStepSoundTimer = true -- If set to true, it will disable the time system for the footstep sound code, allowing you to use other ways like model events
 -- ENT.AnimTbl_Run = {ACT_WALK} -- Set the running animations | Put multiple to let the base pick a random animation when it moves

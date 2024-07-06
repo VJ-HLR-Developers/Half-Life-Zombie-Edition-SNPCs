@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/hl_resurgence/hlze/breeder/babybarnacle"
+	"$surfaceprop" "AlienFlesh"
+}
