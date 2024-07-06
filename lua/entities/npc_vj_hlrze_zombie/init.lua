@@ -8,6 +8,7 @@ include('shared.lua')
 ENT.Model = {"models/vj_hlr/hlze/zombie.mdl"} -- The game will pick a random model from the table when the SNPC is spawned | Add as many as you want
 ENT.StartHealth = 50
 ENT.HullType = HULL_HUMAN
+ENT.CanReceiveOrders = true
 ---------------------------------------------------------------------------------------------------------------------------------------------
 ENT.BloodColor = "Yellow" -- The blood type, this will determine what it should use (decal, particle, etc.)
 ENT.CustomBlood_Particle = {"vj_hlr_blood_yellow"}

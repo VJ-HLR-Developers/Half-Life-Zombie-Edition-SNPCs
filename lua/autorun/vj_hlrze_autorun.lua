@@ -1,6 +1,6 @@
 /*--------------------------------------------------
 	=============== Autorun File ===============
-	*** Copyright (c) 2012-2020 by DrVrej, All rights reserved. ***
+	*** Copyright (c) 2012-2024 by DrVrej, All rights reserved. ***
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 --------------------------------------------------*/
@@ -25,7 +25,7 @@ if VJExists == true then
 	VJ.AddNPC("Zombie Barney","npc_vj_hlrze_zombie_barney",vCat)
 	VJ.AddNPC("Zombie Soldier","npc_vj_hlrze_zsoldier",vCat)
 	VJ.AddNPC("Zombie Soldier (Grenade)","npc_vj_hlrze_zsoldier_grenade",vCat)
-	VJ.AddNPC("Zombie Male Assasin","npc_vj_hlrze_zmassassin",vCat)
+	VJ.AddNPC("Zombie Male Assassin","npc_vj_hlrze_zmassassin",vCat)
 	VJ.AddNPC("Zombie Female Assassin","npc_vj_hlrze_zfassassin",vCat)
 	VJ.AddNPC("Zombie Gordon","npc_vj_hlrze_zombie_hev",vCat)
 	VJ.AddNPC("Zombie Crasher","npc_vj_hlrze_zcrasher",vCat)
@@ -33,6 +33,13 @@ if VJExists == true then
 	VJ.AddNPC("Zombie Rusher Scientist","npc_vj_hlrze_zrusher_scientist",vCat)
 	VJ.AddNPC("Zombie Breeder","npc_vj_hlrze_zbreeder",vCat)
 	VJ.AddNPC("Headcrab","npc_vj_hlrze_headcrab",vCat)
+	
+	VJ.AddNPC("Random Zombie (Black Mesa Staff)","sent_vj_hlrze_randomzombie_bm",vCat)
+	VJ.AddNPC("Random Zombie (HECU)","sent_vj_hlrze_randomzombie_grunt",vCat)
+	VJ.AddNPC("Random Zombie (Military)","sent_vj_hlrze_randomzombie_military",vCat)
+	VJ.AddNPC("Random Zombie (Mutations)","sent_vj_hlrze_randomzombie_mutation",vCat)
+	VJ.AddNPC("Random Zombie (All Standard)","sent_vj_hlrze_randomzombie_allcommon",vCat)
+	VJ.AddNPC("Random Zombie (All)","sent_vj_hlrze_randomzombie_all",vCat)
 	
 -- !!!!!! DON'T TOUCH ANYTHING BELOW THIS !!!!!! -------------------------------------------------------------------------------------------------------------------------
 	AddCSLuaFile(AutorunFile)

@@ -34,7 +34,7 @@ ENT.RangeUseAttachmentForPosID = "hand_headcrab" -- The attachment used on the r
 
 	-- ====== Call For Help Variables ====== --
 ENT.CallForHelp = true -- Can the NPC request allies for help while in combat?
-ENT.CallForHelpDistance = 2500 -- -- How far away the SNPC's call for help goes | Counted in World Units
+ENT.CallForHelpDistance = 4500 -- -- How far away the SNPC's call for help goes | Counted in World Units
 ENT.NextCallForHelpTime = 20 -- Time until it calls for help again
 ENT.HasCallForHelpAnimation = false -- if true, it will play the call for help animation
 
