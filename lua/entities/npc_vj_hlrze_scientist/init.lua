@@ -300,9 +300,10 @@ end
 function ENT:CustomOnAlert(argent)
 	if self.SCI_Type != 2 && self.SCI_Type != 3 then
 		if math.random(1,2) == 1 then
-			if argent:GetClass() == "npc_vj_hlr1_headcrab" or argent:GetClass() == "npc_vj_hlr1_headcrab_baby" or argent:GetClass() == "npc_headcrab" or argent:GetClass() == "npc_headcrab_black" or argent:GetClass() == "npc_headcrab_fast" then
-				self:AlertSoundCode({"vj_hlr/hl1_npc/scientist/seeheadcrab.wav"})
-				self.NextAlertSoundT = CurTime() + math.Rand(self.NextSoundTime_Alert1,self.NextSoundTime_Alert2)
+			if argent:GetClass() == "npc_vj_hlrze_headcrab" or argent:GetClass() == "npc_vj_hlr1_headcrab" or argent:GetClass() == "npc_vj_hlr1_headcrab_baby" or argent:GetClass() == "npc_headcrab" or argent:GetClass() == "npc_headcrab_black" or argent:GetClass() == "npc_headcrab_fast" then
+				--self:AlertSoundCode({"vj_hlr/hl1_npc/scientist/seeheadcrab.wav"})
+				--self.NextAlertSoundT = CurTime() + math.Rand(self.NextSoundTime_Alert1,self.NextSoundTime_Alert2)
+				self:PlaySoundSystem("Alert", "vj_hlr/hl1_npc/scientist/seeheadcrab.wav")
 			end
 		end
 		if argent:GetPos():Distance(self:GetPos()) >= 300 && math.random(1,2) == 1 && self.Behavior == VJ_BEHAVIOR_PASSIVE then
