@@ -8,7 +8,7 @@ include('shared.lua')
 ENT.Model = {"models/vj_hlr/hlze/headcrab.mdl"} -- The game will pick a random model from the table when the SNPC is spawned | Add as many as you want
 ENT.StartHealth = 10
 ENT.HullType = HULL_TINY
-ENT.EntitiesToNoCollide = {"npc_vj_hlr1_gonarch"} -- Entities to not collide with when HasEntitiesToNoCollide is set to true
+--ENT.EntitiesToNoCollide = {"npc_vj_hlr1_gonarch"} -- Entities to not collide with when HasEntitiesToNoCollide is set to true
 ---------------------------------------------------------------------------------------------------------------------------------------------
 ENT.BloodColor = "Yellow" -- The blood type, this will determine what it should use (decal, particle, etc.)
 ENT.CustomBlood_Particle = {"vj_hlr_blood_yellow"}
@@ -33,7 +33,7 @@ ENT.LeapAttackVelocityRight = 0 -- How much right force should it apply?
 ENT.HasDeathAnimation = true -- Does it play an animation when it dies?
 ENT.AnimTbl_Death = {ACT_DIESIMPLE} -- Death Animations
 //ENT.DeathAnimationTime = 0.6 -- Time until the SNPC spawns its corpse and gets removed
-ENT.EntitiesToNoCollide = {"npc_vj_hlrze_headcrab","npc_vj_hlrze_zombie","npc_vj_hlrze_zombie_barney","npc_vj_hlrze_zfassassin","npc_vj_hlrze_zombie_hev","npc_vj_hlrze_zmassassin","npc_vj_hlrze_zrusher","npc_vj_hlrze_zrusher_scientist","npc_vj_hlrze_zsoldier","npc_vj_hlrze_zsoldier_grenade","npc_vj_hlrze_zcrasher","npc_vj_hlrze_zbreeder"}
+ENT.EntitiesToNoCollide = {"npc_vj_hlr1_gonarch","npc_vj_hlrze_headcrab","npc_vj_hlrze_zombie","npc_vj_hlrze_zombie_barney","npc_vj_hlrze_zfassassin","npc_vj_hlrze_zombie_hev","npc_vj_hlrze_zmassassin","npc_vj_hlrze_zrusher","npc_vj_hlrze_zrusher_scientist","npc_vj_hlrze_zsoldier","npc_vj_hlrze_zsoldier_grenade","npc_vj_hlrze_zcrasher","npc_vj_hlrze_zbreeder"}
 	-- ====== Sound File Paths ====== --
 -- Leave blank if you don't want any sounds to play
 ENT.SoundTbl_Idle = {"vj_hlr/hl1_npc/headcrab/hc_idle1.wav","vj_hlr/hl1_npc/headcrab/hc_idle2.wav","vj_hlr/hl1_npc/headcrab/hc_idle3.wav","vj_hlr/hl1_npc/headcrab/hc_idle4.wav","vj_hlr/hl1_npc/headcrab/hc_idle5.wav"}
