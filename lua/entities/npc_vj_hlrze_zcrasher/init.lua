@@ -39,6 +39,18 @@ ENT.AnimTbl_Walk = {ACT_WALK} -- Set the running animations | Put multiple to le
 ENT.AnimTbl_Run = {ACT_WALK} -- Set the running animations | Put multiple to let the base pick a random animation when it moves
 ENT.HasDeathAnimation = false -- Does it play an animation when it dies?
 //ENT.DeathAnimationTime = 0.8 -- Time until the SNPC spawns its corpse and gets removed
+
+	-- ====== NPC Controller Data ====== --
+ENT.VJC_Data = {
+	CameraMode = 1, -- Sets the default camera mode | 1 = Third Person, 2 = First Person
+	ThirdP_Offset = Vector(30, 30, -60), -- The offset for the controller when the camera is in third person
+	FirstP_Bone = "Bip01 Neck", -- If left empty, the base will attempt to calculate a position for first person
+	FirstP_Offset = Vector(5, 0, 8), -- The offset for the controller when the camera is in first person
+	FirstP_ShrinkBone = true, -- Should the bone shrink? Useful if the bone is obscuring the player's view
+	FirstP_CameraBoneAng = 0, -- Should the camera's angle be affected by the bone's angle? | 0 = No, 1 = Pitch, 2 = Yaw, 3 = Roll
+	FirstP_CameraBoneAng_Offset = 0, -- How much should the camera's angle be rotated by? | Useful for weird bone angles
+}
+
 	-- ====== Sound File Paths ====== --
 -- Leave blank if you don't want any sounds to play
 ENT.SoundTbl_FootStep = {"vj_hlr/pl_step1.wav","vj_hlr/pl_step2.wav","vj_hlr/pl_step3.wav","vj_hlr/pl_step4.wav"}

@@ -34,6 +34,18 @@ ENT.HasDeathAnimation = true -- Does it play an animation when it dies?
 ENT.AnimTbl_Death = {ACT_DIESIMPLE} -- Death Animations
 //ENT.DeathAnimationTime = 0.6 -- Time until the SNPC spawns its corpse and gets removed
 ENT.EntitiesToNoCollide = {"npc_vj_hlr1_gonarch","npc_vj_hlrze_headcrab","npc_vj_hlrze_zombie","npc_vj_hlrze_zombie_barney","npc_vj_hlrze_zfassassin","npc_vj_hlrze_zombie_hev","npc_vj_hlrze_zmassassin","npc_vj_hlrze_zrusher","npc_vj_hlrze_zrusher_scientist","npc_vj_hlrze_zsoldier","npc_vj_hlrze_zsoldier_grenade","npc_vj_hlrze_zcrasher","npc_vj_hlrze_zbreeder"}
+
+	-- ====== NPC Controller Data ====== --
+ENT.VJC_Data = {
+	CameraMode = 1, -- Sets the default camera mode | 1 = Third Person, 2 = First Person
+	ThirdP_Offset = Vector(0, 0, 0), -- The offset for the controller when the camera is in third person
+	FirstP_Bone = "Bip01 Spine", -- If left empty, the base will attempt to calculate a position for first person
+	FirstP_Offset = Vector(2, 0, 1), -- The offset for the controller when the camera is in first person
+	FirstP_ShrinkBone = true, -- Should the bone shrink? Useful if the bone is obscuring the player's view
+	FirstP_CameraBoneAng = 0, -- Should the camera's angle be affected by the bone's angle? | 0 = No, 1 = Pitch, 2 = Yaw, 3 = Roll
+	FirstP_CameraBoneAng_Offset = 0, -- How much should the camera's angle be rotated by? | Useful for weird bone angles
+}
+
 	-- ====== Sound File Paths ====== --
 -- Leave blank if you don't want any sounds to play
 ENT.SoundTbl_Idle = {"vj_hlr/hl1_npc/headcrab/hc_idle1.wav","vj_hlr/hl1_npc/headcrab/hc_idle2.wav","vj_hlr/hl1_npc/headcrab/hc_idle3.wav","vj_hlr/hl1_npc/headcrab/hc_idle4.wav","vj_hlr/hl1_npc/headcrab/hc_idle5.wav"}

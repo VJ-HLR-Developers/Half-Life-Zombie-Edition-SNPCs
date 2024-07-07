@@ -140,10 +140,16 @@ vj_hlr/hl1_npc/scientist/scream7.wav (duplicate of scream6)
 
 ENT.GeneralSoundPitch1 = 100
 
-	-- ====== Controller Variables ====== --
-ENT.Controller_FirstPersonBone = "Bip02 Head"
-ENT.Controller_FirstPersonOffset = Vector(0,0,5)
-ENT.Controller_FirstPersonAngle = Angle(90,0,90)
+	-- ====== NPC Controller Data ====== --
+ENT.VJC_Data = {
+	CameraMode = 1, -- Sets the default camera mode | 1 = Third Person, 2 = First Person
+	ThirdP_Offset = Vector(30, 20, -50), -- The offset for the controller when the camera is in third person
+	FirstP_Bone = "Bip01 Head", -- If left empty, the base will attempt to calculate a position for first person
+	FirstP_Offset = Vector(5, 0, 5), -- The offset for the controller when the camera is in first person
+	FirstP_ShrinkBone = true, -- Should the bone shrink? Useful if the bone is obscuring the player's view
+	FirstP_CameraBoneAng = 0, -- Should the camera's angle be affected by the bone's angle? | 0 = No, 1 = Pitch, 2 = Yaw, 3 = Roll
+	FirstP_CameraBoneAng_Offset = 0, -- How much should the camera's angle be rotated by? | Useful for weird bone angles
+}
 
 -- Custom
 ENT.SCI_NextMouthMove = 0
