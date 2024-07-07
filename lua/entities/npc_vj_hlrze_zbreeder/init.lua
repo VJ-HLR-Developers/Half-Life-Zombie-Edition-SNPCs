@@ -50,7 +50,7 @@ ENT.BreederAttackMode = 0 --Attack mode of the breeder. 0 = normal, 1 = throw he
 ENT.BreederBabycrabCount = 0 -- Amount of babycrabs shot in a single attack
 ENT.BreederHeadcrabCount = 5 -- Total amount of headcrabs we have stored in our chest inventory
 --ENT.BreederShotBabycrabCount = 0
-ENT.BreederMaxBabycrabCount = 14 --Max amount of babycrabs we are holding, this is a temporary fix for a bug
+ENT.BreederMaxBabycrabCount = 28 --Max amount of babycrabs we are holding
 
 ENT.ShownFirstHint_Headcrabs = false
 ENT.ShownFirstHint_Babycrabs = false
@@ -215,7 +215,6 @@ function ENT:CustomOnThink()
 		--self.BreederShotBabycrabCount = self.BreederShotBabycrabCount + 1
 		self.BreederMaxBabycrabCount = self.BreederMaxBabycrabCount - 1
 		
-		--I don't know why but this breaks after being called 14 times
 		self:AddLayeredSequence( self:LookupSequence("babycrab_shoot_gesture"), self.BreederBabycrabCount + 1 )
 		VJ_EmitSound(self, "vj_hlr/hl1_npc/gonarch/gon_birth1.wav", 50)
 		
@@ -232,6 +231,7 @@ function ENT:CustomOnThink()
 --Attack has ended, stop spewing
 	elseif self.BreederAttackMode == 2 && self.BreederBabycrabCount <= 0 && CurTime() > self.Breeder_NextBabycrabTime then
 		self:StopMoving()
+		self:RemoveAllGestures() --This fixes baby crab shooting from breaking after being called 14 times
 		self:VJ_ACT_PLAYACTIVITY(ACT_RELOAD_SMG1_LOW,true,false,false) --hand lower anim
 		--self.BreederShotBabycrabCount = 0
 		self:ChangeBreederAttackMode(0) 
