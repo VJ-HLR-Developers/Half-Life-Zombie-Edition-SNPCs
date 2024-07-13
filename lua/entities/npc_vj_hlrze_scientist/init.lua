@@ -208,6 +208,7 @@ if htype == "smg" then
 	self.WeaponAnimTranslations[ACT_RELOAD] 						= ACT_RELOAD_SMG1
 	self.WeaponAnimTranslations[ACT_RUN] 							= ACT_RUN_RPG
 	self.WeaponAnimTranslations[ACT_MELEE_ATTACK1] 					= ACT_GESTURE_MELEE_ATTACK1
+	self.WeaponAnimTranslations[ACT_IDLE_ANGRY] 					= ACT_IDLE_RPG -- Fixes idle anim when controlled
 	wep.NPC_ReloadSound = {"vj_hlr/hla_npc/hgrunt/gr_reload1.wav"}
 elseif htype == "shotgun" then
 	self:SetBodygroup(3,2)
@@ -218,6 +219,7 @@ elseif htype == "shotgun" then
 	self.WeaponAnimTranslations[ACT_RELOAD] 						= ACT_RELOAD_SHOTGUN
 	self.WeaponAnimTranslations[ACT_RUN] 							= ACT_RUN_RIFLE
 	self.WeaponAnimTranslations[ACT_MELEE_ATTACK1] 					= ACT_GESTURE_MELEE_ATTACK1
+	self.WeaponAnimTranslations[ACT_IDLE_ANGRY] 					= ACT_SHOTGUN_IDLE4 -- Fixes idle anim when controlled
 	wep.NPC_HasReloadSound = false
 elseif htype == "pistol" then
 	self:SetBodygroup(3,1)
