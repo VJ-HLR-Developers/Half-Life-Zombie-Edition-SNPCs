@@ -59,7 +59,8 @@ ENT.GeneralSoundPitch1 = 100
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnInitialize()
 	self:SetCollisionBounds(Vector(10,10,18), Vector(-10,-10,0))
-	self.Headcrabbed = false
+	--If death animations are disabled, then the headcrab transformation system is too
+	if GetConVarNumber("vj_npc_nodeathanimation") == 0 then self.Headcrabbed = false else self.Headcrabbed = true end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnThink()
