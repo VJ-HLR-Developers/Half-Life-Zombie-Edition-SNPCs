@@ -260,11 +260,14 @@ function ENT:Security_UnHolsterGun()
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnThink_AIEnabled() --pistol holstering code
-	if self.Security_GunHolstered == true && IsValid(self:GetEnemy()) then --unholster our gun when seeing an enemy
+	if self.Security_GunHolstered == true && IsValid(self:GetEnemy()) && self:GetBodygroup(1) == 0 then --unholster our gun when seeing an enemy
 		self:Security_UnHolsterGun()
-	elseif self.Security_GunHolstered == false 
-	&& !IsValid(self:GetEnemy()) --do we NOT have an enemy? 
-	&& (CurTime() - self.EnemyData.LastVisibleTime) < 5 --has it been 5 seconds since we last saw an enemy?
+	end
+	if self.Security_GunHolstered == false 
+	&& self:GetBodygroup(1) != 0
+	--&& !IsValid(self:GetEnemy()) --do we NOT have an enemy? 
+	--&& (CurTime() - self.EnemyData.LastVisibleTime) < 5 --has it been 5 seconds since we last saw an enemy?
+	&& self:GetNPCState() == NPC_STATE_IDLE --are we calm?
 	&& !self.IsReloadingWeapon  --are we NOT reloading?
 	&& self:Health() > 0 --check of we're dead or not, otherwise we'll holster while getting 'crabbed
 	&& !self.VJ_PlayingSequence --are we NOT already playing a sequence?
