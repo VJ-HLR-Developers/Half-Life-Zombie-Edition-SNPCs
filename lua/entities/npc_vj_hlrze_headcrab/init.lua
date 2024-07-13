@@ -130,28 +130,39 @@ ENT.InfectionClasses = {
 }
 function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity) 
 	local victim = TheHitEntity
+	local playercontroller = self.VJ_TheControllerEntity
+	local cameramode = self.VJ_TheControllerEntity.VJC_Camera_Mode
 	if self.Headcrabbed then return end
 	-- if (victim:GetClass() == "npc_vj_hlrze_scientist" || victim:GetClass() == "npc_vj_hlrze_barney" || victim:GetClass() == "npc_vj_hlrze_hgrunt") && victim:Health() > 0 && victim:IsNPC() && !self.Headcrabbed then
-	if victim:IsNPC() && self.InfectionClasses[victim:GetClass()] && victim:Health() > 0 then
+	if victim:IsNPC() && self.InfectionClasses[victim:GetClass()] && victim:Health() > 0 then -- make sure our victim is a valid infection target
 		self.Headcrabbed = true
-		victim.DeathAnimationTime = 60
+		victim.DeathAnimationTime = 60 --Stop corpse from despawning too soon
 		victim.AnimTbl_Death = {"zombify_begin"}
 		victim.TurningSpeed = 0
 		VJ_EmitSound(victim,"vj_hlr/hl1_npc/headcrab/hc_headbite.wav")
-		--if self.VJ_IsBeingControlled == true then
-			--self.VJ_TheControllerEntity:SetControlledNPC(victim)
-			--self.VJ_TheControllerEntity:StartControlling()
-		--end
-		SafeRemoveEntity(self)
+		if self.VJ_IsBeingControlled == true then --If a player controls us, make them control the victim and then the zombie
+		   local orgThink = playercontroller.Think
+			function playercontroller:Think() --don't kick the player out of controlling our victim
+				if IsValid(victim) && victim:Health() <= 0 then return end
+				return orgThink(self)
+			end
+			
+			self.VJ_TheController:ChatPrint("Transforming victim in 30 seconds...")
+			
+			playercontroller:SetControlledNPC(victim) -- Control the victim
+			playercontroller:StartControlling()
 
-		local zClass = "npc_vj_hlrze_zombie"
+		end
+		SafeRemoveEntity(self) --Remove headcrab
+
+		local zClass = "npc_vj_hlrze_zombie" --Fallback class for the zombie NPC we will spawn
 		local zOffset = 50
-		local zAnimT = 3.01
+		local zAnimT = 3.01 --Duration of the "I got crabbed!" animation
 		local zPos = victim:GetPos()
-		victim:TakeDamage(1000,self,self)
-		victim.VJ_NPC_Class = {nil}
+		victim:TakeDamage(1000,self,self) --Kill the victim
+		victim.VJ_NPC_Class = {nil} --Stop NPCs from attacking victim
 		victim.BringFriendsOnDeath = false
-		local fakedamage = DamageInfo()
+		local fakedamage = DamageInfo() --Fake damage, needed to make victim drop his weapon
 		fakedamage:SetDamage(0)
 		fakedamage:SetAttacker(victim)
 		fakedamage:SetDamageType(DMG_GENERIC) 
@@ -174,14 +185,14 @@ function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity)
 			zAnimT = 1.61
 			zOffset = 30
 			zClass = "npc_vj_hlrze_zsoldier"
-			if victim:GetBodygroup(1) == 0 then
+			if victim:GetBodygroup(1) == 0 then --If victim has a mask then make a grenade zombie
 				victim:SetBodygroup(1,5)
 				zClass = "npc_vj_hlrze_zsoldier_grenade"
 			else victim:SetBodygroup(1,4) zClass = "npc_vj_hlrze_zsoldier"
 			end
 		end
 
-		timer.Simple(1,function()
+		timer.Simple(1,function() -- random extra check
 			if IsValid(victim) then
 				victim.CanTurnWhileStationary = false
 				victim:DoChangeMovementType(VJ_MOVETYPE_STATIONARY)
@@ -194,7 +205,7 @@ function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity)
 		end)
 		timer.Simple(30,function() -- Overridden to 30 seconds because Barney's infection animation loops instead of lasting a long time.
 			if IsValid(victim) then
-				local tr = util.TraceHull{
+				local tr = util.TraceHull{ -- Trace forwards and make sure the zombie doesn't spawn into a wall
 					start = victim:GetPos() +victim:GetUp() *5,
 					endpos = victim:GetPos() +victim:GetUp() *5 +victim:GetForward() *zOffset,
 					mins = victim:GetCollisionBounds().mins,
@@ -216,12 +227,19 @@ function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity)
 				zombie:SetMaterial(victim:GetMaterial())
 				zombie:Spawn()
 				zombie:VJ_ACT_PLAYACTIVITY("getup",true,false,false)
-				zombie:AddEffects(32)
+				zombie:AddEffects(32) -- hide zombie
 				if IsValid(victim) then
 					undo.ReplaceEntity(victim,zombie)
 				end
-				timer.Simple(0.2,function()
+				timer.Simple(0.2,function() --The zombie actually spawns in early and is hidden, this is to move the getup animation in place before showing the zombie model
 					if IsValid(zombie) then
+						if victim.VJ_IsBeingControlled == true then
+							-- Set the player controller to control the zombie instead of the victim
+							victim.VJ_TheControllerEntity:SetControlledNPC(zombie)
+							victim.VJ_TheControllerEntity:StartControlling()
+							victim.VJ_TheControllerEntity.VJC_Camera_Mode = cameramode -- Set camera mode that the headcrab was using
+						end
+						
 						SafeRemoveEntity(victim)
 						zombie:SetPos(zPos)
 						zombie:VJ_ACT_PLAYACTIVITY("getup",true,false,false)

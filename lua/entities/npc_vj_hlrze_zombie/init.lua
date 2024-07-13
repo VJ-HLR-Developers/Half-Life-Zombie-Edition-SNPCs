@@ -249,9 +249,12 @@ else self:SetBodygroup(1,4)
 end
 
 if self.VJ_IsBeingControlled == true then
+	local cameramode = self.VJ_TheControllerEntity.VJC_Camera_Mode -- copy the current first/thirdperson view
 	self.VJ_TheControllerEntity:SetControlledNPC(headcrab)
 	self.VJ_TheControllerEntity:StartControlling()
-	self.VJ_TheControllerEntity.VJC_Camera_Mode = self.VJC_Data.CameraMode -- doesn't work
+	timer.Simple(0.01,function() 
+		self.VJ_TheControllerEntity.VJC_Camera_Mode = cameramode -- set the headcrab's view to what ours was set to
+	end )
 end
 		
 end
