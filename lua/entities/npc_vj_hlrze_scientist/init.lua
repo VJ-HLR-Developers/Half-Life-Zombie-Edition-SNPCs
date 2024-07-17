@@ -172,6 +172,9 @@ function ENT:CustomOnInitialize()
 	end
 	self:SCI_CustomOnInitialize()
 
+	local gmodweaponoverride = GetConVar("gmod_npcweapon"):GetString()
+	
+	if gmodweaponoverride == "" then --Checks if the weapon has a manual override, if not then select our own random weapon
 	local tbl = {
 		"",
 		"",
@@ -185,13 +188,15 @@ function ENT:CustomOnInitialize()
 	}
 	self:Give(VJ_PICK(tbl))
 	
-	--self:Give("weapon_vj_hlrze_beretta")
+	elseif gmodweaponoverride == "none" then --Do nothing because we are being given nothing lol
+	else self:Give(gmodweaponoverride) --Give manually overridden weapon
+	
+	end
 	
 	if IsValid(self:GetActiveWeapon()) then 
 		self.Behavior = VJ_BEHAVIOR_AGGRESSIVE
 		self.IsMedicSNPC = false
 		self.DisableWeapons = false
-		--self:SetBodygroup(3,1)
 	end
 end
 
@@ -199,8 +204,11 @@ function ENT:CustomOnSetupWeaponHoldTypeAnims(htype)
 	local wep = self:GetActiveWeapon()
 self.WeaponAnimTranslations = {}
 --print(htype)
-if htype == "smg" then
-	self:SetBodygroup(3,3)
+if htype == "smg" or htype == "ar2" then
+	if wep:GetClass() == "weapon_vj_hlrze_m16" then 
+		self:SetBodygroup(3,3)
+		wep.NPC_ReloadSound = {"vj_hlr/hla_npc/hgrunt/gr_reload1.wav"}
+	end
 	self.WeaponAnimTranslations[ACT_IDLE] 							= ACT_IDLE_RPG
 	self.WeaponAnimTranslations[ACT_CROUCHIDLE] 					= ACT_IDLE_RPG
 	self.WeaponAnimTranslations[ACT_RANGE_ATTACK1] 					= ACT_RANGE_ATTACK_SMG1
@@ -209,9 +217,11 @@ if htype == "smg" then
 	self.WeaponAnimTranslations[ACT_RUN] 							= ACT_RUN_RPG
 	self.WeaponAnimTranslations[ACT_MELEE_ATTACK1] 					= ACT_GESTURE_MELEE_ATTACK1
 	self.WeaponAnimTranslations[ACT_IDLE_ANGRY] 					= ACT_IDLE_RPG -- Fixes idle anim when controlled
-	wep.NPC_ReloadSound = {"vj_hlr/hla_npc/hgrunt/gr_reload1.wav"}
+	
 elseif htype == "shotgun" then
-	self:SetBodygroup(3,2)
+	if wep:GetClass() == "weapon_vj_hlrze_spas12" then 
+		self:SetBodygroup(3,2)
+	end
 	self.WeaponAnimTranslations[ACT_IDLE] 							= ACT_SHOTGUN_IDLE4
 	self.WeaponAnimTranslations[ACT_CROUCHIDLE] 					= ACT_SHOTGUN_IDLE4
 	self.WeaponAnimTranslations[ACT_RANGE_ATTACK1] 					= ACT_RANGE_ATTACK_SHOTGUN
@@ -222,7 +232,7 @@ elseif htype == "shotgun" then
 	self.WeaponAnimTranslations[ACT_IDLE_ANGRY] 					= ACT_SHOTGUN_IDLE4 -- Fixes idle anim when controlled
 	wep.NPC_HasReloadSound = false
 elseif htype == "pistol" then
-	self:SetBodygroup(3,1)
+	if wep:GetClass() == "weapon_vj_hlrze_beretta" then self:SetBodygroup(3,1) end
 	self.WeaponAnimTranslations[ACT_IDLE] 							= ACT_IDLE_PISTOL
 	self.WeaponAnimTranslations[ACT_CROUCHIDLE] 					= ACT_IDLE_PISTOL
 	self.WeaponAnimTranslations[ACT_WALK] 							= ACT_WALK_PISTOL

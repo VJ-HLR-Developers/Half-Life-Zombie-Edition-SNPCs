@@ -162,14 +162,20 @@ function ENT:Security_CustomOnInitialize()
 
 	self.AnimTbl_Death = {ACT_DIEBACKWARD,ACT_DIEFORWARD,ACT_DIE_GUTSHOT,ACT_DIE_HEADSHOT,ACT_DIESIMPLE} -- Death Animations
 
-	self:Give(VJ_PICK(weps))
+	local gmodweaponoverride = GetConVar("gmod_npcweapon"):GetString()
+	
+	if gmodweaponoverride == "" then --Checks if the weapon has a manual override, if not then select our own random weapon
+		self:Give(VJ_PICK(weps))
+		elseif gmodweaponoverride == "none" then --Do nothing because we are being given nothing lol
+		else self:Give(gmodweaponoverride) --Give manually overridden weapon
+	end
 --	self:Give("weapon_vj_hlrze_beretta")
 
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomOnInitialize()
 	//self:SetCollisionBounds(Vector(13, 13, 76), Vector(-13, -13, 0))
-	self:SetBodygroup(1,0)
+	--self:SetBodygroup(1,0)
 	self:Security_CustomOnInitialize()
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -264,7 +270,7 @@ function ENT:CustomOnThink_AIEnabled() --pistol holstering code
 		self:Security_UnHolsterGun()
 	end
 	if self.Security_GunHolstered == false 
-	&& self:GetBodygroup(1) != 0
+	&& self:GetBodygroup(1) == 1 --do we have a baretta in our hands?
 	--&& !IsValid(self:GetEnemy()) --do we NOT have an enemy? 
 	--&& (CurTime() - self.EnemyData.LastVisibleTime) < 5 --has it been 5 seconds since we last saw an enemy?
 	&& self:GetNPCState() == NPC_STATE_IDLE --are we calm?
@@ -349,9 +355,12 @@ function ENT:CustomOnSetupWeaponHoldTypeAnims(htype)
 	
 self.WeaponAnimTranslations = {}
 --print(htype)
-if htype == "smg" then
+if htype == "smg" or htype == "ar2" then
 	self.Security_GunHolstered = false
-	self:SetBodygroup(1,3)
+	if wep:GetClass() == "weapon_vj_hlrze_m16" then 
+		self:SetBodygroup(1,3)
+		wep.NPC_ReloadSound = {"vj_hlr/hla_npc/hgrunt/gr_reload1.wav"}
+	end
 	self.WeaponAnimTranslations[ACT_IDLE] 							= ACT_IDLE_RPG
 	self.WeaponAnimTranslations[ACT_RANGE_ATTACK1] 					= ACT_CROUCHIDLE
 	self.WeaponAnimTranslations[ACT_WALK] 							= ACT_WALK_RPG
@@ -359,10 +368,12 @@ if htype == "smg" then
 	self.WeaponAnimTranslations[ACT_RUN] 							= ACT_RUN_RPG
 	self.WeaponAnimTranslations[ACT_MELEE_ATTACK1] 					= ACT_GESTURE_MELEE_ATTACK1
 	self.WeaponAnimTranslations[ACT_IDLE_ANGRY] 					= ACT_IDLE_RPG -- Fixes idle anim when controlled
-	wep.NPC_ReloadSound = {"vj_hlr/hla_npc/hgrunt/gr_reload1.wav"}
+
 elseif htype == "shotgun" then
 	self.Security_GunHolstered = false
-	self:SetBodygroup(1,4)
+	if wep:GetClass() == "weapon_vj_hlrze_spas12" then 
+		self:SetBodygroup(1,4)
+	end
 	self.WeaponAnimTranslations[ACT_IDLE] 							= ACT_SHOTGUN_IDLE4
 	self.WeaponAnimTranslations[ACT_RANGE_ATTACK1] 					= ACT_RANGE_ATTACK_SHOTGUN
 	self.WeaponAnimTranslations[ACT_WALK] 							= ACT_WALK_AIM_SHOTGUN
@@ -371,6 +382,9 @@ elseif htype == "shotgun" then
 	self.WeaponAnimTranslations[ACT_MELEE_ATTACK1] 					= ACT_GESTURE_MELEE_ATTACK1
 	self.WeaponAnimTranslations[ACT_IDLE_ANGRY] 					= ACT_SHOTGUN_IDLE4 -- Fixes idle anim when controlled
 	wep.NPC_HasReloadSound = false
+elseif (htype == "pistol" or htype == "357") && wep:GetClass() != "weapon_vj_hlrze_beretta" then
+	self.Security_GunHolstered = false --we have a pistol-type weapon but it's not the beretta, so disable holster code
+	self:SetBodygroup(1,2)
 end
 
 return true
