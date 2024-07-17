@@ -41,6 +41,12 @@ if VJExists == true then
 	VJ.AddNPC("Random Zombie (All Standard)","sent_vj_hlrze_randomzombie_allcommon",vCat)
 	VJ.AddNPC("Random Zombie (All)","sent_vj_hlrze_randomzombie_all",vCat)
 	
+	-- ====== NPC Weapons ====== ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	VJ.AddNPCWeapon("Beretta (HL Zombie Edition)", "weapon_vj_hlrze_beretta")
+	VJ.AddNPCWeapon("M16 (HL Zombie Edition)", "weapon_vj_hlrze_m16")
+	VJ.AddNPCWeapon("SPAS 12 (HL Zombie Edition)", "weapon_vj_hlrze_spas12")
+	VJ.AddNPCWeapon("M249 SAW (HL Zombie Edition)", "weapon_vj_hlrze_m249")
+
 -- !!!!!! DON'T TOUCH ANYTHING BELOW THIS !!!!!! -------------------------------------------------------------------------------------------------------------------------
 	AddCSLuaFile(AutorunFile)
 	VJ.AddAddonProperty(AddonName, AddonType)
