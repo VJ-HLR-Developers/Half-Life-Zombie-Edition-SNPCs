@@ -1,7 +1,7 @@
 AddCSLuaFile("shared.lua")
 include('shared.lua')
 /*-----------------------------------------------
-	*** Copyright (c) 2012-2019 by DrVrej, All rights reserved. ***
+	*** Copyright (c) 2012-2025 by DrVrej, All rights reserved. ***
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 -----------------------------------------------*/
@@ -9,9 +9,9 @@ ENT.Model = {"models/vj_hlr/hlze/crasher.mdl"} -- The game will pick a random mo
 ENT.StartHealth = 300
 ENT.HullType = HULL_HUMAN
 ---------------------------------------------------------------------------------------------------------------------------------------------
-ENT.BloodColor = "Yellow" -- The blood type, this will determine what it should use (decal, particle, etc.)
-ENT.CustomBlood_Particle = {"vj_hlr_blood_yellow"}
-ENT.CustomBlood_Decal = {"VJ_HLR_Blood_Yellow"} -- Decals to spawn when it's damaged
+ENT.BloodColor = VJ.BLOOD_COLOR_YELLOW -- The blood type, this will determine what it should use (decal, particle, etc.)
+ENT.BloodParticle = {"vj_hlr_blood_yellow"}
+ENT.BloodDecal = {"VJ_HLR1_Blood_Yellow"} -- Decals to spawn when it's damaged
 ENT.HasBloodPool = false -- Does it have a blood pool?
 ENT.VJ_NPC_Class = {"CLASS_ZOMBIE"} -- NPCs with the same class with be allied to each other
 
@@ -23,10 +23,10 @@ ENT.MeleeAttackDistance = 50 -- How close does it have to be until it attacks?
 ENT.MeleeAttackDamageDistance = 80 -- How far does the damage go?
 
 ENT.HasRangeAttack = true -- Should the SNPC have a range attack?
-ENT.RangeAttackEntityToSpawn = "obj_vj_hlr1_gonomegut" -- The entity that is spawned when range attacking
+ENT.RangeAttackProjectiles = "obj_vj_hlr1_gonomegut" -- The entity that is spawned when range attacking
 ENT.AnimTbl_RangeAttack = {ACT_RANGE_ATTACK1} -- Range Attack Animations
-ENT.RangeDistance = 600 -- This is how far away it can shoot
-ENT.RangeToMeleeDistance = 200 -- How close does it have to be until it uses melee?
+ENT.RangeAttackMaxDistance = 600 -- This is how far away it can shoot
+ENT.RangeAttackMinDistance = 200 -- How close does it have to be until it uses melee?
 ENT.TimeUntilRangeAttackProjectileRelease = false -- How much time until the projectile code is ran?
 ENT.NextRangeAttackTime = 6 -- How much time until it can use a range attack?
 ENT.RangeAttackPos_Up = 60 -- Up/Down spawning position for range attack
@@ -41,7 +41,7 @@ ENT.HasDeathAnimation = false -- Does it play an animation when it dies?
 //ENT.DeathAnimationTime = 0.8 -- Time until the SNPC spawns its corpse and gets removed
 
 	-- ====== NPC Controller Data ====== --
-ENT.VJC_Data = {
+ENT.ControllerParams = {
 	CameraMode = 1, -- Sets the default camera mode | 1 = Third Person, 2 = First Person
 	ThirdP_Offset = Vector(30, 30, -60), -- The offset for the controller when the camera is in third person
 	FirstP_Bone = "Bip01 Neck", -- If left empty, the base will attempt to calculate a position for first person
@@ -53,7 +53,7 @@ ENT.VJC_Data = {
 
 	-- ====== Sound File Paths ====== --
 -- Leave blank if you don't want any sounds to play
-ENT.SoundTbl_FootStep = {"vj_hlr/pl_step1.wav","vj_hlr/pl_step2.wav","vj_hlr/pl_step3.wav","vj_hlr/pl_step4.wav"}
+ENT.SoundTbl_FootStep = {"vj_hlr/gsrc/pl_step1.wav","vj_hlr/gsrc/pl_step2.wav","vj_hlr/gsrc/pl_step3.wav","vj_hlr/gsrc/pl_step4.wav"}
 ENT.SoundTbl_Idle = {
 	"vj_hlr/hlze/zombie/zombie_voice_idle1.wav",
 	"vj_hlr/hlze/zombie/zombie_voice_idle2.wav",
@@ -88,39 +88,39 @@ ENT.SoundTbl_Death = {
 	"vj_hlr/hlze/zombie/zombie_death3.wav"
 }
 ENT.SoundTbl_BeforeMeleeAttack = {"vj_hlr/hlze/zombie/zombie_melee2.wav"}
-ENT.SoundTbl_MeleeAttackExtra = {"vj_hlr/hl1_npc/zombie/claw_strike1.wav","vj_hlr/hl1_npc/zombie/claw_strike2.wav","vj_hlr/hl1_npc/zombie/claw_strike3.wav"}
-ENT.SoundTbl_MeleeAttackMiss = {"vj_hlr/hl1_npc/zombie/claw_miss1.wav","vj_hlr/hl1_npc/zombie/claw_miss2.wav"}
+ENT.SoundTbl_MeleeAttackExtra = {"vj_hlr/gsrc/npc/zombie/claw_strike1.wav","vj_hlr/gsrc/npc/zombie/claw_strike2.wav","vj_hlr/gsrc/npc/zombie/claw_strike3.wav"}
+ENT.SoundTbl_MeleeAttackMiss = {"vj_hlr/gsrc/npc/zombie/claw_miss1.wav","vj_hlr/gsrc/npc/zombie/claw_miss2.wav"}
 
 ENT.GeneralSoundPitch1 = 100
-ENT.FootStepPitch1 = 70
-ENT.FootStepPitch2 = 70
+ENT.FootstepSoundPitch1 = 70
+ENT.FootstepSoundPitch2 = 70
 ENT.GibOnDeathDamagesTable = {"All"}
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomOnInitialize()
+function ENT:Init()
 	self:SetCollisionBounds(Vector(24,24,85),Vector(-24,-24,0))
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomOnAcceptInput(key,activator,caller,data)
+function ENT:OnInput(key,activator,caller,data)
 	//print(key)
 	if key == "event_emit step" then
-		self:FootStepSoundCode()
+		self:PlayFootstepSound()
 	end
 	if key == "event_emit hand" then
 		VJ_EmitSound(self,"npc/zombie/foot_slide" .. math.random(1,3) .. ".wav",72)
 	end
 	if key == "event_mattack" then
-		self:MeleeAttackCode()
+		self:ExecuteMeleeAttack()
 	end
 	if key == "event_rattack" then
-		self:RangeAttackCode()
+		self:ExecuteRangeAttack()
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:RangeAttackCode_GetShootPos(TheProjectile)
+function ENT:RangeAttackProjVelocity(TheProjectile)
 	return self:CalculateProjectile("Curve",self:GetPos() +self:GetUp() *self.RangeAttackPos_Up +self:GetForward() *self.RangeAttackPos_Forward, self:GetEnemy():GetPos() +self:GetEnemy():OBBCenter() +self:GetEnemy():GetRight() *math.Rand(-90,90) +self:GetEnemy():GetForward() *math.Rand(-90,90) +self:GetEnemy():GetUp() *math.Rand(-90,90), 600)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
+function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	self.HasDeathSounds = false
 	for i=1,math.random(15,30) do
 		local class
@@ -140,7 +140,7 @@ function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 			phys:SetVelocity(Vector(math.Rand(-100,100),math.Rand(-100,100),math.Rand(-100,100)) *2 +self:GetUp() *200)
 		end
 	end
-	if self.HasGibDeathParticles == true then
+	if self.CanGibOnDeathEffects == true then
 		local bloodeffect = EffectData()
 		bloodeffect:SetOrigin(self:GetPos() +self:OBBCenter())
 		bloodeffect:SetColor(VJ_Color2Byte(Color(255,221,35)))
@@ -174,12 +174,8 @@ function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib10.mdl",{BloodType="Yellow",BloodDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,15))})
 	VJ_EmitSound(self,"physics/flesh/flesh_bloody_break.wav",85,100)
 	VJ_EmitSound(self,"physics/flesh/flesh_bloody_break.wav",85,100)
+	self:PlaySoundSystem("Gib", "vj_base/gib/splat.wav")
 	return true
-end
----------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomGibOnDeathSounds(dmginfo,hitgroup)
-	VJ_EmitSound(self,"vj_gib/default_gib_splat.wav",90,math.random(100,100))
-	return false
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:CustomDeathAnimationCode(dmginfo,hitgroup)
@@ -190,7 +186,7 @@ function ENT:CustomDeathAnimationCode(dmginfo,hitgroup)
 	end
 end
 /*-----------------------------------------------
-	*** Copyright (c) 2012-2019 by DrVrej, All rights reserved. ***
+	*** Copyright (c) 2012-2025 by DrVrej, All rights reserved. ***
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 -----------------------------------------------*/

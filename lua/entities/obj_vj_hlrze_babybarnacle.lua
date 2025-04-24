@@ -1,5 +1,5 @@
 /*--------------------------------------------------
-	*** Copyright (c) 2024 by The One Epicplayer, All rights reserved. ***
+	*** Copyright (c) 2025 by The One Epicplayer, All rights reserved. ***
 --------------------------------------------------*/
 AddCSLuaFile()
 
@@ -27,11 +27,11 @@ ENT.DoesRadiusDamage = true -- Should it do a blast damage when it hits somethin
 ENT.RadiusDamageRadius = 20 -- How far the damage go? The farther away it's from its enemy, the less damage it will do | Counted in world units
 ENT.RadiusDamage = 30 -- How much damage should it deal? Remember this is a radius damage, therefore it will do less damage the farther away the entity is from its enemy
 ENT.DecalTbl_DeathDecals = {}
-ENT.SoundTbl_Idle = {"vj_hlr/hl1_npc/bullchicken/bc_acid1.wav", "vj_hlr/hl1_npc/bullchicken/bc_acid2.wav"}
-ENT.SoundTbl_OnCollide = {"vj_hlr/hl1_npc/bullchicken/bc_spithit1.wav", "vj_hlr/hl1_npc/bullchicken/bc_spithit2.wav"}
+ENT.SoundTbl_Idle = {"vj_hlr/gsrc/npc/bullchicken/bc_acid1.wav", "vj_hlr/gsrc/npc/bullchicken/bc_acid2.wav"}
+ENT.SoundTbl_OnCollide = {"vj_hlr/gsrc/npc/bullchicken/bc_spithit1.wav", "vj_hlr/gsrc/npc/bullchicken/bc_spithit2.wav"}
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomOnInitialize()
+function ENT:Init()
 	
 		self.Scale = 1
 
@@ -40,7 +40,7 @@ function ENT:CustomOnInitialize()
 	self:SetAngles(self:GetVelocity():GetNormal():Angle())
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:DeathEffects(data, phys)
+function ENT:OnDestroy(data, phys)
 	local spr = ents.Create("env_sprite")
 	spr:SetKeyValue("model","vj_hl/sprites/bigspit_impact.vmt")
 	spr:SetKeyValue("GlowProxySize","2.0")

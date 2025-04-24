@@ -1,16 +1,16 @@
 AddCSLuaFile("shared.lua")
 include('shared.lua')
 /*-----------------------------------------------
-	*** Copyright (c) 2012-2019 by DrVrej, All rights reserved. ***
+	*** Copyright (c) 2012-2025 by DrVrej, All rights reserved. ***
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 -----------------------------------------------*/
 ENT.CanUseGrenade = true
 ENT.HasRangeAttack = true -- Should the SNPC have a range attack?
 ENT.DisableRangeAttackAnimation = true -- if true, it will disable the animation code
-ENT.DisableDefaultRangeAttackCode = true -- When true, it won't spawn the range attack entity, allowing you to make your own
-ENT.RangeDistance = 400 -- This is how far away it can shoot
-ENT.RangeToMeleeDistance = 200 -- How close does it have to be until it uses melee?
+ENT.DisableDefaultExecuteRangeAttack = true -- When true, it won't spawn the range attack entity, allowing you to make your own
+ENT.RangeAttackMaxDistance = 400 -- This is how far away it can shoot
+ENT.RangeAttackMinDistance = 200 -- How close does it have to be until it uses melee?
 ENT.NextAnyAttackTime_Range = 2 -- How much time until it can use any attack again? | Counted in Seconds
 ENT.NextRangeAttackTime = 30
 ENT.SoundTbl_Idle = {"vj_hlr/hlze/zombie/zo_nade_idle1.wav","vj_hlr/hlze/zombie/zo_nade_idle2.wav","vj_hlr/hlze/zombie/zo_nade_idle3.wav","vj_hlr/hlze/zombie/zo_nade_idle4.wav"}

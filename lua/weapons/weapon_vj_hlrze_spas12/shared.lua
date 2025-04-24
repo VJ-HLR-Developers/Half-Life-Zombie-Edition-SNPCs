@@ -9,8 +9,8 @@ SWEP.Category					= "VJ Base"
 	-- NPC Settings ---------------------------------------------------------------------------------------------------------------------------------------------
 SWEP.NPC_NextPrimaryFire 		= false -- Next time it can use primary fire
 SWEP.NPC_CustomSpread	 		= 2.5 -- This is added on top of the custom spread that's set inside the SNPC! | Starting from 1: Closer to 0 = better accuracy, Farther than 1 = worse accuracy
-SWEP.NPC_ReloadSound			= {"vj_hlr/hl1_weapon/shotgun/shotgun_reload.wav"} -- Sounds it plays when the base detects the SNPC playing a reload animation
---SWEP.NPC_ExtraFireSound			= {"vj_hlr/hl1_weapon/shotgun/scock1.wav"} -- Plays an extra sound after it fires (Example: Bolt action sound)
+SWEP.NPC_ReloadSound			= {"vj_hlr/gsrc/wep/shotgun/shotgun_reload.wav"} -- Sounds it plays when the base detects the SNPC playing a reload animation
+--SWEP.NPC_ExtraFireSound			= {"vj_hlr/gsrc/wep/shotgun/scock1.wav"} -- Plays an extra sound after it fires (Example: Bolt action sound)
 --SWEP.NPC_ExtraFireSoundTime		= 0.2 -- How much time until it plays the sound (After Firing)?
 SWEP.NPC_CanBePickedUp			= false -- Can this weapon be picked up by NPCs? (Ex: Rebels)
 	-- Main Settings ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -19,6 +19,7 @@ SWEP.WorldModel					= "models/vj_hlr/hlze/weapons/spas12.mdl"
 SWEP.HoldType 					= "shotgun"
 SWEP.Spawnable					= false
 SWEP.AdminSpawnable				= false
+SWEP.ReplacementWeapon = {"weapon_hl1_shotgun", "weapon_shotgun_hl1"}
 	-- World Model ---------------------------------------------------------------------------------------------------------------------------------------------
 SWEP.WorldModel_Invisible = true -- Should the world model be invisible?
 SWEP.WorldModel_UseCustomPosition = true -- Should the gun use custom position? This can be used to fix guns that are in the crotch
@@ -30,14 +31,14 @@ SWEP.Primary.Damage				= 5 -- Damage
 SWEP.Primary.NumberOfShots		= 5 -- How many shots per attack?
 SWEP.Primary.ClipSize			= 8 -- Max amount of bullets per clip
 SWEP.Primary.Ammo				= "SMG1" -- Ammo type
-SWEP.Primary.Sound				= {"vj_hlr/hl1_weapon/shotgun/sbarrel1.wav"}
-SWEP.Primary.DistantSound		= {"vj_hlr/hl1_weapon/shotgun/sbarrel1_distant.wav"}
+SWEP.Primary.Sound				= {"vj_hlr/gsrc/wep/shotgun/sbarrel1.wav"}
+SWEP.Primary.DistantSound		= {"vj_hlr/gsrc/wep/shotgun/sbarrel1_distant.wav"}
 SWEP.PrimaryEffects_ShellType 	= "VJ_Weapon_ShotgunShell1"
 
 -- Custom
 SWEP.HLR_ValidModels = {"models/vj_hlr/hlze/hgrunt.mdl","models/vj_hlr/hlze/barney.mdl","models/vj_hlr/hlze/scientist.mdl"}
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function SWEP:CustomOnInitialize()
+function SWEP:Init()
 	timer.Simple(0.1,function() -- Minag mikani modelner tske, yete ooresh model-e, serpe as zenke
 		if IsValid(self) && IsValid(self:GetOwner()) then
 			if self:GetOwner():GetModel() == "models/vj_hlr/hlze/scientist.mdl" then
@@ -66,7 +67,7 @@ function SWEP:CustomOnDrawWorldModel() -- This is client only!
     end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function SWEP:CustomOnPrimaryAttackEffects()
+function SWEP:PrimaryAttackEffects(owner)
 	self.PrimaryEffects_MuzzleFlash = false
 	muz = ents.Create("env_sprite")
 	muz:SetKeyValue("model","vj_hl/sprites/muzzleflash2.vmt")
@@ -85,5 +86,5 @@ function SWEP:CustomOnPrimaryAttackEffects()
 	muz:Spawn()
 	muz:Activate()
 	muz:Fire("Kill","",0.08)
-	return true
+	self.BaseClass.PrimaryAttackEffects(self, owner)
 end

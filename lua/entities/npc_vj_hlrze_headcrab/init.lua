@@ -1,7 +1,7 @@
 AddCSLuaFile("shared.lua")
 include('shared.lua')
 /*-----------------------------------------------
-	*** Copyright (c) 2012-2019 by DrVrej, All rights reserved. ***
+	*** Copyright (c) 2012-2025 by DrVrej, All rights reserved. ***
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 -----------------------------------------------*/
@@ -10,23 +10,23 @@ ENT.StartHealth = 10
 ENT.HullType = HULL_TINY
 --ENT.EntitiesToNoCollide = {"npc_vj_hlr1_gonarch"} -- Entities to not collide with when HasEntitiesToNoCollide is set to true
 ---------------------------------------------------------------------------------------------------------------------------------------------
-ENT.BloodColor = "Yellow" -- The blood type, this will determine what it should use (decal, particle, etc.)
-ENT.CustomBlood_Particle = {"vj_hlr_blood_yellow"}
-ENT.CustomBlood_Decal = {"VJ_HLR_Blood_Yellow"} -- Decals to spawn when it's damaged
+ENT.BloodColor = VJ.BLOOD_COLOR_YELLOW -- The blood type, this will determine what it should use (decal, particle, etc.)
+ENT.BloodParticle = {"vj_hlr_blood_yellow"}
+ENT.BloodDecal = {"VJ_HLR1_Blood_Yellow"} -- Decals to spawn when it's damaged
 ENT.HasBloodPool = false -- Does it have a blood pool?
 ENT.VJ_NPC_Class = {"CLASS_ZOMBIE"} -- NPCs with the same class with be allied to each other
 ENT.HasMeleeAttack = false -- Should the SNPC have a melee attack?
 ENT.HasLeapAttack = true -- Should the SNPC have a leap attack?
 ENT.LeapAttackDamage = 10
 ENT.AnimTbl_LeapAttack = {ACT_RANGE_ATTACK1} -- Melee Attack Animations
-ENT.LeapDistance = 230 -- The distance of the leap, for example if it is set to 500, when the SNPC is 500 Unit away, it will jump
-ENT.LeapToMeleeDistance = 1 -- How close does it have to be until it uses melee?
+ENT.LeapAttackMaxDistance = 230 -- The distance of the leap, for example if it is set to 500, when the SNPC is 500 Unit away, it will jump
+ENT.LeapAttackMinDistance = 1 -- How close does it have to be until it uses melee?
 ENT.LeapAttackDamageDistance = 50 -- How far does the damage go?
 ENT.TimeUntilLeapAttackDamage = 0.4 -- How much time until it runs the leap damage code?
 ENT.TimeUntilLeapAttackVelocity = 0.4 -- How much time until it runs the velocity code?
 ENT.NextAnyAttackTime_Leap = 3 -- How much time until it can use any attack again? | Counted in Seconds
 ENT.LeapAttackExtraTimers = {0.6,0.8,1} -- Extra leap attack timers | it will run the damage code after the given amount of seconds
-ENT.StopLeapAttackAfterFirstHit = true -- Should it stop the leap attack from running rest of timers when it hits an enemy?
+ENT.LeapAttackStopOnHit = true -- Should it stop the leap attack from running rest of timers when it hits an enemy?
 ENT.LeapAttackVelocityForward = 50 -- How much forward force should it apply?
 ENT.LeapAttackVelocityUp = 250 -- How much upward force should it apply?
 ENT.LeapAttackVelocityRight = 0 -- How much right force should it apply?
@@ -36,7 +36,7 @@ ENT.AnimTbl_Death = {ACT_DIESIMPLE} -- Death Animations
 ENT.EntitiesToNoCollide = {"npc_vj_hlr1_gonarch","npc_vj_hlrze_headcrab","npc_vj_hlrze_zombie","npc_vj_hlrze_zombie_barney","npc_vj_hlrze_zfassassin","npc_vj_hlrze_zombie_hev","npc_vj_hlrze_zmassassin","npc_vj_hlrze_zrusher","npc_vj_hlrze_zrusher_scientist","npc_vj_hlrze_zsoldier","npc_vj_hlrze_zsoldier_grenade","npc_vj_hlrze_zcrasher","npc_vj_hlrze_zbreeder"}
 
 	-- ====== NPC Controller Data ====== --
-ENT.VJC_Data = {
+ENT.ControllerParams = {
 	CameraMode = 1, -- Sets the default camera mode | 1 = Third Person, 2 = First Person
 	ThirdP_Offset = Vector(0, 0, 0), -- The offset for the controller when the camera is in third person
 	FirstP_Bone = "Bip01 Spine", -- If left empty, the base will attempt to calculate a position for first person
@@ -48,22 +48,22 @@ ENT.VJC_Data = {
 
 	-- ====== Sound File Paths ====== --
 -- Leave blank if you don't want any sounds to play
-ENT.SoundTbl_Idle = {"vj_hlr/hl1_npc/headcrab/hc_idle1.wav","vj_hlr/hl1_npc/headcrab/hc_idle2.wav","vj_hlr/hl1_npc/headcrab/hc_idle3.wav","vj_hlr/hl1_npc/headcrab/hc_idle4.wav","vj_hlr/hl1_npc/headcrab/hc_idle5.wav"}
-ENT.SoundTbl_Alert = {"vj_hlr/hl1_npc/headcrab/hc_alert1.wav","vj_hlr/hl1_npc/headcrab/hc_alert2.wav"}
-ENT.SoundTbl_LeapAttackJump = {"vj_hlr/hl1_npc/headcrab/hc_attack1.wav","vj_hlr/hl1_npc/headcrab/hc_attack2.wav","vj_hlr/hl1_npc/headcrab/hc_attack3.wav"}
-ENT.SoundTbl_LeapAttackDamage = {"vj_hlr/hl1_npc/headcrab/hc_headbite.wav"}
-ENT.SoundTbl_Pain = {"vj_hlr/hl1_npc/headcrab/hc_pain1.wav","vj_hlr/hl1_npc/headcrab/hc_pain2.wav","vj_hlr/hl1_npc/headcrab/hc_pain3.wav"}
-ENT.SoundTbl_Death = {"vj_hlr/hl1_npc/headcrab/hc_die1.wav","vj_hlr/hl1_npc/headcrab/hc_die2.wav"}
+ENT.SoundTbl_Idle = {"vj_hlr/gsrc/npc/headcrab/hc_idle1.wav","vj_hlr/gsrc/npc/headcrab/hc_idle2.wav","vj_hlr/gsrc/npc/headcrab/hc_idle3.wav","vj_hlr/gsrc/npc/headcrab/hc_idle4.wav","vj_hlr/gsrc/npc/headcrab/hc_idle5.wav"}
+ENT.SoundTbl_Alert = {"vj_hlr/gsrc/npc/headcrab/hc_alert1.wav","vj_hlr/gsrc/npc/headcrab/hc_alert2.wav"}
+ENT.SoundTbl_LeapAttackJump = {"vj_hlr/gsrc/npc/headcrab/hc_attack1.wav","vj_hlr/gsrc/npc/headcrab/hc_attack2.wav","vj_hlr/gsrc/npc/headcrab/hc_attack3.wav"}
+ENT.SoundTbl_LeapAttackDamage = {"vj_hlr/gsrc/npc/headcrab/hc_headbite.wav"}
+ENT.SoundTbl_Pain = {"vj_hlr/gsrc/npc/headcrab/hc_pain1.wav","vj_hlr/gsrc/npc/headcrab/hc_pain2.wav","vj_hlr/gsrc/npc/headcrab/hc_pain3.wav"}
+ENT.SoundTbl_Death = {"vj_hlr/gsrc/npc/headcrab/hc_die1.wav","vj_hlr/gsrc/npc/headcrab/hc_die2.wav"}
 
 ENT.GeneralSoundPitch1 = 100
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomOnInitialize()
+function ENT:Init()
 	self:SetCollisionBounds(Vector(10,10,18), Vector(-10,-10,0))
 	--If death animations are disabled, then the headcrab transformation system is too
-	if GetConVar("vj_npc_nodeathanimation"):GetInt() == 0 then self.Headcrabbed = false else self.Headcrabbed = true end
+	if GetConVar("vj_npc_anim_death"):GetInt() == 1 then self.Headcrabbed = false else self.Headcrabbed = true end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomOnThink()
+function ENT:OnThink()
 	if self:WaterLevel() > 1 then
 		self:SetHealth(self:Health() - 1)
 		if self:Health() <= 0 then
@@ -73,16 +73,16 @@ function ENT:CustomOnThink()
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomOnAlert(argent)
+function ENT:OnAlert(argent)
 	if self.VJ_IsBeingControlled == true then return end
 	if math.random(1,2) == 1 then
 		self:VJ_ACT_PLAYACTIVITY("angry",true,false,true)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
+function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	self.HasDeathSounds = false
-	if self.HasGibDeathParticles == true then
+	if self.CanGibOnDeathEffects == true then
 		local bloodeffect = EffectData()
 		bloodeffect:SetOrigin(self:GetPos() +self:OBBCenter())
 		bloodeffect:SetColor(VJ_Color2Byte(Color(255,221,35)))
@@ -111,15 +111,11 @@ function ENT:SetUpGibesOnDeath(dmginfo,hitgroup)
 	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib7.mdl",{BloodType="Yellow",BloodDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
 	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib9.mdl",{BloodType="Yellow",BloodDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
 	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib10.mdl",{BloodType="Yellow",BloodDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
+	self:PlaySoundSystem("Gib", "vj_base/gib/splat.wav")
 	return true -- Return to true if it gibbed!
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomGibOnDeathSounds(dmginfo,hitgroup)
-	VJ_EmitSound(self,"vj_gib/default_gib_splat.wav",90,math.random(100,100))
-	return false
-end
----------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomOnDoKilledEnemy(argent,attacker,inflictor) 
+function ENT:OnKilledEnemy(argent,attacker,inflictor) 
 	-- print(argent)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -139,7 +135,7 @@ function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity)
 		victim.DeathAnimationTime = 60 --Stop corpse from despawning too soon
 		victim.AnimTbl_Death = {"zombify_begin"}
 		victim.TurningSpeed = 0
-		VJ_EmitSound(victim,"vj_hlr/hl1_npc/headcrab/hc_headbite.wav")
+		VJ_EmitSound(victim,"vj_hlr/gsrc/npc/headcrab/hc_headbite.wav")
 		if self.VJ_IsBeingControlled == true then --If a player controls us, make them control the victim and then the zombie
 		   local orgThink = playercontroller.Think
 			function playercontroller:Think() --don't kick the player out of controlling our victim
@@ -170,15 +166,15 @@ function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity)
 		if victim:GetClass() == "npc_vj_hlrze_barney" then
 			victim:SetSkin(1)
 			victim:CreateGibEntity("prop_physics","models/vj_hlr/hlze/barney_helmet.mdl",{Pos=victim:GetPos() + victim:GetUp() * 50})
-			victim:DropWeaponOnDeathCode(fakedamage,1)
+			victim:DeathWeaponDrop(fakedamage,1)
 			victim:SetBodygroup(1,2)
 			victim:SetBodygroup(2,2)
 			zClass = "npc_vj_hlrze_zombie_barney"
 		elseif victim:GetClass() == "npc_vj_hlrze_scientist" then
 			victim:SetSkin(2)
 			victim:SetBodygroup(1,4)
-			victim.IsMedicSNPC = false
-			if victim:GetActiveWeapon() then victim:DropWeaponOnDeathCode(fakedamage,1) victim:SetBodygroup(3,0) end
+			victim.IsMedic = false
+			if victim:GetActiveWeapon() then victim:DeathWeaponDrop(fakedamage,1) victim:SetBodygroup(3,0) end
 		elseif victim:GetClass() == "npc_vj_hlrze_hgrunt" then
 			victim:SetBodygroup(2,3)
 			victim:SetSkin(2)
@@ -253,11 +249,11 @@ end
 
 local gibs1 = {"models/vj_hlr/gibs/agib1.mdl", "models/vj_hlr/gibs/agib2.mdl", "models/vj_hlr/gibs/agib3.mdl", "models/vj_hlr/gibs/agib4.mdl","models/vj_hlr/gibs/agib5.mdl","models/vj_hlr/gibs/agib6.mdl","models/vj_hlr/gibs/agib7.mdl","models/vj_hlr/gibs/agib8.mdl","models/vj_hlr/gibs/agib9.mdl","models/vj_hlr/gibs/agib10.mdl"}
 --
-function ENT:CustomOnDeath_AfterCorpseSpawned(dmginfo, hitgroup, corpseEnt)
-	VJ_HLR_ApplyCorpseEffects(self, corpseEnt, gibs1)
+function ENT:OnCreateDeathCorpse(dmginfo, hitgroup, corpseEnt)
+	VJ.HLR_ApplyCorpseSystem(self, corpseEnt, gibs1)
 end
 /*-----------------------------------------------
-	*** Copyright (c) 2012-2019 by DrVrej, All rights reserved. ***
+	*** Copyright (c) 2012-2025 by DrVrej, All rights reserved. ***
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 -----------------------------------------------*/

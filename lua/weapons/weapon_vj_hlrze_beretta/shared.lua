@@ -8,7 +8,7 @@ SWEP.Instructions				= "Controls are like a regular weapon."
 SWEP.Category					= "VJ Base"
 	-- NPC Settings ---------------------------------------------------------------------------------------------------------------------------------------------
 SWEP.NPC_NextPrimaryFire 		= 0.8 -- Next time it can use primary fire
-SWEP.NPC_ReloadSound			= {"vj_hlr/hl1_npc/hgrunt/gr_reload1.wav"} -- Sounds it plays when the base detects the SNPC playing a reload animation
+SWEP.NPC_ReloadSound			= {"vj_hlr/gsrc/npc/hgrunt/gr_reload1.wav"} -- Sounds it plays when the base detects the SNPC playing a reload animation
 SWEP.NPC_CanBePickedUp			= false -- Can this weapon be picked up by NPCs? (Ex: Rebels)
 	-- Main Settings ---------------------------------------------------------------------------------------------------------------------------------------------
 SWEP.MadeForNPCsOnly 			= true -- Is this weapon meant to be for NPCs only?
@@ -16,6 +16,7 @@ SWEP.WorldModel					= "models/vj_hlr/hlze/weapons/beretta.mdl"
 SWEP.HoldType 					= "pistol"
 SWEP.Spawnable					= false
 SWEP.AdminSpawnable				= false
+SWEP.ReplacementWeapon = {"weapon_hl1_glock", "weapon_glock_hl1"}
 	-- World Model ---------------------------------------------------------------------------------------------------------------------------------------------
 SWEP.WorldModel_Invisible = true -- Should the world model be invisible?
 SWEP.WorldModel_UseCustomPosition = true -- Should the gun use custom position? This can be used to fix guns that are in the crotch
@@ -27,8 +28,8 @@ SWEP.Primary.Damage				= 5 -- Damage
 SWEP.Primary.ClipSize			= 17 -- Max amount of bullets per clip
 SWEP.Primary.Automatic			= false -- Is it automatic?
 SWEP.Primary.Ammo				= "SMG1" -- Ammo type
-SWEP.Primary.Sound				= {"vj_hlr/hl1_weapon/glock/glock_regular.wav"}
-SWEP.Primary.DistantSound		= {"vj_hlr/hl1_weapon/glock/glock_distant.wav"}
+SWEP.Primary.Sound				= {"vj_hlr/gsrc/wep/glock/glock_regular.wav"}
+SWEP.Primary.DistantSound		= {"vj_hlr/gsrc/wep/glock/glock_distant.wav"}
 SWEP.PrimaryEffects_ShellType 	= "VJ_Weapon_PistolShell1"
 SWEP.Primary.TracerType = "VJ_HLR_Tracer"
 
@@ -37,7 +38,7 @@ SWEP.HLR_ValidModels = {"models/vj_hlr/hlze/barney.mdl","models/vj_hlr/hlze/scie
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
 
-function SWEP:CustomOnInitialize()
+function SWEP:Init()
 	timer.Simple(0.1,function()
 		if IsValid(self) && IsValid(self:GetOwner()) then
 			
@@ -64,7 +65,7 @@ function SWEP:CustomOnDrawWorldModel() -- This is client only!
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function SWEP:CustomOnPrimaryAttackEffects()
+function SWEP:PrimaryAttackEffects(owner)
 	self.PrimaryEffects_MuzzleFlash = false
 	muz = ents.Create("env_sprite_oriented")
 	muz:SetKeyValue("model","vj_hl/sprites/muzzleflash2.vmt")
@@ -83,5 +84,5 @@ function SWEP:CustomOnPrimaryAttackEffects()
 	muz:Spawn()
 	muz:Activate()
 	muz:Fire("Kill","",0.08)
-	return true
+	self.BaseClass.PrimaryAttackEffects(self, owner)
 end
