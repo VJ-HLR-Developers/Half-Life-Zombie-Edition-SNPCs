@@ -93,6 +93,7 @@ function ENT:Cripple(crip)
 		self:VJ_ACT_PLAYACTIVITY(ACT_DIESIMPLE,true,false,false)
 		self:SetHullType(HULL_WIDE_SHORT)
 		self:SetCollisionBounds(Vector(14,14,20),Vector(-14,-14,0))
+		self:SetSurroundingBounds(Vector(58,58,30),Vector(-58,-58,0))
 		self.AnimationTranslations[ACT_IDLE] = {ACT_COMBAT_IDLE}
 		self.AnimationTranslations[ACT_WALK] = {VJ_SequenceToActivity(self,"limp_leg_walk")}
 		self.AnimationTranslations[ACT_RUN] = {VJ_SequenceToActivity(self,"limp_leg_run")}
@@ -106,6 +107,7 @@ function ENT:Cripple(crip)
 		self:VJ_ACT_PLAYACTIVITY(ACT_ROLL_LEFT,true,false,false)
 		self:SetHullType(HULL_HUMAN)
 		self:SetCollisionBounds(Vector(18,18,66),Vector(-18,-18,0))
+		self:SetSurroundingBounds(Vector(20,20,80),Vector(-20,-20,0))
 		self.AnimationTranslations[ACT_IDLE] = {ACT_IDLE}
 		self.AnimationTranslations[ACT_WALK] = {ACT_WALK}
 		self.AnimationTranslations[ACT_RUN] = {ACT_RUN}
@@ -167,7 +169,7 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	self.HasDeathSounds = false
-	if self.CanGibOnDeathEffects == true then
+	if self.HasGibOnDeathEffects == true then
 		local bloodeffect = EffectData()
 		bloodeffect:SetOrigin(self:GetPos() +self:OBBCenter())
 		bloodeffect:SetColor(VJ_Color2Byte(Color(255,221,35)))
@@ -203,12 +205,14 @@ function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	return true -- Return to true if it gibbed!
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomDeathAnimationCode(dmginfo,hitgroup)
-	if self.Crippled then return end
-	if hitgroup == HITGROUP_HEAD then
-		self.AnimTbl_Death = {ACT_DIE_HEADSHOT}
-	else
-		self.AnimTbl_Death = {ACT_DIEBACKWARD,ACT_DIESIMPLE}
+function ENT:OnDeath(dmginfo, hitgroup, status)
+	if status == "DeathAnim" then
+		if self.Crippled then return end
+		if hitgroup == HITGROUP_HEAD then
+			self.AnimTbl_Death = {ACT_DIE_HEADSHOT}
+		else
+			self.AnimTbl_Death = {ACT_DIEBACKWARD,ACT_DIESIMPLE}
+		end
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -324,4 +328,10 @@ function ENT:OnEat(status, statusInfo)
 		end
 	end
 	return 0
+end
+
+function ENT:BodyTarget( origin, noisy )
+	if self.Crippled then
+		return self:GetPos() + Vector(0,0,500)
+	end
 end

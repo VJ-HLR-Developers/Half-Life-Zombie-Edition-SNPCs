@@ -176,10 +176,10 @@ function ENT:Init()
 	
 	if gmodweaponoverride == "" then --Checks if the weapon has a manual override, if not then select our own random weapon
 	local tbl = {
-		"",
-		"",
-		"",
-		"",
+		false,
+		false,
+		false,
+		false,
 		"weapon_vj_hlrze_beretta",
 		"weapon_vj_hlrze_beretta",
 		"weapon_vj_hlrze_beretta",
@@ -245,7 +245,23 @@ end
 return true
 
 end
-
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:TranslateActivity(act)
+	-- Barnacle animation
+	if self:IsEFlagSet(EFL_IS_BEING_LIFTED_BY_BARNACLE) then
+		return ACT_BARNACLE_PULL
+	-- Scared animations
+	elseif (!self.VJ_IsBeingControlled && self.Behavior == VJ_BEHAVIOR_PASSIVE && (self:GetNPCState() == NPC_STATE_ALERT or self:GetNPCState() == NPC_STATE_COMBAT)) or (self.VJ_IsBeingControlled && self.SCI_ControllerAnim == 1) then
+		if act == ACT_IDLE then
+			return ACT_CROUCHIDLE
+		elseif act == ACT_WALK then
+			return ACT_WALK_SCARED
+		elseif act == ACT_RUN then
+			return ACT_RUN_SCARED
+		end
+	end
+	return self.BaseClass.TranslateActivity(self, act)
+end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:SCI_Init()
 	self.SoundTbl_Idle = {"vj_hlr/gsrc/npc/scientist/administrator.wav","vj_hlr/gsrc/npc/scientist/c1a0_sci_stall.wav","vj_hlr/gsrc/npc/scientist/c1a1_sci_3scan.wav","vj_hlr/gsrc/npc/scientist/c1a1_sci_2scan.wav","vj_hlr/gsrc/npc/scientist/c1a1_sci_1scan.wav","vj_hlr/gsrc/npc/scientist/c1a4_sci_trainend.wav","vj_hlr/gsrc/npc/scientist/containfail.wav","vj_hlr/gsrc/npc/scientist/cough.wav","vj_hlr/gsrc/npc/scientist/fusionshunt.wav","vj_hlr/gsrc/npc/scientist/hopenominal.wav","vj_hlr/gsrc/npc/scientist/hideglasses.wav","vj_hlr/gsrc/npc/scientist/howinteresting.wav","vj_hlr/gsrc/npc/scientist/ipredictedthis.wav","vj_hlr/gsrc/npc/scientist/needsleep.wav","vj_hlr/gsrc/npc/scientist/neverseen.wav","vj_hlr/gsrc/npc/scientist/nogrant.wav","vj_hlr/gsrc/npc/scientist/organicmatter.wav","vj_hlr/gsrc/npc/scientist/peculiarmarks.wav","vj_hlr/gsrc/npc/scientist/peculiarodor.wav","vj_hlr/gsrc/npc/scientist/reportflux.wav","vj_hlr/gsrc/npc/scientist/runtest.wav","vj_hlr/gsrc/npc/scientist/shutdownchart.wav","vj_hlr/gsrc/npc/scientist/somethingfoul.wav","vj_hlr/gsrc/npc/scientist/sneeze.wav","vj_hlr/gsrc/npc/scientist/sniffle.wav","vj_hlr/gsrc/npc/scientist/stench.wav","vj_hlr/gsrc/npc/scientist/thatsodd.wav","vj_hlr/gsrc/npc/scientist/thatsmell.wav","vj_hlr/gsrc/npc/scientist/allnominal.wav","vj_hlr/gsrc/npc/scientist/importantspecies.wav","vj_hlr/gsrc/npc/scientist/yawn.wav","vj_hlr/gsrc/npc/scientist/whoresponsible.wav","vj_hlr/gsrc/npc/scientist/uselessphd.wav"}
@@ -376,7 +392,7 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	self.HasDeathSounds = false
-	if self.CanGibOnDeathEffects == true then
+	if self.HasGibOnDeathEffects == true then
 		local bloodeffect = EffectData()
 		bloodeffect:SetOrigin(self:GetPos() +self:OBBCenter())
 		bloodeffect:SetColor(VJ_Color2Byte(Color(130,19,10)))

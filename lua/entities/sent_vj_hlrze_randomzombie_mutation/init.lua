@@ -11,5 +11,5 @@ ENT.EntitiesToSpawn = {
 	"npc_vj_hlrze_zrusher",
 	"npc_vj_hlrze_zrusher_scientist",
 	"npc_vj_hlrze_zcrasher"
-	},WeaponsList = {""}},
+	}},
 }

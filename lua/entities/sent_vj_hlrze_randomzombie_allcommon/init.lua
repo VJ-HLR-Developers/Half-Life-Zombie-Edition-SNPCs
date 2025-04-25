@@ -26,5 +26,5 @@ ENT.EntitiesToSpawn = {
 	"npc_vj_hlrze_zmassassin",
 	"npc_vj_hlrze_zmassassin",
 	"npc_vj_hlrze_zombie_hev"
-	},WeaponsList = {""}},
+	}},
 }

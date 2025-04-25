@@ -116,8 +116,10 @@ function ENT:OnInput(key,activator,caller,data)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:RangeAttackProjVelocity(TheProjectile)
-	return self:CalculateProjectile("Curve",self:GetPos() +self:GetUp() *self.RangeAttackPos_Up +self:GetForward() *self.RangeAttackPos_Forward, self:GetEnemy():GetPos() +self:GetEnemy():OBBCenter() +self:GetEnemy():GetRight() *math.Rand(-90,90) +self:GetEnemy():GetForward() *math.Rand(-90,90) +self:GetEnemy():GetUp() *math.Rand(-90,90), 600)
+function ENT:RangeAttackProjVel(TheProjectile)
+	--print("bum")
+	--return self:CalculateProjectile("Curve",self:GetPos() +self:GetUp() *self.RangeAttackPos_Up +self:GetForward() *self.RangeAttackPos_Forward, self:GetEnemy():GetPos() +self:GetEnemy():OBBCenter() +self:GetEnemy():GetRight() *math.Rand(-90,90) +self:GetEnemy():GetForward() *math.Rand(-90,90) +self:GetEnemy():GetUp() *math.Rand(-90,90), 600)
+	return VJ.CalculateTrajectory(self, NULL, "Curve", self:GetPos() +self:GetUp() *self.RangeAttackPos_Up +self:GetForward() *self.RangeAttackPos_Forward, self:GetEnemy():GetPos() +self:GetEnemy():OBBCenter() +self:GetEnemy():GetRight() *math.Rand(-90,90) +self:GetEnemy():GetForward() *math.Rand(-90,90) +self:GetEnemy():GetUp() *math.Rand(-90,90), 1)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:HandleGibOnDeath(dmginfo,hitgroup)
@@ -140,7 +142,7 @@ function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 			phys:SetVelocity(Vector(math.Rand(-100,100),math.Rand(-100,100),math.Rand(-100,100)) *2 +self:GetUp() *200)
 		end
 	end
-	if self.CanGibOnDeathEffects == true then
+	if self.HasGibOnDeathEffects == true then
 		local bloodeffect = EffectData()
 		bloodeffect:SetOrigin(self:GetPos() +self:OBBCenter())
 		bloodeffect:SetColor(VJ_Color2Byte(Color(255,221,35)))
@@ -176,14 +178,6 @@ function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	VJ_EmitSound(self,"physics/flesh/flesh_bloody_break.wav",85,100)
 	self:PlaySoundSystem("Gib", "vj_base/gib/splat.wav")
 	return true
-end
----------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomDeathAnimationCode(dmginfo,hitgroup)
-	if hitgroup == HITGROUP_HEAD then
-		self.AnimTbl_Death = {ACT_DIE_GUTSHOT,ACT_DIE_HEADSHOT}
-	else
-		self.AnimTbl_Death = {ACT_DIEBACKWARD,ACT_DIEFORWARD,ACT_DIESIMPLE}
-	end
 end
 /*-----------------------------------------------
 	*** Copyright (c) 2012-2025 by DrVrej, All rights reserved. ***

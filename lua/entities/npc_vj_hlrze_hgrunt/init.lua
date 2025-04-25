@@ -18,32 +18,33 @@ ENT.HasMeleeAttack = true -- Should the SNPC have a melee attack?
 ENT.AnimTbl_MeleeAttack = {ACT_MELEE_ATTACK1} -- Melee Attack Animations
 ENT.MeleeAttackDamage = 10
 ENT.TimeUntilMeleeAttackDamage = false -- This counted in seconds | This calculates the time until it hits something
+
 ENT.HasGrenadeAttack = true -- Should the SNPC have a grenade attack?
-ENT.GrenadeAttackModel = "models/vj_hlr/weapons/w_grenade.mdl" -- The model for the grenade entity
-ENT.AnimTbl_GrenadeAttack = {ACT_SPECIAL_ATTACK2} -- Grenade Attack Animations
-ENT.GrenadeAttackAttachment = "lhand" -- The attachment that the grenade will spawn at
+ENT.GrenadeAttackEntity = "obj_vj_hlr1_grenade"
+ENT.AnimTbl_GrenadeAttack = ACT_SPECIAL_ATTACK2
+ENT.GrenadeAttackAttachment = "lhand"
 ENT.GrenadeAttackThrowTime = 1.3 -- Time until the grenade is released
-ENT.GrenadeAttackChance = 1
-ENT.Medic_DisableAnimation = true -- if true, it will disable the animation code
-ENT.Medic_SpawnPropOnHeal = false -- Should it spawn a prop, such as small health vial at a attachment when healing an ally?
-ENT.Medic_TimeUntilHeal = 4 -- Time until the ally receives health | Set to false to let the base decide the time
-ENT.Weapon_NoSpawnMenu = true -- If set to true, the NPC weapon setting in the spawnmenu will not be applied for this SNPC
-ENT.DisableWeaponFiringGesture = true -- If set to true, it will disable the weapon firing gestures
-ENT.Weapon_Strafe = false -- Should it move randomly when shooting?
-//ENT.PoseParameterLooking_InvertPitch = true -- Inverts the pitch poseparameters (X)
-//ENT.PoseParameterLooking_Names = {pitch={"XR"},yaw={},roll={"ZR"}} -- Custom pose parameters to use, can put as many as needed
-ENT.AnimTbl_ShootWhileMovingRun = {ACT_SPRINT} -- Animations it will play when shooting while running | NOTE: Weapon may translate the animation that they see fit!
-ENT.AnimTbl_ShootWhileMovingWalk = {ACT_SPRINT} -- Animations it will play when shooting while walking | NOTE: Weapon may translate the animation that they see fit!
-ENT.DamageAllyResponseAnimation = {ACT_SIGNAL3} -- Animation used if the SNPC does the DamageAllyResponse function
-ENT.DisableFootStepSoundTimer = true -- If set to true, it will disable the time system for the footstep sound code, allowing you to use other ways like model events
-ENT.AnimTbl_CallForHelp = {ACT_SIGNAL1} -- Call For Help Animations
-ENT.HasDeathAnimation = true -- Does it play an animation when it dies?
-ENT.AnimTbl_Death = {ACT_DIEBACKWARD,ACT_DIEFORWARD,ACT_DIE_GUTSHOT,ACT_DIE_HEADSHOT,ACT_DIESIMPLE} -- Death Animations
-ENT.DeathAnimationTime = 0.8 -- Time until the SNPC spawns its corpse and gets removed
-ENT.AnimTbl_TakingCover = {ACT_CROUCHIDLE} -- The animation it plays when hiding in a covered position, leave empty to let the base decide
-ENT.AnimTbl_AlertFriendsOnDeath = {"vjseq_idle2"} -- Animations it plays when an ally dies that also has AlertFriendsOnDeath set to true
-ENT.DropWeaponOnDeathAttachment = "rhand" -- Which attachment should it use for the weapon's position
-ENT.HasLostWeaponSightAnimation = true -- Set to true if you would like the SNPC to play a different animation when it has lost sight of the enemy and can't fire at it
+ENT.GrenadeAttackChance = 2
+
+ENT.AnimTbl_Medic_GiveHealth = false
+ENT.Medic_SpawnPropOnHeal = false
+ENT.Medic_TimeUntilHeal = 4
+ENT.Weapon_IgnoreSpawnMenu = true
+ENT.Weapon_Strafe = false
+ENT.AnimTbl_WeaponAttackGesture = false
+ENT.AnimTbl_DamageAllyResponse = ACT_SIGNAL3
+ENT.AnimTbl_CallForHelp = ACT_SIGNAL1
+ENT.HasDeathAnimation = true
+ENT.AnimTbl_Death = {ACT_DIEBACKWARD, ACT_DIEFORWARD, ACT_DIE_GUTSHOT, ACT_DIE_HEADSHOT, ACT_DIESIMPLE}
+ENT.DeathAnimationTime = 0.8
+ENT.AnimTbl_TakingCover = ACT_CROUCHIDLE
+ENT.AnimTbl_WeaponAttackSecondary = ACT_SPECIAL_ATTACK1
+ENT.Weapon_SecondaryFireTime = 0.7
+ENT.AnimTbl_WeaponReload = ACT_RELOAD_SMG1
+ENT.CanTurnWhileMoving = false
+ENT.DisableFootStepSoundTimer = true
+ENT.DropDeathLoot = false
+
 	-- ====== Flinching Code ====== --
 ENT.CanFlinch = 1 -- 0 = Don't flinch | 1 = Flinch at any damage | 2 = Flinch only from certain damages
 ENT.AnimTbl_Flinch = {ACT_SMALL_FLINCH} -- If it uses normal based animation, use this
@@ -90,14 +91,14 @@ function ENT:HECU_OnInit()
 	self.SoundTbl_DangerSight = {"vj_hlr/gsrc/npc/hgrunt/gr_cover1.wav", "vj_hlr/gsrc/npc/hgrunt/gr_cover7.wav", "vj_hlr/gsrc/npc/hgrunt/gr_grenadealert2.wav", "vj_hlr/gsrc/npc/hgrunt/gr_grenadealert3.wav", "vj_hlr/gsrc/npc/hgrunt/gr_grenadealert4.wav", "vj_hlr/gsrc/npc/hgrunt/gr_grenadealert5.wav", "vj_hlr/gsrc/npc/hgrunt/gr_grenadealert6.wav"}
 	self.SoundTbl_AllyDeath = {"vj_hlr/gsrc/npc/hgrunt/gr_allydeath.wav", "vj_hlr/gsrc/npc/hgrunt/gr_cover2.wav", "vj_hlr/gsrc/npc/hgrunt/gr_cover3.wav", "vj_hlr/gsrc/npc/hgrunt/gr_cover4.wav", "vj_hlr/gsrc/npc/hgrunt/gr_cover7.wav"}
 	
-	local randomskin = (math.random(0,3))
+	local randomskin = (math.random(0,3)) --Should skin colour be black or white?
 	if randomskin < 3 then self:SetSkin(0) else self:SetSkin(1) end
 	local randhead = math.random(0,5)
-	if randhead == 4 then self:SetBodygroup(1,1) self:SetSkin(0) end --commander
-	if randhead == 5 then self:SetBodygroup(1,3) self:SetSkin(1) end --grenader
-	local randweapon = math.random(0,5)
-	if randweapon == 4 then self:SetBodygroup(2,1) if randhead != 4 then self:SetBodygroup(1,2) end end --shotgunner
-	if randweapon == 5 && randhead < 5 then self:SetBodygroup(2,2) end --SAW gunner
+	if randhead == 4 then self:SetBodygroup(1,1) self:SetSkin(0) end --commander, forces skin to white
+	if randhead == 5 then self:SetBodygroup(1,3) self:SetSkin(1) end --grenader, forces skin to black
+	local randweapon = math.random(0,5) --Randomly selected weapon
+	if randweapon == 4 then self:SetBodygroup(2,1) if randhead != 4 then self:SetBodygroup(1,2) end end --shotgunner, don't swap head if we're a commander
+	if randweapon == 5 && randhead < 5 then self:SetBodygroup(2,2) end --SAW gunner, don't change if we're already a grenader
 	
 	local randombloody = (math.random(0,2)) --It used to be that all grunts get bloody when hurt, but now it's a random chance determined from spawn
 	if randombloody == 2 then self.HECU_WillBecomeBloody = true end
@@ -113,8 +114,8 @@ function ENT:Init()
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:OnCreateSound(SoundData,SoundFile)
-	if VJ.HasValue(self.SoundTbl_Breath, sdFile) then return end
-	self.HECU_NextMouthMove = CurTime() + SoundDuration(sdFile)
+	if VJ.HasValue(self.SoundTbl_Breath, SoundFile) then return end
+	self.HECU_NextMouthMove = CurTime() + SoundDuration(SoundFile)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:OnInput(key,activator,caller,data)
@@ -133,7 +134,7 @@ function ENT:OnInput(key,activator,caller,data)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:OnThink()
-	if self.HECU_CustomOnThink then self:HECU_OnThink() end
+	--if self.HECU_CustomOnThink then self:HECU_OnThink() end
 	self:HECU_MouthCode()
 	if self:Health() <= (self:GetMaxHealth() / 2.2) then
 		self.AnimationTranslations[ACT_WALK] = {ACT_WALK_HURT}
@@ -152,11 +153,13 @@ function ENT:OnThink()
 		self.AnimationTranslations[ACT_WALK] = {ACT_WALK}
 		self.AnimTbl_ShootWhileMovingWalk = {ACT_WALK}
 	end
-	if IsValid(self:GetEnemy()) && self.DoingWeaponAttack_Standing == true && self.VJ_IsBeingControlled == false && CurTime() > self.HECU_NextStrafeT && !self:IsMoving() && self:GetPos():Distance(self:GetEnemy():GetPos()) < 1400 then
+	
+	if IsValid(self:GetEnemy()) && self.WeaponAttackState == VJ.WEP_ATTACK_STATE_FIRE_STAND && self.VJ_IsBeingControlled == false && CurTime() > self.HECU_NextStrafeT && !self:IsMoving() && self:GetPos():Distance(self:GetEnemy():GetPos()) < 1400 then
 		self:StopMoving()
 		self:VJ_ACT_PLAYACTIVITY({ACT_STRAFE_RIGHT,ACT_STRAFE_LEFT},true,false,false)
 		self.HECU_NextStrafeT = CurTime() +math.Rand(6,12)
 	end
+	
 	local bgroup = self:GetBodygroup(2)
 	if self.HECU_LastBodyGroup != bgroup then
 		self.HECU_LastBodyGroup = bgroup
@@ -202,7 +205,7 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	self.HasDeathSounds = false
-	if self.CanGibOnDeathEffects == true then
+	if self.HasGibOnDeathEffects == true then
 		local bloodeffect = EffectData()
 		bloodeffect:SetOrigin(self:GetPos() +self:OBBCenter())
 		bloodeffect:SetColor(VJ_Color2Byte(Color(130,19,10)))
@@ -233,15 +236,10 @@ function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	return true
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
-	if hitgroup == 3 then
-		dmginfo:ScaleDamage(0.5)
-		--VJ_EmitSound(self,"vj_hlr/fx/ric" .. math.random(1,5) .. ".wav",88,100)
+function ENT:OnDeath(dmginfo, hitgroup, status)
+	if status == "Finish" then
+		self:SetBodygroup(2,3)
 	end
-end
----------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomOnDeath_BeforeCorpseSpawned(dmginfo,hitgroup)
-	self:SetBodygroup(2,3)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:Controller_IntMsg(ply)

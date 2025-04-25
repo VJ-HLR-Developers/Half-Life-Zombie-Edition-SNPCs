@@ -41,8 +41,6 @@ function ENT:Explode()
 	self.GrenadePulled = false
 	local grenent = ents.Create("obj_vj_hlr1_grenade")
 	grenent:SetPos(self:GetPos() +self:OBBCenter())
-	--grenent:SetOwner(self)
-	--grenent:SetParent(self)
 	grenent.FuseTime = 0
 	grenent.RadiusDamageRadius = 300
 	grenent.RadiusDamage = 100
@@ -80,20 +78,23 @@ function ENT:OnDamaged(dmginfo, hitgroup, status)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:OnDeath(dmginfo, hitgroup, status)
-	print("bum")
 	if status == "Init" && self.GrenadePulled == true then
 		self:SetBodygroup(2,0)
 		local grenent = ents.Create("obj_vj_hlr1_grenade")
 		grenent:SetPos(self:GetPos() +self:OBBCenter())
-		--grenent:SetOwner(self)
-		--grenent:SetParent(self)
-		--grenent.FussTime = 1.5
 		grenent.RadiusDamageRadius = 300
 		grenent.RadiusDamage = 100
 		grenent:Spawn()
 		grenent:Activate()
 		grenent.PrintName = "Zombie Grenade"
-		--grenent.FussTime = 1.5
+	end
+	if status == "DeathAnim" then
+		if self.Crippled then return end
+		if hitgroup == HITGROUP_HEAD then
+			self.AnimTbl_Death = {ACT_DIE_HEADSHOT}
+		else
+			self.AnimTbl_Death = {ACT_DIEBACKWARD,ACT_DIESIMPLE}
+		end
 	end
 end
 

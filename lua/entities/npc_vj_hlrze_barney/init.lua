@@ -293,7 +293,7 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	self.HasDeathSounds = false
-	if self.CanGibOnDeathEffects == true then
+	if self.HasGibOnDeathEffects == true then
 		local bloodeffect = EffectData()
 		bloodeffect:SetOrigin(self:GetPos() +self:OBBCenter())
 		bloodeffect:SetColor(VJ_Color2Byte(Color(130,19,10)))

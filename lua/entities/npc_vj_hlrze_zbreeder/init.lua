@@ -180,22 +180,28 @@ headcrab:Spawn()
 VJ_EmitSound(self, "vj_hlr/gsrc/wep/sporelauncher/splauncher_fire.wav", 100)
 end
 
-function ENT:CustomOnInitialKilled(dmginfo, hitgroup) 
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:OnDeath(dmginfo, hitgroup, status)
+	if status == "Init" then
+		if self.BreederAttackMode == 1 then -- if we're holding a headcrab, drop it
+			self:Dropheadcrab_hand()
+		end
+		self:SetBodygroup(2,0)
 
-if self.BreederAttackMode == 1 then -- if we're holding a headcrab, drop it
-	self:Dropheadcrab_hand()
+		if hitgroup == HITGROUP_HEAD then
+			self.AnimTbl_Death = {ACT_DIE_HEADSHOT}
+		else
+			self.AnimTbl_Death = {ACT_DIEBACKWARD,ACT_DIESIMPLE}
+		end
+	end
 end
 
-self:SetBodygroup(2,0)
-
-end
-
---function ENT:RangeAttackProjVelocity(projectile)
+--function ENT:RangeAttackProjVel(projectile)
 --	local projPos = projectile:GetPos()
 --	return self:CalculateProjectile("Curve", projPos, self:GetAimPosition(self:GetEnemy(), projPos, 1, 1500), 1500)
 --end
 
---function ENT:RangeAttackProjVelocity(projectile) return VJ.CalculateTrajectory(self, self:GetEnemy(), "Curve", projectile:GetPos(), 1, 10) end
+--function ENT:RangeAttackProjVel(projectile) return VJ.CalculateTrajectory(self, self:GetEnemy(), "Curve", projectile:GetPos(), 1, 10) end
 
 function ENT:OnThink()
 

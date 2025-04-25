@@ -105,7 +105,7 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	self.HasDeathSounds = false
-	if self.CanGibOnDeathEffects == true then
+	if self.HasGibOnDeathEffects == true then
 		local bloodeffect = EffectData()
 		bloodeffect:SetOrigin(self:GetPos() +self:OBBCenter())
 		bloodeffect:SetColor(VJ_Color2Byte(Color(255,221,35)))
@@ -141,11 +141,13 @@ function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	return true -- Return to true if it gibbed!
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:CustomDeathAnimationCode(dmginfo,hitgroup)
-	if hitgroup == HITGROUP_HEAD then
-		self.AnimTbl_Death = {ACT_DIE_GUTSHOT,ACT_DIE_HEADSHOT}
-	else
-		self.AnimTbl_Death = {ACT_DIEBACKWARD,ACT_DIEFORWARD,ACT_DIESIMPLE}
+function ENT:OnDeath(dmginfo, hitgroup, status)
+	if status == "DeathAnim" then
+		if hitgroup == HITGROUP_HEAD then
+			self.AnimTbl_Death = {ACT_DIE_GUTSHOT,ACT_DIE_HEADSHOT}
+		else
+			self.AnimTbl_Death = {ACT_DIEBACKWARD,ACT_DIEFORWARD,ACT_DIESIMPLE}
+		end
 	end
 end
 

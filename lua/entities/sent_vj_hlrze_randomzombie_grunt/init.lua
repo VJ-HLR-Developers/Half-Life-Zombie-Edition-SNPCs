@@ -9,5 +9,5 @@ ENT.EntitiesToSpawn = {
 	"npc_vj_hlrze_zsoldier",
 	"npc_vj_hlrze_zsoldier",
 	"npc_vj_hlrze_zsoldier_grenade"
-	},WeaponsList = {""}},
+	}},
 }
