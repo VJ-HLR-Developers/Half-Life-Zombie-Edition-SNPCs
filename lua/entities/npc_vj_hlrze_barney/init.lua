@@ -1,5 +1,5 @@
 AddCSLuaFile("shared.lua")
-include('shared.lua')
+include("shared.lua")
 /*-----------------------------------------------
 	*** Copyright (c) 2012-2025 by DrVrej, All rights reserved. ***
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
@@ -165,7 +165,7 @@ function ENT:Security_Init()
 	local gmodweaponoverride = GetConVar("gmod_npcweapon"):GetString()
 	
 	if gmodweaponoverride == "" then --Checks if the weapon has a manual override, if not then select our own random weapon
-		self:DoChangeWeapon(VJ_PICK(weps))
+		self:DoChangeWeapon(VJ.PICK(weps))
 		elseif gmodweaponoverride == "none" then --Do nothing because we are being given nothing lol
 		else self:DoChangeWeapon(gmodweaponoverride) --Give manually overridden weapon
 	end
@@ -196,10 +196,10 @@ function ENT:OnInput(key,activator,caller,data)
 		end
 	end
 	if key == "shell" then
-		VJ_EmitSound(self,{"vj_hlr/gsrc/wep/reload1.wav","vj_hlr/gsrc/wep/reload2.wav","vj_hlr/gsrc/wep/reload3.wav"},80,100)
+		VJ.EmitSound(self,{"vj_hlr/gsrc/wep/reload1.wav","vj_hlr/gsrc/wep/reload2.wav","vj_hlr/gsrc/wep/reload3.wav"},80,100)
 	end
 	if key == "cock" then --and ball torture
-		VJ_EmitSound(self,{"vj_hlr/gsrc/wep/shotgun/scock1.wav"},80,100)
+		VJ.EmitSound(self,{"vj_hlr/gsrc/wep/shotgun/scock1.wav"},80,100)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -260,7 +260,7 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:Security_UnHolsterGun()
 	self:StopMoving()
-	self:VJ_ACT_PLAYACTIVITY(ACT_ARM,true,false,true)
+	self:PlayAnim(ACT_ARM,true,false,true)
 	self.Security_GunHolstered = false
 	timer.Simple(0.55,function() if IsValid(self) then self:SetBodygroup(1,1) end end)
 end
@@ -280,7 +280,7 @@ function ENT:OnThinkActive() --pistol holstering code
 	&& self.WeaponEntity.HoldType == "pistol" --are we using a pistol weapon?
 	&& self.WeaponEntity:GetMaxClip1() == self.WeaponEntity:Clip1() --is our magazine full?
 	then
-		self:VJ_ACT_PLAYACTIVITY(ACT_DISARM,true,false,true)
+		self:PlayAnim(ACT_DISARM,true,false,true)
 		self.Security_GunHolstered = true
 		timer.Simple(1.5,function() if IsValid(self) then self:SetBodygroup(1,0) self.Security_GunHolstered = true end end)
 	end
@@ -296,7 +296,7 @@ function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	if self.HasGibOnDeathEffects == true then
 		local bloodeffect = EffectData()
 		bloodeffect:SetOrigin(self:GetPos() +self:OBBCenter())
-		bloodeffect:SetColor(VJ_Color2Byte(Color(130,19,10)))
+		bloodeffect:SetColor(VJ.Color2Byte(Color(130,19,10)))
 		bloodeffect:SetScale(120)
 		util.Effect("VJ_Blood1",bloodeffect)
 		
@@ -308,17 +308,17 @@ function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 		util.Effect("bloodspray",bloodspray)
 		util.Effect("bloodspray",bloodspray)
 	end
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh1.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh2.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh3.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh4.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_b_bone.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,50))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_b_gib.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_guts.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_hmeat.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,45))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_lung.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,45))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_skull.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,60))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_legbone.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,15))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh1.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh2.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh3.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh4.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_b_bone.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,50))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_b_gib.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_guts.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_hmeat.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,45))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_lung.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,45))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_skull.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,60))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_legbone.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,15))})
 	self:PlaySoundSystem("Gib", "vj_base/gib/splat.wav")
 	return true -- Return to true if it gibbed!
 end
@@ -332,18 +332,13 @@ function ENT:CustomOnTakeDamage_BeforeDamage(dmginfo,hitgroup)
 		-- self.Bleeds = false
 		dmginfo:ScaleDamage(0.5)
 		-- timer.Simple(0.01,function() if IsValid(self) then self.Bleeds = true end end)
-		--VJ_EmitSound(self,"vj_hlr/fx/ric" .. math.random(1,5) .. ".wav",88,100)
+		--VJ.EmitSound(self,"vj_hlr/fx/ric" .. math.random(1,5) .. ".wav",88,100)
 		local rico = EffectData()
 		rico:SetOrigin(dmginfo:GetDamagePosition())
 		rico:SetScale(4) -- Size
 		rico:SetMagnitude(2) -- Effect type | 1 = Animated | 2 = Basic
 		util.Effect("VJ_HLR_Rico",rico)
 	end
-end
----------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:OnDeathWeaponDrop_AfterWeaponSpawned(dmginfo,hitgroup,GetWeapon)
-	GetWeapon.WorldModel_Invisible = false
-	GetWeapon:SetNWBool("VJ_WorldModel_Invisible",false)
 end
 
 function ENT:SetAnimationTranslations(htype) 

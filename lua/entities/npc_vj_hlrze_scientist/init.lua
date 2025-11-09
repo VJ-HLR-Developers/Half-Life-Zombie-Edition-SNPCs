@@ -1,5 +1,5 @@
 AddCSLuaFile("shared.lua")
-include('shared.lua')
+include("shared.lua")
 /*-----------------------------------------------
 	*** Copyright (c) 2012-2025 by DrVrej, All rights reserved. ***
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
@@ -186,7 +186,7 @@ function ENT:Init()
 		"weapon_vj_hlrze_spas12",
 		"weapon_vj_hlrze_m16",
 	}
-	self:DoChangeWeapon(VJ_PICK(tbl))
+	self:DoChangeWeapon(VJ.PICK(tbl))
 	
 	elseif gmodweaponoverride == "none" then --Do nothing because we are being given nothing lol
 	else self:DoChangeWeapon(gmodweaponoverride) --Give manually overridden weapon
@@ -296,8 +296,8 @@ function ENT:OnInput(key,activator,caller,data)
 		self:PlayFootstepSound()
 	end
 	if key == "tie" then
-		self:StopAllCommonSpeechSounds()
-		VJ_EmitSound(self,{"vj_hlr/gsrc/npc/scientist/weartie.wav","vj_hlr/gsrc/npc/scientist/ties.wav"},80,100)
+		self:StopAllSounds()
+		VJ.EmitSound(self,{"vj_hlr/gsrc/npc/scientist/weartie.wav","vj_hlr/gsrc/npc/scientist/ties.wav"},80,100)
 	end
 	if key == "draw" then
 		self:SetBodygroup(2,1)
@@ -312,10 +312,10 @@ function ENT:OnInput(key,activator,caller,data)
 		end
 	end
 	if key == "shell" then
-		VJ_EmitSound(self,{"vj_hlr/gsrc/wep/reload1.wav","vj_hlr/gsrc/wep/reload2.wav","vj_hlr/gsrc/wep/reload3.wav"},80,100)
+		VJ.EmitSound(self,{"vj_hlr/gsrc/wep/reload1.wav","vj_hlr/gsrc/wep/reload2.wav","vj_hlr/gsrc/wep/reload3.wav"},80,100)
 	end
 	if key == "cock" then --and ball torture
-		VJ_EmitSound(self,{"vj_hlr/gsrc/wep/shotgun/scock1.wav"},80,100)
+		VJ.EmitSound(self,{"vj_hlr/gsrc/wep/shotgun/scock1.wav"},80,100)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -353,7 +353,7 @@ function ENT:OnAlert(ent)
 			self:PlaySoundSystem("Alert", "vj_hlr/gsrc/npc/scientist/seeheadcrab.wav")
 		end
 		if math.random(1, 2) == 1 && ent:GetPos():Distance(self:GetPos()) >= 300 && self.Behavior == VJ_BEHAVIOR_PASSIVE then
-			self:VJ_ACT_PLAYACTIVITY({"vjseq_eye_wipe","vjseq_fear1","vjseq_fear2"},true,false,true)
+			self:PlayAnim({"vjseq_eye_wipe","vjseq_fear1","vjseq_fear2"},true,false,true)
 		end
 	end
 end
@@ -385,17 +385,12 @@ function ENT:CustomOnDeath_BeforeCorpseSpawned(dmginfo,hitgroup)
 	self:SetBodygroup(3,0)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:OnDeathWeaponDrop_AfterWeaponSpawned(dmginfo,hitgroup,GetWeapon)
-	GetWeapon.WorldModel_Invisible = false
-	GetWeapon:SetNWBool("VJ_WorldModel_Invisible",false)
-end
----------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	self.HasDeathSounds = false
 	if self.HasGibOnDeathEffects == true then
 		local bloodeffect = EffectData()
 		bloodeffect:SetOrigin(self:GetPos() +self:OBBCenter())
-		bloodeffect:SetColor(VJ_Color2Byte(Color(130,19,10)))
+		bloodeffect:SetColor(VJ.Color2Byte(Color(130,19,10)))
 		bloodeffect:SetScale(120)
 		util.Effect("VJ_Blood1",bloodeffect)
 		
@@ -407,17 +402,17 @@ function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 		util.Effect("bloodspray",bloodspray)
 		util.Effect("bloodspray",bloodspray)
 	end
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh1.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh2.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh3.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh4.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_b_bone.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,50))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_b_gib.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_guts.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_hmeat.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,45))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_lung.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,45))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_skull.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,60))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_legbone.mdl",{BloodDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,15))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh1.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh2.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh3.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/flesh4.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_b_bone.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,50))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_b_gib.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_guts.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,40))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_hmeat.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,45))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_lung.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,45))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_skull.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,60))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/hgib_legbone.mdl",{CollisionDecal="VJ_HLR_Blood_Red",Pos=self:LocalToWorld(Vector(0,0,15))})
 	self:PlaySoundSystem("Gib", "vj_base/gib/splat.wav")
 	return true
 end

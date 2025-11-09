@@ -1,5 +1,5 @@
 AddCSLuaFile("shared.lua")
-include('shared.lua')
+include("shared.lua")
 /*-----------------------------------------------
 	*** Copyright (c) 2012-2025 by DrVrej, All rights reserved. ***
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
@@ -61,7 +61,7 @@ function ENT:GrenadeCode()
 	self.AnimationTranslations[ACT_WALK] = {ACT_RUN_AGITATED}
 	self.GrenadePulled = true
 	self.HasMeleeAttack = false
-	self:VJ_ACT_PLAYACTIVITY(ACT_RANGE_ATTACK1,true,0.6,false)
+	self:PlayAnim(ACT_RANGE_ATTACK1,true,0.6,false)
 	timer.Simple(0.3,function()
 		if self:IsValid() then
 			self:SetBodygroup(2,1)
@@ -73,7 +73,7 @@ end
 function ENT:OnDamaged(dmginfo, hitgroup, status)
 	if hitgroup == 3 then
 		dmginfo:ScaleDamage(0.5)
-		--VJ_EmitSound(self,"vj_hlr/fx/ric" .. math.random(1,5) .. ".wav",88,100)
+		--VJ.EmitSound(self,"vj_hlr/fx/ric" .. math.random(1,5) .. ".wav",88,100)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -101,8 +101,3 @@ end
 function ENT:OnRangeAttack(status, enemy) 
 self:GrenadeCode()
 end
-/*-----------------------------------------------
-	*** Copyright (c) 2012-2025 by DrVrej, All rights reserved. ***
-	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
-	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
------------------------------------------------*/

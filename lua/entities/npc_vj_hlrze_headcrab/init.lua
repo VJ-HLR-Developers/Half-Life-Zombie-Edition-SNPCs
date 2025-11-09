@@ -1,5 +1,5 @@
 AddCSLuaFile("shared.lua")
-include('shared.lua')
+include("shared.lua")
 /*-----------------------------------------------
 	*** Copyright (c) 2012-2025 by DrVrej, All rights reserved. ***
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
@@ -76,7 +76,7 @@ end
 function ENT:OnAlert(argent)
 	if self.VJ_IsBeingControlled == true then return end
 	if math.random(1,2) == 1 then
-		self:VJ_ACT_PLAYACTIVITY("angry",true,false,true)
+		self:PlayAnim("angry",true,false,true)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	if self.HasGibOnDeathEffects == true then
 		local bloodeffect = EffectData()
 		bloodeffect:SetOrigin(self:GetPos() +self:OBBCenter())
-		bloodeffect:SetColor(VJ_Color2Byte(Color(255,221,35)))
+		bloodeffect:SetColor(VJ.Color2Byte(Color(255,221,35)))
 		bloodeffect:SetScale(120)
 		util.Effect("VJ_Blood1",bloodeffect)
 		
@@ -105,12 +105,12 @@ function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	end
 	
 	if self:GetModel() != "models/vj_hlr/hl1/headcrab_baby.mdl" then
-		self:CreateGibEntity("obj_vj_gib",{"models/vj_hlr/gibs/agib1.mdl","models/vj_hlr/gibs/agib3.mdl"},{BloodType="Yellow",BloodDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
+		self:CreateGibEntity("obj_vj_gib",{"models/vj_hlr/gibs/agib1.mdl","models/vj_hlr/gibs/agib3.mdl"},{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
 	end
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib5.mdl",{BloodType="Yellow",BloodDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib7.mdl",{BloodType="Yellow",BloodDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib9.mdl",{BloodType="Yellow",BloodDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib10.mdl",{BloodType="Yellow",BloodDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib5.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib7.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib9.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib10.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
 	self:PlaySoundSystem("Gib", "vj_base/gib/splat.wav")
 	return true -- Return to true if it gibbed!
 end
@@ -135,7 +135,7 @@ function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity)
 		victim.DeathAnimationTime = 60 --Stop corpse from despawning too soon
 		victim.AnimTbl_Death = {"zombify_begin"}
 		victim.TurningSpeed = 0
-		VJ_EmitSound(victim,"vj_hlr/gsrc/npc/headcrab/hc_headbite.wav")
+		VJ.EmitSound(victim,"vj_hlr/gsrc/npc/headcrab/hc_headbite.wav")
 		if self.VJ_IsBeingControlled == true then --If a player controls us, make them control the victim and then the zombie
 		   local orgThink = playercontroller.Think
 			function playercontroller:Think() --don't kick the player out of controlling our victim
@@ -196,7 +196,7 @@ function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity)
 		end)
 		timer.Simple(zAnimT,function()
 			if IsValid(victim) then
-				victim:VJ_ACT_PLAYACTIVITY("zombify_continues",true,false,false)
+				victim:PlayAnim("zombify_continues",true,false,false)
 			end
 		end)
 		timer.Simple(30,function() -- Overridden to 30 seconds because Barney's infection animation loops instead of lasting a long time.
@@ -222,7 +222,7 @@ function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity)
 				zombie:SetColor(victim:GetColor())
 				zombie:SetMaterial(victim:GetMaterial())
 				zombie:Spawn()
-				zombie:VJ_ACT_PLAYACTIVITY("getup",true,false,false)
+				zombie:PlayAnim("getup",true,false,false)
 				zombie:AddEffects(32) -- hide zombie
 				if IsValid(victim) then
 					undo.ReplaceEntity(victim,zombie)
@@ -238,7 +238,7 @@ function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity)
 						
 						SafeRemoveEntity(victim)
 						zombie:SetPos(zPos)
-						zombie:VJ_ACT_PLAYACTIVITY("getup",true,false,false)
+						zombie:PlayAnim("getup",true,false,false)
 						zombie:RemoveEffects(32)
 					end
 				end)
@@ -252,8 +252,3 @@ local gibs1 = {"models/vj_hlr/gibs/agib1.mdl", "models/vj_hlr/gibs/agib2.mdl", "
 function ENT:OnCreateDeathCorpse(dmginfo, hitgroup, corpseEnt)
 	VJ.HLR_ApplyCorpseSystem(self, corpseEnt, gibs1)
 end
-/*-----------------------------------------------
-	*** Copyright (c) 2012-2025 by DrVrej, All rights reserved. ***
-	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
-	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
------------------------------------------------*/

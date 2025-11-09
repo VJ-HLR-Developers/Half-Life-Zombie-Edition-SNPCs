@@ -1,5 +1,5 @@
 AddCSLuaFile("shared.lua")
-include('shared.lua')
+include("shared.lua")
 ENT.Model = {"models/vj_hlr/hlze/breeder.mdl"}
 ENT.StartHealth = 180
 ENT.IsHEVZombie = true
@@ -177,7 +177,7 @@ headcrab:SetLocalVelocity(Vector(self:GetForward()* math.Rand(10,100),self:GetUp
 headcrab.EntitiesToNoCollide = {"npc_vj_hlr1_gonarch","npc_vj_hlr1_headcrab_baby","npc_vj_hlrze_zbreeder","npc_vj_hlrze_headcrab"}
 headcrab:Spawn()
 
-VJ_EmitSound(self, "vj_hlr/gsrc/wep/sporelauncher/splauncher_fire.wav", 100)
+VJ.EmitSound(self, "vj_hlr/gsrc/wep/sporelauncher/splauncher_fire.wav", 100)
 end
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -224,15 +224,15 @@ function ENT:OnThink()
 	
 --Active spewing code
 	if self.BreederAttackMode == 2 && self.BreederBabycrabCount > 0 && CurTime() > self.Breeder_NextBabycrabTime then
-		--self:VJ_ACT_PLAYACTIVITY(ACT_GESTURE_RANGE_ATTACK_AR2, false, 0, false, 0, {AlwaysUseGesture = true})
-		--self:VJ_ACT_PLAYACTIVITY("vjges_babycrab_shoot_gesture", false, 0, false, 0)
+		--self:PlayAnim(ACT_GESTURE_RANGE_ATTACK_AR2, false, 0, false, 0, {AlwaysUseGesture = true})
+		--self:PlayAnim("vjges_babycrab_shoot_gesture", false, 0, false, 0)
 		--self:AddGesture(ACT_GESTURE_RANGE_ATTACK_AR2, true )
 		
 		--self.BreederShotBabycrabCount = self.BreederShotBabycrabCount + 1
 		self.BreederMaxBabycrabCount = self.BreederMaxBabycrabCount - 1
 		
 		self:AddLayeredSequence( self:LookupSequence("babycrab_shoot_gesture"), self.BreederBabycrabCount + 1 )
-		VJ_EmitSound(self, "vj_hlr/gsrc/npc/gonarch/gon_birth1.wav", 50)
+		VJ.EmitSound(self, "vj_hlr/gsrc/npc/gonarch/gon_birth1.wav", 50)
 		
 		--self:SetLayerSequence( self.BreederBabycrabCount + 1, self:LookupSequence("babycrab_shoot_gesture") )
 		--self:SetLayerPriority( self.BreederBabycrabCount + 1, self.BreederBabycrabCount )
@@ -248,7 +248,7 @@ function ENT:OnThink()
 	elseif self.BreederAttackMode == 2 && self.BreederBabycrabCount <= 0 && CurTime() > self.Breeder_NextBabycrabTime then
 		self:StopMoving()
 		self:RemoveAllGestures() --This fixes baby crab shooting from breaking after being called 14 times
-		self:VJ_ACT_PLAYACTIVITY(ACT_RELOAD_SMG1_LOW,true,false,false) --hand lower anim
+		self:PlayAnim(ACT_RELOAD_SMG1_LOW,true,false,false) --hand lower anim
 		--self.BreederShotBabycrabCount = 0
 		self:ChangeBreederAttackMode(0) 
 		if self.VJ_IsBeingControlled == true then
@@ -270,12 +270,12 @@ end
 
 function ENT:Breeder_PulloutHeadcrab() --Pull out headcrab and go into headcrab attack mode
 	self:StopMoving()
-	self:VJ_ACT_PLAYACTIVITY(ACT_RELOAD_SHOTGUN,true,1.2,false)
+	self:PlayAnim(ACT_RELOAD_SHOTGUN,true,1.2,false)
 end
 
 function ENT:Breeder_BeginCrabSpew() --Aim with hand and spew out baby crabs!
 	self:StopMoving()
-	self:VJ_ACT_PLAYACTIVITY(ACT_RELOAD_SMG1,true,false,false)
+	self:PlayAnim(ACT_RELOAD_SMG1,true,false,false)
 	self:ChangeBreederAttackMode(2) 
 	self.Breeder_NextBabycrabTime = CurTime() + 0.5 -- Delay the spewing until our anim is finished
 
@@ -300,14 +300,14 @@ local vecZ50 = Vector(0, 0, -50)
 function ENT:OnEat(status, statusInfo)
 	if status == "CheckFood" then
 		if self.BreederAttackMode == 1 then -- if we're hungry, drop the crab we're holding
-			self:VJ_ACT_PLAYACTIVITY(ACT_SPECIAL_ATTACK1,true,false,false)
+			self:PlayAnim(ACT_SPECIAL_ATTACK1,true,false,false)
 		end
 		return (statusInfo.owner.BloodData && statusInfo.owner.BloodData.Color == VJ.BLOOD_COLOR_RED && self.BreederAttackMode == 0) -- only start eating if the corpse is a human, and we're not at full health - epicplayer
 	elseif status == "BeginEating" then
 		self.AnimationTranslations[ACT_IDLE] = ACT_GESTURE_RANGE_ATTACK1
 		return select(2, self:PlayAnim(ACT_ARM, true, false))
 	elseif status == "Eat" then
-		VJ_EmitSound(self, "vj_hlr/gsrc/npc/bullchicken/bc_bite"..math.random(1, 3)..".wav", 100) --more accurate to the mod - epicplayer
+		VJ.EmitSound(self, "vj_hlr/gsrc/npc/bullchicken/bc_bite"..math.random(1, 3)..".wav", 100) --more accurate to the mod - epicplayer
 		-- Health changes
 		local food = self.EatingData.Target
 		local damage = 15 -- How much damage food will receive
@@ -318,11 +318,11 @@ function ENT:OnEat(status, statusInfo)
 		local bloodData = food.BloodData
 		if bloodData then
 			local bloodPos = food:GetPos() + food:OBBCenter()
-			local bloodParticle = VJ_PICK(bloodData.Particle)
+			local bloodParticle = VJ.PICK(bloodData.Particle)
 			if bloodParticle then
 				ParticleEffect(bloodParticle, bloodPos, self:GetAngles())
 			end
-			local bloodDecal = VJ_PICK(bloodData.Decal)
+			local bloodDecal = VJ.PICK(bloodData.Decal)
 			if bloodDecal then
 				local tr = util.TraceLine({start = bloodPos, endpos = bloodPos + vecZ50, filter = {food, self}})
 				util.Decal(bloodDecal, tr.HitPos + tr.HitNormal + Vector(math.random(-45, 45), math.random(-45, 45), 0), tr.HitPos - tr.HitNormal, food)
@@ -331,7 +331,7 @@ function ENT:OnEat(status, statusInfo)
 		return 1
 	elseif status == "StopEating" then
 		if statusInfo != "Dead" && self.EatingData.AnimStatus != "None" then -- Do NOT play anim while dead or has NOT prepared to eat
-			return self:VJ_ACT_PLAYACTIVITY(ACT_DISARM, true, false)
+			return self:PlayAnim(ACT_DISARM, true, false)
 		end
 	end
 	return 0
