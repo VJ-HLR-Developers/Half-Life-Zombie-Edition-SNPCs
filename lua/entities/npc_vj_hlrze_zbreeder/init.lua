@@ -36,7 +36,7 @@ ENT.RangeUseAttachmentForPosID = "hand_headcrab" -- The attachment used on the r
 ENT.CallForHelp = true -- Can the NPC request allies for help while in combat?
 ENT.CallForHelpDistance = 4500 -- -- How far away the SNPC's call for help goes | Counted in World Units
 ENT.CallForHelpCooldown = 20 -- Time until it calls for help again
-ENT.HasCallForHelpAnimation = false -- if true, it will play the call for help animation
+ENT.AnimTbl_CallForHelp = false
 
 ENT.AnimTbl_MeleeAttack = ACT_MELEE_ATTACK1
 
@@ -60,7 +60,7 @@ function ENT:Init()
 	self.Breeder_NextBabycrabTime = CurTime() + math.Rand(10,30) --The next time we can engage baby crab spew mode
 end
 
-function ENT:OnInput(key,activator,caller,data)
+function ENT:OnInput(key, activator, caller, data)
 	if key == "event_emit step" then
 		self:PlayFootstepSound()
 	end
@@ -86,31 +86,31 @@ function ENT:OnInput(key,activator,caller,data)
 	end
 	if key == "event_pulloutbarnacle" then --barnacle code is handled in the range attack stuff
 		self:SetBodygroup(2,2) --show barnacle bodygroup
-		self.CanFlinch = 0 --Don't interrupt
-		timer.Simple(2, function() if IsValid(self) then self:SetBodygroup(2,0) self.CanFlinch = 1 end end)
+		self.CanFlinch = false --Don't interrupt
+		timer.Simple(2, function() if IsValid(self) then self:SetBodygroup(2,0) self.CanFlinch = true end end)
 	end
 	if key == "event_throwbarnacle" then
 		self:ExecuteRangeAttack()
 		self:SetBodygroup(2,0) --hide barnacle bodygroup
-		self.CanFlinch = 1
+		self.CanFlinch = true
 	end
 	if key == "event_shootbabycrab" then
 		self:Shootbabycrab_hand()
 	end
 end
 
-function ENT:ChangeBreederAttackMode(htype) 
-self.BreederAttackMode = htype
-if htype == 0 then --normal zombie
+function ENT:ChangeBreederAttackMode(wepHoldType) 
+self.BreederAttackMode = wepHoldType
+if wepHoldType == 0 then --normal zombie
 	self.AnimationTranslations[ACT_IDLE] = {ACT_IDLE}
 	self.AnimationTranslations[ACT_WALK] = {ACT_WALK}
 	self.AnimationTranslations[ACT_RUN] = {ACT_RUN}
 	self.AnimationTranslations[ACT_TURN_RIGHT] = ACT_TURN_RIGHT
 	self.AnimationTranslations[ACT_TURN_LEFT] = ACT_TURN_LEFT
 	self.CanEat = true
-	self.CanFlinch = 1
+	self.CanFlinch = true
 	self.MeleeAttackDistance = 50 -- Distance to try melee attacking
-	self.AnimationTranslations[ACT_MELEE_ATTACK1] = {ACT_MELEE_ATTACK1} -- Melee Attack Animations
+	self.AnimationTranslations[ACT_MELEE_ATTACK1] = {ACT_MELEE_ATTACK1}
 	self.MeleeAttackAnimationFaceEnemy = true -- Should it face the enemy while playing the melee attack animation?
 	self.MeleeAttackAnimationAllowOtherTasks = false -- If set to true, the animation will not stop other tasks from playing, such as chasing | Useful for gesture attacks!
 	self.HasRangeAttack = true -- Should the SNPC have a range attack?
@@ -118,12 +118,12 @@ if htype == 0 then --normal zombie
 	self.NextMeleeAttackTime_DoRand = false -- False = Don't use random time
 	self.HasMeleeAttackSounds = true
 	
-elseif htype == 1 then -- holding headcrab
+elseif wepHoldType == 1 then -- holding headcrab
 	self.AnimationTranslations[ACT_IDLE] = {ACT_IDLE_ANGRY_SHOTGUN}
 	self.AnimationTranslations[ACT_WALK] = {ACT_WALK_AIM_SHOTGUN}
 	self.AnimationTranslations[ACT_RUN] = {ACT_WALK_AIM_SHOTGUN}
 	self.CanEat = true
-	self.CanFlinch = 1
+	self.CanFlinch = true
 	self.MeleeAttackDistance = 300
 	self.AnimationTranslations[ACT_MELEE_ATTACK1] = {ACT_SPECIAL_ATTACK1}
 	self.MeleeAttackAnimationFaceEnemy = true
@@ -137,12 +137,12 @@ elseif htype == 1 then -- holding headcrab
 		self.ShownFirstHint_Headcrabs = true
 	end
 	
-elseif htype == 2 then -- shooting out baby headcrabs
+elseif wepHoldType == 2 then -- shooting out baby headcrabs
 	self.AnimationTranslations[ACT_IDLE] = {ACT_IDLE_RIFLE}
 	self.AnimationTranslations[ACT_WALK] = {ACT_WALK_AIM_RIFLE}
 	self.AnimationTranslations[ACT_RUN] = {ACT_WALK_AIM_RIFLE}
 	self.CanEat = false
-	self.CanFlinch = 0
+	self.CanFlinch = false
 	self.MeleeAttackDistance = 200
 	self.AnimationTranslations[ACT_MELEE_ATTACK1] = {ACT_IDLE_RIFLE}
 	self.MeleeAttackAnimationFaceEnemy = false
@@ -337,7 +337,7 @@ function ENT:OnEat(status, statusInfo)
 	return 0
 end
 
-function ENT:Controller_IntMsg(ply)
+function ENT:Controller_Initialize(ply, controlEnt)
 	ply:ChatPrint("JUMP: Detach Own Headcrab | MOUSE2: Throw Baby Barnacle")
 	ply:ChatPrint("RELOAD: Pull Out Headcrab | CROUCH: Spew Baby Headcrabs")
 end

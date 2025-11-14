@@ -5,19 +5,19 @@ include("shared.lua")
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 -----------------------------------------------*/
-ENT.Model = {"models/vj_hlr/hlze/zombie.mdl"} -- The game will pick a random model from the table when the SNPC is spawned | Add as many as you want
+ENT.Model = {"models/vj_hlr/hlze/zombie.mdl"}
 ENT.StartHealth = 50
 ENT.HullType = HULL_HUMAN
 ENT.CanReceiveOrders = true
 ---------------------------------------------------------------------------------------------------------------------------------------------
-ENT.BloodColor = VJ.BLOOD_COLOR_YELLOW -- The blood type, this will determine what it should use (decal, particle, etc.)
+ENT.BloodColor = VJ.BLOOD_COLOR_YELLOW
 ENT.BloodParticle = {"vj_hlr_blood_yellow"}
-ENT.BloodDecal = {"VJ_HLR1_Blood_Yellow"} -- Decals to spawn when it's damaged
-ENT.HasBloodPool = false -- Does it have a blood pool?
-ENT.VJ_NPC_Class = {"CLASS_ZOMBIE"} -- NPCs with the same class with be allied to each other
+ENT.BloodDecal = {"VJ_HLR1_Blood_Yellow"}
+ENT.HasBloodPool = false
+ENT.VJ_NPC_Class = {"CLASS_ZOMBIE"}
 
-ENT.HasMeleeAttack = true -- Should the SNPC have a melee attack?
-ENT.TimeUntilMeleeAttackDamage = false -- This counted in seconds | This calculates the time until it hits something
+ENT.HasMeleeAttack = true
+ENT.TimeUntilMeleeAttackDamage = false
 ENT.MeleeAttackDistance = 50 -- How close does it have to be until it attacks?
 ENT.MeleeAttackDamageDistance = 80 -- How far does the damage go?
 ENT.DisableLeapAttackAnimation = true -- if true, it will disable the animation code
@@ -27,16 +27,15 @@ ENT.BringFriendsOnDeath = false
 ENT.CallForHelp = false
 
 ENT.HasExtraMeleeAttackSounds = true -- Set to true to use the extra melee attack sounds
-ENT.DisableFootStepSoundTimer = true -- If set to true, it will disable the time system for the footstep sound code, allowing you to use other ways like model events
+ENT.DisableFootStepSoundTimer = true
 -- ENT.AnimTbl_Run = {ACT_WALK} -- Set the running animations | Put multiple to let the base pick a random animation when it moves
 ENT.AnimTbl_Run = {ACT_RUN,ACT_WALK} -- Set the running animations | Put multiple to let the base pick a random animation when it moves
-ENT.HasDeathAnimation = true -- Does it play an animation when it dies?
-//ENT.DeathAnimationTime = 0.8 -- Time until the SNPC spawns its corpse and gets removed
-	-- ====== Flinching Variables ====== --
-ENT.CanFlinch = 1 -- 0 = Don't flinch | 1 = Flinch at any damage | 2 = Flinch only from certain damages
-ENT.AnimTbl_Flinch = {"vjseq_flinch"} -- If it uses normal based animation, use this
-ENT.HasHitGroupFlinching = true -- It will flinch when hit in certain hitgroups | It can also have certain animations to play in certain hitgroups
-ENT.HitGroupFlinching_Values = {
+ENT.HasDeathAnimation = true
+
+-- Flinching
+ENT.CanFlinch = true
+ENT.AnimTbl_Flinch = "vjseq_flinch"
+ENT.FlinchHitGroupMap = {
 	{HitGroup={HITGROUP_LEFTARM},IsSchedule=false,Animation={ACT_FLINCH_LEFTARM}},
 	{HitGroup={HITGROUP_LEFTLEG},IsSchedule=false,Animation={ACT_FLINCH_LEFTLEG}},
 	{HitGroup={HITGROUP_RIGHTARM},IsSchedule=false,Animation={ACT_FLINCH_RIGHTARM}},
@@ -53,16 +52,15 @@ ENT.CanEat = true -- Should it search and eat organic stuff when idle?
 	-- ====== NPC Controller Data ====== --
 ENT.ControllerParams = {
 	CameraMode = 1, -- Sets the default camera mode | 1 = Third Person, 2 = First Person
-	ThirdP_Offset = Vector(30, 20, -50), -- The offset for the controller when the camera is in third person
-	FirstP_Bone = "Bip01 Neck", -- If left empty, the base will attempt to calculate a position for first person
-	FirstP_Offset = Vector(5, 0, 10), -- The offset for the controller when the camera is in first person
+	ThirdP_Offset = Vector(30, 20, -50),
+	FirstP_Bone = "Bip01 Neck",
+	FirstP_Offset = Vector(5, 0, 10),
 	FirstP_ShrinkBone = true, -- Should the bone shrink? Useful if the bone is obscuring the player's view
 	FirstP_CameraBoneAng = 0, -- Should the camera's angle be affected by the bone's angle? | 0 = No, 1 = Pitch, 2 = Yaw, 3 = Roll
 	FirstP_CameraBoneAng_Offset = 0, -- How much should the camera's angle be rotated by? | Useful for weird bone angles
 }
 
-	-- ====== Sound File Paths ====== --
--- Leave blank if you don't want any sounds to play
+-- Sounds
 ENT.SoundTbl_FootStep = {"vj_hlr/gsrc/pl_step1.wav","vj_hlr/gsrc/pl_step2.wav","vj_hlr/gsrc/pl_step3.wav","vj_hlr/gsrc/pl_step4.wav"}
 ENT.SoundTbl_Idle = {"vj_hlr/gsrc/npc/zombie/zo_idle1.wav","vj_hlr/gsrc/npc/zombie/zo_idle2.wav","vj_hlr/gsrc/npc/zombie/zo_idle3.wav","vj_hlr/gsrc/npc/zombie/zo_idle4.wav"}
 ENT.SoundTbl_Alert = {"vj_hlr/gsrc/npc/zombie/zo_alert10.wav","vj_hlr/gsrc/npc/zombie/zo_alert20.wav","vj_hlr/gsrc/npc/zombie/zo_alert30.wav"}
@@ -72,7 +70,7 @@ ENT.SoundTbl_MeleeAttackMiss = {"vj_hlr/gsrc/npc/zombie/claw_miss1.wav","vj_hlr/
 ENT.SoundTbl_Pain = {"vj_hlr/gsrc/npc/zombie/zo_pain1.wav","vj_hlr/gsrc/npc/zombie/zo_pain2.wav"}
 ENT.SoundTbl_Death = {"vj_hlr/gsrc/npc/zombie/zo_pain1.wav","vj_hlr/gsrc/npc/zombie/zo_pain2.wav"}
 
-ENT.GeneralSoundPitch1 = 100
+ENT.MainSoundPitch = 100
 ENT.BodyGroups = {
 	[0] = 0,
 	[1] = 0,
@@ -99,7 +97,7 @@ function ENT:Cripple(crip)
 		self.AnimationTranslations[ACT_RUN] = {VJ.SequenceToActivity(self,"limp_leg_run")}
 		self.AnimationTranslations[ACT_TURN_RIGHT] 							= ACT_COMBAT_IDLE
 		self.AnimationTranslations[ACT_TURN_LEFT] 							= ACT_COMBAT_IDLE
-		self.CanFlinch = 0
+		self.CanFlinch = false
 		self.JumpParams.MaxRise = VJ.SET(0,0)
 		self.CanEat = false
 	else
@@ -113,7 +111,7 @@ function ENT:Cripple(crip)
 		self.AnimationTranslations[ACT_RUN] = {ACT_RUN}
 		self.AnimationTranslations[ACT_TURN_RIGHT] 							= ACT_TURN_RIGHT
 		self.AnimationTranslations[ACT_TURN_LEFT] 							= ACT_TURN_LEFT
-		self.CanFlinch = 1
+		self.CanFlinch = true
 		self.JumpParams.MaxRise = VJ.SET(400,550)
 		self.CanEat = true
 	end
@@ -135,7 +133,7 @@ function ENT:OnThink()
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:OnInput(key,activator,caller,data)
+function ENT:OnInput(key, activator, caller, data)
 	if key == "event_emit step" then
 		self:PlayFootstepSound()
 	end
@@ -167,7 +165,7 @@ function ENT:MultipleMeleeAttacks()
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:HandleGibOnDeath(dmginfo,hitgroup)
+function ENT:HandleGibOnDeath(dmginfo, hitgroup)
 	self.HasDeathSounds = false
 	if self.HasGibOnDeathEffects == true then
 		local bloodeffect = EffectData()
@@ -281,13 +279,13 @@ function ENT:Controller_Initialize(ply)
 --self.LeapAttackUseCustomVelocity = true
 end
 
-function ENT:Controller_IntMsg(ply)
+function ENT:Controller_Initialize(ply, controlEnt)
 	ply:ChatPrint("JUMP: Detach Headcrab")
 end
 local gibs1 = {"models/vj_hlr/gibs/agib1.mdl", "models/vj_hlr/gibs/agib2.mdl", "models/vj_hlr/gibs/agib3.mdl", "models/vj_hlr/gibs/agib4.mdl","models/vj_hlr/gibs/agib5.mdl","models/vj_hlr/gibs/agib6.mdl","models/vj_hlr/gibs/agib7.mdl","models/vj_hlr/gibs/agib8.mdl","models/vj_hlr/gibs/agib9.mdl","models/vj_hlr/gibs/agib10.mdl"}
 --
-function ENT:OnCreateDeathCorpse(dmginfo, hitgroup, corpseEnt)
-	VJ.HLR_ApplyCorpseSystem(self, corpseEnt, gibs1)
+function ENT:OnCreateDeathCorpse(dmginfo, hitgroup, corpse)
+	VJ.HLR_ApplyCorpseSystem(self, corpse, gibs1)
 end
 
 local vecZ50 = Vector(0, 0, -50)

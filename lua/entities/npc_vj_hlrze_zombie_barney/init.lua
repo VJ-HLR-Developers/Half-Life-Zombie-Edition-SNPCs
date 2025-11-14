@@ -6,7 +6,7 @@ include("shared.lua")
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 -----------------------------------------------*/
 ENT.StartHealth = 70
-ENT.GeneralSoundPitch1 = 100
+ENT.MainSoundPitch = 100
 ENT.BodyGroups = {
 	[0] = 1,
 	[1] = 1,

@@ -34,7 +34,7 @@ VJ.AddNPC("Random Zombie (Military)", "sent_vj_hlrze_randomzombie_military", spa
 VJ.AddNPC("Random Zombie (Mutations)", "sent_vj_hlrze_randomzombie_mutation", spawnCategory)
 
 -- NPC Weapons
-VJ.AddNPCWeapon("Beretta (HL Zombie Edition)", "weapon_vj_hlrze_beretta")
-VJ.AddNPCWeapon("M16 (HL Zombie Edition)", "weapon_vj_hlrze_m16")
-VJ.AddNPCWeapon("SPAS 12 (HL Zombie Edition)", "weapon_vj_hlrze_spas12")
-VJ.AddNPCWeapon("M249 SAW (HL Zombie Edition)", "weapon_vj_hlrze_m249")
+VJ.AddNPCWeapon("Beretta (HL Zombie Edition)", "weapon_vj_hlrze_beretta", spawnCategory)
+VJ.AddNPCWeapon("M16 (HL Zombie Edition)", "weapon_vj_hlrze_m16", spawnCategory)
+VJ.AddNPCWeapon("SPAS 12 (HL Zombie Edition)", "weapon_vj_hlrze_spas12", spawnCategory)
+VJ.AddNPCWeapon("M249 SAW (HL Zombie Edition)", "weapon_vj_hlrze_m249", spawnCategory)

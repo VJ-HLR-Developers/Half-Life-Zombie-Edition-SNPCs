@@ -9,8 +9,7 @@ ENT.StartHealth = 90
 ENT.CanUseGrenade = false
 ENT.RangeAttackProjectiles = "" -- Entities that it can spawn when range attacking | table = Picks randomly
 ENT.TimeUntilRangeAttackProjectileRelease = false
-	-- ====== Sound File Paths ====== --
--- Leave blank if you don't want any sounds to play
+-- Sounds
 ENT.SoundTbl_FootStep = {"vj_hlr/gsrc/pl_step1.wav","vj_hlr/gsrc/pl_step2.wav","vj_hlr/gsrc/pl_step3.wav","vj_hlr/gsrc/pl_step4.wav"}
 ENT.SoundTbl_Idle = {"vj_hlr/gsrc/npc/zombie/zo_idle1.wav","vj_hlr/gsrc/npc/zombie/zo_idle2.wav","vj_hlr/gsrc/npc/zombie/zo_idle3.wav","vj_hlr/gsrc/npc/zombie/zo_idle4.wav"}
 ENT.SoundTbl_Alert = {"vj_hlr/gsrc/npc/zombie/zo_alert10.wav","vj_hlr/gsrc/npc/zombie/zo_alert20.wav","vj_hlr/gsrc/npc/zombie/zo_alert30.wav"}
@@ -20,7 +19,7 @@ ENT.SoundTbl_MeleeAttackExtra = {"vj_hlr/gsrc/npc/zombie/claw_strike1.wav","vj_h
 ENT.SoundTbl_MeleeAttackMiss = {"vj_hlr/gsrc/npc/zombie/claw_miss1.wav","vj_hlr/gsrc/npc/zombie/claw_miss2.wav"}
 ENT.SoundTbl_Death = {"vj_hlr/gsrc/npc/zombie/zo_pain1.wav","vj_hlr/gsrc/npc/zombie/zo_pain2.wav"}
 
-ENT.GeneralSoundPitch1 = 100
+ENT.MainSoundPitch = 100
 ENT.BodyGroups = {
 	[0] = 2,
 	[1] = math.random(2,3),

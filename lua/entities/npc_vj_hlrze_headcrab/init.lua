@@ -5,49 +5,41 @@ include("shared.lua")
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 -----------------------------------------------*/
-ENT.Model = {"models/vj_hlr/hlze/headcrab.mdl"} -- The game will pick a random model from the table when the SNPC is spawned | Add as many as you want
+ENT.Model = "models/vj_hlr/hlze/headcrab.mdl"
 ENT.StartHealth = 10
 ENT.HullType = HULL_TINY
---ENT.EntitiesToNoCollide = {"npc_vj_hlr1_gonarch"} -- Entities to not collide with when HasEntitiesToNoCollide is set to true
----------------------------------------------------------------------------------------------------------------------------------------------
-ENT.BloodColor = VJ.BLOOD_COLOR_YELLOW -- The blood type, this will determine what it should use (decal, particle, etc.)
-ENT.BloodParticle = {"vj_hlr_blood_yellow"}
-ENT.BloodDecal = {"VJ_HLR1_Blood_Yellow"} -- Decals to spawn when it's damaged
-ENT.HasBloodPool = false -- Does it have a blood pool?
-ENT.VJ_NPC_Class = {"CLASS_ZOMBIE"} -- NPCs with the same class with be allied to each other
-ENT.HasMeleeAttack = false -- Should the SNPC have a melee attack?
-ENT.HasLeapAttack = true -- Should the SNPC have a leap attack?
-ENT.LeapAttackDamage = 10
-ENT.AnimTbl_LeapAttack = {ACT_RANGE_ATTACK1} -- Melee Attack Animations
-ENT.LeapAttackMaxDistance = 230 -- The distance of the leap, for example if it is set to 500, when the SNPC is 500 Unit away, it will jump
-ENT.LeapAttackMinDistance = 1 -- How close does it have to be until it uses melee?
-ENT.LeapAttackDamageDistance = 50 -- How far does the damage go?
-ENT.TimeUntilLeapAttackDamage = 0.4 -- How much time until it runs the leap damage code?
-ENT.TimeUntilLeapAttackVelocity = 0.4 -- How much time until it runs the velocity code?
-ENT.NextAnyAttackTime_Leap = 3 -- How much time until it can use any attack again? | Counted in Seconds
-ENT.LeapAttackExtraTimers = {0.6,0.8,1} -- Extra leap attack timers | it will run the damage code after the given amount of seconds
-ENT.LeapAttackStopOnHit = true -- Should it stop the leap attack from running rest of timers when it hits an enemy?
-ENT.LeapAttackVelocityForward = 50 -- How much forward force should it apply?
-ENT.LeapAttackVelocityUp = 250 -- How much upward force should it apply?
-ENT.LeapAttackVelocityRight = 0 -- How much right force should it apply?
-ENT.HasDeathAnimation = true -- Does it play an animation when it dies?
-ENT.AnimTbl_Death = {ACT_DIESIMPLE} -- Death Animations
-//ENT.DeathAnimationTime = 0.6 -- Time until the SNPC spawns its corpse and gets removed
-ENT.EntitiesToNoCollide = {"npc_vj_hlr1_gonarch","npc_vj_hlrze_headcrab","npc_vj_hlrze_zombie","npc_vj_hlrze_zombie_barney","npc_vj_hlrze_zfassassin","npc_vj_hlrze_zombie_hev","npc_vj_hlrze_zmassassin","npc_vj_hlrze_zrusher","npc_vj_hlrze_zrusher_scientist","npc_vj_hlrze_zsoldier","npc_vj_hlrze_zsoldier_grenade","npc_vj_hlrze_zcrasher","npc_vj_hlrze_zbreeder"}
-
-	-- ====== NPC Controller Data ====== --
 ENT.ControllerParams = {
-	CameraMode = 1, -- Sets the default camera mode | 1 = Third Person, 2 = First Person
-	ThirdP_Offset = Vector(0, 0, 0), -- The offset for the controller when the camera is in third person
-	FirstP_Bone = "Bip01 Spine", -- If left empty, the base will attempt to calculate a position for first person
-	FirstP_Offset = Vector(2, 0, 1), -- The offset for the controller when the camera is in first person
-	FirstP_ShrinkBone = true, -- Should the bone shrink? Useful if the bone is obscuring the player's view
-	FirstP_CameraBoneAng = 0, -- Should the camera's angle be affected by the bone's angle? | 0 = No, 1 = Pitch, 2 = Yaw, 3 = Roll
-	FirstP_CameraBoneAng_Offset = 0, -- How much should the camera's angle be rotated by? | Useful for weird bone angles
+	ThirdP_Offset = Vector(0, 0, 0),
+	FirstP_Bone = "Bip01 Spine",
+	FirstP_Offset = Vector(2, 0, 1),
 }
+ENT.EntitiesToNoCollide = {"npc_vj_hlr1_gonarch","npc_vj_hlrze_headcrab","npc_vj_hlrze_zombie","npc_vj_hlrze_zombie_barney","npc_vj_hlrze_zfassassin","npc_vj_hlrze_zombie_hev","npc_vj_hlrze_zmassassin","npc_vj_hlrze_zrusher","npc_vj_hlrze_zrusher_scientist","npc_vj_hlrze_zsoldier","npc_vj_hlrze_zsoldier_grenade","npc_vj_hlrze_zcrasher","npc_vj_hlrze_zbreeder"}
+---------------------------------------------------------------------------------------------------------------------------------------------
+ENT.VJ_NPC_Class = {"CLASS_ZOMBIE"}
+ENT.BloodColor = VJ.BLOOD_COLOR_YELLOW
+ENT.BloodParticle = {"vj_hlr_blood_yellow"}
+ENT.BloodDecal = {"VJ_HLR1_Blood_Yellow"}
+ENT.HasBloodPool = false
+ENT.HasMeleeAttack = false
 
-	-- ====== Sound File Paths ====== --
--- Leave blank if you don't want any sounds to play
+-- Leap attack
+ENT.HasLeapAttack = true
+ENT.LeapAttackDamage = 10
+ENT.AnimTbl_LeapAttack = ACT_RANGE_ATTACK1
+ENT.LeapAttackMinDistance = 1
+ENT.LeapAttackMaxDistance = 256
+ENT.LeapAttackDamageDistance = 50
+ENT.TimeUntilLeapAttackDamage = 0.4
+ENT.TimeUntilLeapAttackVelocity = 0.4
+ENT.NextLeapAttackTime = 1
+ENT.LeapAttackExtraTimers = {0.6, 0.8, 1, 1.2, 1.4}
+ENT.NextAnyAttackTime_Leap = 3
+ENT.LeapAttackStopOnHit = true
+
+ENT.HasDeathAnimation = true
+ENT.AnimTbl_Death = {ACT_DIESIMPLE}
+
+-- Sounds
 ENT.SoundTbl_Idle = {"vj_hlr/gsrc/npc/headcrab/hc_idle1.wav","vj_hlr/gsrc/npc/headcrab/hc_idle2.wav","vj_hlr/gsrc/npc/headcrab/hc_idle3.wav","vj_hlr/gsrc/npc/headcrab/hc_idle4.wav","vj_hlr/gsrc/npc/headcrab/hc_idle5.wav"}
 ENT.SoundTbl_Alert = {"vj_hlr/gsrc/npc/headcrab/hc_alert1.wav","vj_hlr/gsrc/npc/headcrab/hc_alert2.wav"}
 ENT.SoundTbl_LeapAttackJump = {"vj_hlr/gsrc/npc/headcrab/hc_attack1.wav","vj_hlr/gsrc/npc/headcrab/hc_attack2.wav","vj_hlr/gsrc/npc/headcrab/hc_attack3.wav"}
@@ -55,32 +47,172 @@ ENT.SoundTbl_LeapAttackDamage = {"vj_hlr/gsrc/npc/headcrab/hc_headbite.wav"}
 ENT.SoundTbl_Pain = {"vj_hlr/gsrc/npc/headcrab/hc_pain1.wav","vj_hlr/gsrc/npc/headcrab/hc_pain2.wav","vj_hlr/gsrc/npc/headcrab/hc_pain3.wav"}
 ENT.SoundTbl_Death = {"vj_hlr/gsrc/npc/headcrab/hc_die1.wav","vj_hlr/gsrc/npc/headcrab/hc_die2.wav"}
 
-ENT.GeneralSoundPitch1 = 100
+ENT.MainSoundPitch = 100
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:Init()
 	self:SetCollisionBounds(Vector(10,10,18), Vector(-10,-10,0))
-	--If death animations are disabled, then the headcrab transformation system is too
-	if GetConVar("vj_npc_anim_death"):GetInt() == 1 then self.Headcrabbed = false else self.Headcrabbed = true end
+	-- If death animations are disabled, then the headcrab transformation system is too
+	if GetConVar("vj_npc_anim_death"):GetInt() == 1 then
+		self.Headcrabbed = false
+	else
+		self.Headcrabbed = true
+	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:OnThink()
-	if self:WaterLevel() > 1 then
+	-- When in deep water, drown by slowly taking damage
+	if self:WaterLevel() > 2 then
 		self:SetHealth(self:Health() - 1)
 		if self:Health() <= 0 then
 			self.Bleeds = false
-			self:TakeDamage(1,self,self)
+			self:TakeDamage(1, self, self)
 		end
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:OnAlert(argent)
-	if self.VJ_IsBeingControlled == true then return end
-	if math.random(1,2) == 1 then
-		self:PlayAnim("angry",true,false,true)
+function ENT:OnAlert(ent)
+	if self.VJ_IsBeingControlled then return end
+	if math.random(1, 2) == 1 then
+		self:PlayAnim("angry", true, false, true)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:HandleGibOnDeath(dmginfo,hitgroup)
+function ENT:OnLeapAttack(status, enemy)
+	if status == "Jump" then
+		return VJ.CalculateTrajectory(self, NULL, "Curve", self:GetPos() + self:OBBCenter(), self:GetEnemy():EyePos(), 1) + self:GetForward() * 80 - self:GetUp() * 30
+	end
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
+local infectionClasses = {
+	npc_vj_hlrze_scientist = true,
+	npc_vj_hlrze_barney = true,
+	npc_vj_hlrze_hgrunt = true,
+}
+--
+function ENT:OnLeapAttackExecute(status, ent)
+	if status == "PreDamage" then
+		local playercontroller = self.VJ_TheControllerEntity
+		local cameramode = self.VJ_TheControllerEntity.VJC_Camera_Mode
+		if self.Headcrabbed then return end
+		if ent:IsNPC() && infectionClasses[ent:GetClass()] && ent:Health() > 0 then -- make sure our ent is a valid infection target
+			self.Headcrabbed = true
+			ent.DeathAnimationTime = 60 --Stop corpse from despawning too soon
+			ent.AnimTbl_Death = {"zombify_begin"}
+			ent.TurningSpeed = 0
+			VJ.EmitSound(ent,"vj_hlr/gsrc/npc/headcrab/hc_headbite.wav")
+			if self.VJ_IsBeingControlled == true then --If a player controls us, make them control the ent and then the zombie
+			local orgThink = playercontroller.Think
+				function playercontroller:Think() --don't kick the player out of controlling our ent
+					if IsValid(ent) && ent:Health() <= 0 then return end
+					return orgThink(self)
+				end
+				
+				self.VJ_TheController:ChatPrint("Transforming ent in 30 seconds...")
+				
+				playercontroller:SetControlledNPC(ent) -- Control the ent
+				playercontroller:StartControlling()
+
+			end
+			SafeRemoveEntity(self) --Remove headcrab
+
+			local zClass = "npc_vj_hlrze_zombie" --Fallback class for the zombie NPC we will spawn
+			local zOffset = 50
+			local zAnimT = 3.01 --Duration of the "I got crabbed!" animation
+			local zPos = ent:GetPos()
+			ent:TakeDamage(1000,self,self) --Kill the ent
+			ent.VJ_NPC_Class = {nil} --Stop NPCs from attacking ent
+			ent.BringFriendsOnDeath = false
+			local fakedamage = DamageInfo() --Fake damage, needed to make ent drop his weapon
+			fakedamage:SetDamage(0)
+			fakedamage:SetAttacker(ent)
+			fakedamage:SetDamageType(DMG_GENERIC) 
+			ent.AnimTbl_WeaponAttack = {"zombify_continues"} 
+			if ent:GetClass() == "npc_vj_hlrze_barney" then
+				ent:SetSkin(1)
+				ent:CreateGibEntity("prop_physics","models/vj_hlr/hlze/barney_helmet.mdl",{Pos=ent:GetPos() + ent:GetUp() * 50})
+				ent:DeathWeaponDrop(fakedamage,1)
+				ent:SetBodygroup(1,2)
+				ent:SetBodygroup(2,2)
+				zClass = "npc_vj_hlrze_zombie_barney"
+			elseif ent:GetClass() == "npc_vj_hlrze_scientist" then
+				ent:SetSkin(2)
+				ent:SetBodygroup(1,4)
+				ent.IsMedic = false
+				if ent:GetActiveWeapon() then ent:DeathWeaponDrop(fakedamage,1) ent:SetBodygroup(3,0) end
+			elseif ent:GetClass() == "npc_vj_hlrze_hgrunt" then
+				ent:SetBodygroup(2,3)
+				ent:SetSkin(2)
+				zAnimT = 1.61
+				zOffset = 30
+				zClass = "npc_vj_hlrze_zsoldier"
+				if ent:GetBodygroup(1) == 0 then --If ent has a mask then make a grenade zombie
+					ent:SetBodygroup(1,5)
+					zClass = "npc_vj_hlrze_zsoldier_grenade"
+				else ent:SetBodygroup(1,4) zClass = "npc_vj_hlrze_zsoldier"
+				end
+			end
+
+			timer.Simple(1,function() -- random extra check
+				if IsValid(ent) then
+					ent.CanTurnWhileStationary = false
+					ent:DoChangeMovementType(VJ_MOVETYPE_STATIONARY)
+				end
+			end)
+			timer.Simple(zAnimT,function()
+				if IsValid(ent) then
+					ent:PlayAnim("zombify_continues",true,false,false)
+				end
+			end)
+			timer.Simple(30,function() -- Overridden to 30 seconds because Barney's infection animation loops instead of lasting a long time.
+				if IsValid(ent) then
+					local tr = util.TraceHull{ -- Trace forwards and make sure the zombie doesn't spawn into a wall
+						start = ent:GetPos() +ent:GetUp() *5,
+						endpos = ent:GetPos() +ent:GetUp() *5 +ent:GetForward() *zOffset,
+						mins = ent:GetCollisionBounds().mins,
+						maxs = ent:GetCollisionBounds().maxs,
+						ignoreworld = false,
+						filter = {ent}
+					}
+				
+					if tr.Hit then
+						zPos = tr.HitPos +ent:GetForward() *-14
+					else
+						zPos = ent:GetPos() +ent:GetForward() *zOffset
+					end
+				
+					local zombie = ents.Create(zClass)
+					zombie:SetPos(zPos)
+					zombie:SetAngles(ent:GetAngles())
+					zombie:SetColor(ent:GetColor())
+					zombie:SetMaterial(ent:GetMaterial())
+					zombie:Spawn()
+					zombie:PlayAnim("getup",true,false,false)
+					zombie:AddEffects(32) -- hide zombie
+					if IsValid(ent) then
+						undo.ReplaceEntity(ent,zombie)
+					end
+					timer.Simple(0.2,function() --The zombie actually spawns in early and is hidden, this is to move the getup animation in place before showing the zombie model
+						if IsValid(zombie) then
+							if ent.VJ_IsBeingControlled == true then
+								-- Set the player controller to control the zombie instead of the ent
+								ent.VJ_TheControllerEntity:SetControlledNPC(zombie)
+								ent.VJ_TheControllerEntity:StartControlling()
+								ent.VJ_TheControllerEntity.VJC_Camera_Mode = cameramode -- Set camera mode that the headcrab was using
+							end
+							
+							SafeRemoveEntity(ent)
+							zombie:SetPos(zPos)
+							zombie:PlayAnim("getup",true,false,false)
+							zombie:RemoveEffects(32)
+						end
+					end)
+				end
+			end)
+		end
+	end
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:HandleGibOnDeath(dmginfo, hitgroup)
 	self.HasDeathSounds = false
 	if self.HasGibOnDeathEffects == true then
 		local bloodeffect = EffectData()
@@ -115,140 +247,8 @@ function ENT:HandleGibOnDeath(dmginfo,hitgroup)
 	return true -- Return to true if it gibbed!
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:OnKilledEnemy(argent,attacker,inflictor) 
-	-- print(argent)
-end
----------------------------------------------------------------------------------------------------------------------------------------------
-ENT.InfectionClasses = {
-	npc_vj_hlrze_scientist = true,
-	npc_vj_hlrze_barney = true,
-	npc_vj_hlrze_hgrunt = true,
-}
-function ENT:CustomOnLeapAttack_AfterChecks(TheHitEntity) 
-	local victim = TheHitEntity
-	local playercontroller = self.VJ_TheControllerEntity
-	local cameramode = self.VJ_TheControllerEntity.VJC_Camera_Mode
-	if self.Headcrabbed then return end
-	-- if (victim:GetClass() == "npc_vj_hlrze_scientist" || victim:GetClass() == "npc_vj_hlrze_barney" || victim:GetClass() == "npc_vj_hlrze_hgrunt") && victim:Health() > 0 && victim:IsNPC() && !self.Headcrabbed then
-	if victim:IsNPC() && self.InfectionClasses[victim:GetClass()] && victim:Health() > 0 then -- make sure our victim is a valid infection target
-		self.Headcrabbed = true
-		victim.DeathAnimationTime = 60 --Stop corpse from despawning too soon
-		victim.AnimTbl_Death = {"zombify_begin"}
-		victim.TurningSpeed = 0
-		VJ.EmitSound(victim,"vj_hlr/gsrc/npc/headcrab/hc_headbite.wav")
-		if self.VJ_IsBeingControlled == true then --If a player controls us, make them control the victim and then the zombie
-		   local orgThink = playercontroller.Think
-			function playercontroller:Think() --don't kick the player out of controlling our victim
-				if IsValid(victim) && victim:Health() <= 0 then return end
-				return orgThink(self)
-			end
-			
-			self.VJ_TheController:ChatPrint("Transforming victim in 30 seconds...")
-			
-			playercontroller:SetControlledNPC(victim) -- Control the victim
-			playercontroller:StartControlling()
-
-		end
-		SafeRemoveEntity(self) --Remove headcrab
-
-		local zClass = "npc_vj_hlrze_zombie" --Fallback class for the zombie NPC we will spawn
-		local zOffset = 50
-		local zAnimT = 3.01 --Duration of the "I got crabbed!" animation
-		local zPos = victim:GetPos()
-		victim:TakeDamage(1000,self,self) --Kill the victim
-		victim.VJ_NPC_Class = {nil} --Stop NPCs from attacking victim
-		victim.BringFriendsOnDeath = false
-		local fakedamage = DamageInfo() --Fake damage, needed to make victim drop his weapon
-		fakedamage:SetDamage(0)
-		fakedamage:SetAttacker(victim)
-		fakedamage:SetDamageType(DMG_GENERIC) 
-		victim.AnimTbl_WeaponAttack = {"zombify_continues"} 
-		if victim:GetClass() == "npc_vj_hlrze_barney" then
-			victim:SetSkin(1)
-			victim:CreateGibEntity("prop_physics","models/vj_hlr/hlze/barney_helmet.mdl",{Pos=victim:GetPos() + victim:GetUp() * 50})
-			victim:DeathWeaponDrop(fakedamage,1)
-			victim:SetBodygroup(1,2)
-			victim:SetBodygroup(2,2)
-			zClass = "npc_vj_hlrze_zombie_barney"
-		elseif victim:GetClass() == "npc_vj_hlrze_scientist" then
-			victim:SetSkin(2)
-			victim:SetBodygroup(1,4)
-			victim.IsMedic = false
-			if victim:GetActiveWeapon() then victim:DeathWeaponDrop(fakedamage,1) victim:SetBodygroup(3,0) end
-		elseif victim:GetClass() == "npc_vj_hlrze_hgrunt" then
-			victim:SetBodygroup(2,3)
-			victim:SetSkin(2)
-			zAnimT = 1.61
-			zOffset = 30
-			zClass = "npc_vj_hlrze_zsoldier"
-			if victim:GetBodygroup(1) == 0 then --If victim has a mask then make a grenade zombie
-				victim:SetBodygroup(1,5)
-				zClass = "npc_vj_hlrze_zsoldier_grenade"
-			else victim:SetBodygroup(1,4) zClass = "npc_vj_hlrze_zsoldier"
-			end
-		end
-
-		timer.Simple(1,function() -- random extra check
-			if IsValid(victim) then
-				victim.CanTurnWhileStationary = false
-				victim:DoChangeMovementType(VJ_MOVETYPE_STATIONARY)
-			end
-		end)
-		timer.Simple(zAnimT,function()
-			if IsValid(victim) then
-				victim:PlayAnim("zombify_continues",true,false,false)
-			end
-		end)
-		timer.Simple(30,function() -- Overridden to 30 seconds because Barney's infection animation loops instead of lasting a long time.
-			if IsValid(victim) then
-				local tr = util.TraceHull{ -- Trace forwards and make sure the zombie doesn't spawn into a wall
-					start = victim:GetPos() +victim:GetUp() *5,
-					endpos = victim:GetPos() +victim:GetUp() *5 +victim:GetForward() *zOffset,
-					mins = victim:GetCollisionBounds().mins,
-					maxs = victim:GetCollisionBounds().maxs,
-					ignoreworld = false,
-					filter = {victim}
-				}
-			
-				if tr.Hit then
-					zPos = tr.HitPos +victim:GetForward() *-14
-				else
-					zPos = victim:GetPos() +victim:GetForward() *zOffset
-				end
-			
-				local zombie = ents.Create(zClass)
-				zombie:SetPos(zPos)
-				zombie:SetAngles(victim:GetAngles())
-				zombie:SetColor(victim:GetColor())
-				zombie:SetMaterial(victim:GetMaterial())
-				zombie:Spawn()
-				zombie:PlayAnim("getup",true,false,false)
-				zombie:AddEffects(32) -- hide zombie
-				if IsValid(victim) then
-					undo.ReplaceEntity(victim,zombie)
-				end
-				timer.Simple(0.2,function() --The zombie actually spawns in early and is hidden, this is to move the getup animation in place before showing the zombie model
-					if IsValid(zombie) then
-						if victim.VJ_IsBeingControlled == true then
-							-- Set the player controller to control the zombie instead of the victim
-							victim.VJ_TheControllerEntity:SetControlledNPC(zombie)
-							victim.VJ_TheControllerEntity:StartControlling()
-							victim.VJ_TheControllerEntity.VJC_Camera_Mode = cameramode -- Set camera mode that the headcrab was using
-						end
-						
-						SafeRemoveEntity(victim)
-						zombie:SetPos(zPos)
-						zombie:PlayAnim("getup",true,false,false)
-						zombie:RemoveEffects(32)
-					end
-				end)
-			end
-		end)
-	end
-end
-
 local gibs1 = {"models/vj_hlr/gibs/agib1.mdl", "models/vj_hlr/gibs/agib2.mdl", "models/vj_hlr/gibs/agib3.mdl", "models/vj_hlr/gibs/agib4.mdl","models/vj_hlr/gibs/agib5.mdl","models/vj_hlr/gibs/agib6.mdl","models/vj_hlr/gibs/agib7.mdl","models/vj_hlr/gibs/agib8.mdl","models/vj_hlr/gibs/agib9.mdl","models/vj_hlr/gibs/agib10.mdl"}
 --
-function ENT:OnCreateDeathCorpse(dmginfo, hitgroup, corpseEnt)
-	VJ.HLR_ApplyCorpseSystem(self, corpseEnt, gibs1)
+function ENT:OnCreateDeathCorpse(dmginfo, hitgroup, corpse)
+	VJ.HLR_ApplyCorpseSystem(self, corpse, gibs1)
 end

@@ -6,9 +6,9 @@ include("shared.lua")
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 -----------------------------------------------*/
 ENT.StartHealth = 90
-ENT.GeneralSoundPitch1 = 95
+ENT.MainSoundPitch = 95
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:Init()
-	self:SetBodygroup(0,4)
-	self:SetBodygroup(1,2)
+	self:SetBodygroup(0, 4)
+	self:SetBodygroup(1, 2)
 end
