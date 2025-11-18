@@ -5,60 +5,43 @@ include("shared.lua")
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 -----------------------------------------------*/
-ENT.Model = {"models/vj_hlr/hlze/zombie.mdl"}
+ENT.Model = "models/vj_hlr/hlze/zombie.mdl"
 ENT.StartHealth = 50
 ENT.HullType = HULL_HUMAN
-ENT.CanReceiveOrders = true
+ENT.ControllerParams = {
+	ThirdP_Offset = Vector(30, 20, -50),
+	FirstP_Bone = "Bip01 Neck",
+	FirstP_Offset = Vector(5, 0, 10),
+}
 ---------------------------------------------------------------------------------------------------------------------------------------------
+ENT.VJ_NPC_Class = {"CLASS_ZOMBIE"}
 ENT.BloodColor = VJ.BLOOD_COLOR_YELLOW
 ENT.BloodParticle = {"vj_hlr_blood_yellow"}
 ENT.BloodDecal = {"VJ_HLR1_Blood_Yellow"}
 ENT.HasBloodPool = false
-ENT.VJ_NPC_Class = {"CLASS_ZOMBIE"}
-
-ENT.HasMeleeAttack = true
-ENT.TimeUntilMeleeAttackDamage = false
-ENT.MeleeAttackDistance = 50 -- How close does it have to be until it attacks?
-ENT.MeleeAttackDamageDistance = 80 -- How far does the damage go?
-ENT.DisableLeapAttackAnimation = true -- if true, it will disable the animation code
-ENT.LeapAttackUseCustomVelocity = true -- Should it disable the default velocity system?
-
 ENT.BringFriendsOnDeath = false
 ENT.CallForHelp = false
+ENT.CanEat = true
 
-ENT.HasExtraMeleeAttackSounds = true -- Set to true to use the extra melee attack sounds
-ENT.DisableFootStepSoundTimer = true
--- ENT.AnimTbl_Run = {ACT_WALK} -- Set the running animations | Put multiple to let the base pick a random animation when it moves
-ENT.AnimTbl_Run = {ACT_RUN,ACT_WALK} -- Set the running animations | Put multiple to let the base pick a random animation when it moves
-ENT.HasDeathAnimation = true
+-- Melee attack
+ENT.HasMeleeAttack = true
+ENT.TimeUntilMeleeAttackDamage = false
+ENT.MeleeAttackDistance = 50
+ENT.MeleeAttackDamageDistance = 80
 
 -- Flinching
 ENT.CanFlinch = true
 ENT.AnimTbl_Flinch = "vjseq_flinch"
 ENT.FlinchHitGroupMap = {
-	{HitGroup={HITGROUP_LEFTARM},IsSchedule=false,Animation={ACT_FLINCH_LEFTARM}},
-	{HitGroup={HITGROUP_LEFTLEG},IsSchedule=false,Animation={ACT_FLINCH_LEFTLEG}},
-	{HitGroup={HITGROUP_RIGHTARM},IsSchedule=false,Animation={ACT_FLINCH_RIGHTARM}},
-	{HitGroup={HITGROUP_RIGHTLEG},IsSchedule=false,Animation={ACT_FLINCH_RIGHTLEG}}
-} -- if "IsSchedule" is set to true, "Animation" needs to be a schedule
-
-	-- ====== Velocity Variables ====== --
-ENT.LeapAttackVelocityForward = 0 -- How much forward force should it apply?
-ENT.LeapAttackVelocityUp = 0 -- How much upward force should it apply?
-
-	-- ====== Eating Variables ====== --
-ENT.CanEat = true -- Should it search and eat organic stuff when idle?
-
-	-- ====== NPC Controller Data ====== --
-ENT.ControllerParams = {
-	CameraMode = 1, -- Sets the default camera mode | 1 = Third Person, 2 = First Person
-	ThirdP_Offset = Vector(30, 20, -50),
-	FirstP_Bone = "Bip01 Neck",
-	FirstP_Offset = Vector(5, 0, 10),
-	FirstP_ShrinkBone = true, -- Should the bone shrink? Useful if the bone is obscuring the player's view
-	FirstP_CameraBoneAng = 0, -- Should the camera's angle be affected by the bone's angle? | 0 = No, 1 = Pitch, 2 = Yaw, 3 = Roll
-	FirstP_CameraBoneAng_Offset = 0, -- How much should the camera's angle be rotated by? | Useful for weird bone angles
+	{HitGroup={HITGROUP_LEFTARM}, Animation={ACT_FLINCH_LEFTARM}},
+	{HitGroup={HITGROUP_LEFTLEG}, Animation={ACT_FLINCH_LEFTLEG}},
+	{HitGroup={HITGROUP_RIGHTARM}, Animation={ACT_FLINCH_RIGHTARM}},
+	{HitGroup={HITGROUP_RIGHTLEG}, Animation={ACT_FLINCH_RIGHTLEG}}
 }
+
+ENT.HasExtraMeleeAttackSounds = true
+ENT.DisableFootStepSoundTimer = true
+ENT.HasDeathAnimation = true
 
 -- Sounds
 ENT.SoundTbl_FootStep = {"vj_hlr/gsrc/pl_step1.wav","vj_hlr/gsrc/pl_step2.wav","vj_hlr/gsrc/pl_step3.wav","vj_hlr/gsrc/pl_step4.wav"}
@@ -71,82 +54,95 @@ ENT.SoundTbl_Pain = {"vj_hlr/gsrc/npc/zombie/zo_pain1.wav","vj_hlr/gsrc/npc/zomb
 ENT.SoundTbl_Death = {"vj_hlr/gsrc/npc/zombie/zo_pain1.wav","vj_hlr/gsrc/npc/zombie/zo_pain2.wav"}
 
 ENT.MainSoundPitch = 100
-ENT.BodyGroups = {
-	[0] = 0,
-	[1] = 0,
-}
-ENT.Crippled = false
-ENT.LegHealth = ENT.StartHealth /6
-ENT.NextRegenT = CurTime()
+
+-- Custom
+ENT.Zombie_Crippled = false
+ENT.Zombie_LegHP = ENT.StartHealth / 6
+ENT.Zombie_RecoveryHP = 0 -- Threshold it must pass before recovering
+ENT.Zombie_NextCrippleRegenT = 0
 ENT.IsHEVZombie = false
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:Init()
-	self:SetBodygroup(0,self.BodyGroups[0])
-	self:SetBodygroup(1,self.BodyGroups[1])
+	self:SetBodygroup(0, 0)
+	self:SetBodygroup(1, 0)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:Cripple(crip)
-	self.Crippled = crip
-	if crip then
-		self:PlayAnim(ACT_DIESIMPLE,true,false,false)
-		self:SetHullType(HULL_WIDE_SHORT)
-		self:SetCollisionBounds(Vector(14,14,20),Vector(-14,-14,0))
-		self:SetSurroundingBounds(Vector(58,58,30),Vector(-58,-58,0))
-		self.AnimationTranslations[ACT_IDLE] = {ACT_COMBAT_IDLE}
-		self.AnimationTranslations[ACT_WALK] = {VJ.SequenceToActivity(self,"limp_leg_walk")}
-		self.AnimationTranslations[ACT_RUN] = {VJ.SequenceToActivity(self,"limp_leg_run")}
-		self.AnimationTranslations[ACT_TURN_RIGHT] 							= ACT_COMBAT_IDLE
-		self.AnimationTranslations[ACT_TURN_LEFT] 							= ACT_COMBAT_IDLE
+function ENT:Controller_Initialize(ply, controlEnt)
+	ply:ChatPrint("JUMP: Detach Headcrab")
+	if self.Zombie_CanGrenade then
+		ply:ChatPrint("MOUSE2: Arm Grenade")
+	end
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:Cripple(enable)
+	//print("Cripple", enable)
+	if enable then
+		self.Zombie_Crippled = true
+		self.Zombie_RecoveryHP = self:Health() + 20
+		self.AnimationTranslations[ACT_IDLE] = ACT_COMBAT_IDLE
+		self.AnimationTranslations[ACT_WALK] = VJ.SequenceToActivity(self,"limp_leg_walk")
+		self.AnimationTranslations[ACT_RUN] = VJ.SequenceToActivity(self,"limp_leg_run")
+		self.AnimationTranslations[ACT_TURN_RIGHT] = ACT_COMBAT_IDLE
+		self.AnimationTranslations[ACT_TURN_LEFT] = ACT_COMBAT_IDLE
+		self.JumpParams.Enabled = false
 		self.CanFlinch = false
-		self.JumpParams.MaxRise = VJ.SET(0,0)
 		self.CanEat = false
+		self:SetHullType(HULL_WIDE_SHORT)
+		self:SetCollisionBounds(Vector(14, 14, 20), Vector(-14, -14, 0))
+		self:SetSurroundingBounds(Vector(58, 58, 30), Vector(-58, -58, 0))
+		self:PlayAnim(ACT_DIESIMPLE, true, false, false)
 	else
-		self.LegHealth = 20
-		self:PlayAnim(ACT_ROLL_LEFT,true,false,false)
-		self:SetHullType(HULL_HUMAN)
-		self:SetCollisionBounds(Vector(18,18,66),Vector(-18,-18,0))
-		self:SetSurroundingBounds(Vector(20,20,80),Vector(-20,-20,0))
-		self.AnimationTranslations[ACT_IDLE] = {ACT_IDLE}
-		self.AnimationTranslations[ACT_WALK] = {ACT_WALK}
-		self.AnimationTranslations[ACT_RUN] = {ACT_RUN}
-		self.AnimationTranslations[ACT_TURN_RIGHT] 							= ACT_TURN_RIGHT
-		self.AnimationTranslations[ACT_TURN_LEFT] 							= ACT_TURN_LEFT
+		self.Zombie_Crippled = false
+		self.Zombie_LegHP = 20
+		self.AnimationTranslations[ACT_IDLE] = nil
+		self.AnimationTranslations[ACT_WALK] = nil
+		self.AnimationTranslations[ACT_RUN] = nil
+		self.AnimationTranslations[ACT_TURN_RIGHT] = nil
+		self.AnimationTranslations[ACT_TURN_LEFT] = nil
+		self.JumpParams.Enabled = true
 		self.CanFlinch = true
-		self.JumpParams.MaxRise = VJ.SET(400,550)
 		self.CanEat = true
+		self:SetHullType(HULL_HUMAN)
+		self:SetCollisionBounds(Vector(18, 18, 66), Vector(-18, -18, 0))
+		self:SetSurroundingBounds(Vector(20, 20, 80), Vector(-20, -20, 0))
+		self:PlayAnim(ACT_ROLL_LEFT, true, false, false)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:OnThink()
-	if self.Crippled && CurTime() > self.NextRegenT then
-		self:SetHealth(math.Clamp(self:Health() +5,1,self:GetMaxHealth()))
-		self.NextRegenT = CurTime() +10
+	if self.Zombie_Crippled then
+		-- Slowly regenerate health only while crippled
+		if CurTime() > self.Zombie_NextCrippleRegenT then
+			self:SetHealth(math.Clamp(self:Health() + 5, 1, self:GetMaxHealth()))
+			self.Zombie_NextCrippleRegenT = CurTime() + 10
+		end
+		-- Uncripple only if we surpassed the recovery amount or reached max health (This is to avoid getting crippled and getting back up within the same second)
+		local curHP = self:Health()
+		if curHP >= self.Zombie_RecoveryHP or curHP == self:GetMaxHealth() then
+			self:Cripple(false)
+		end
 	end
-	if self.Crippled && self:Health() > self:GetMaxHealth() *0.65 then
-		self:Cripple(false)
-	end
-	--Players detaching headcrabs is now done here instead of in leap attack
-	if (self:Alive() && self.VJ_IsBeingControlled == true && self.VJ_TheController:KeyDown(IN_JUMP)) then
-		self.AnimTbl_Death = {ACT_DIE_HEADSHOT}
-		self:Dropheadcrab()
-		self:TakeDamage(self:Health() + 100,self,self)
+	
+	-- NPC Controller headcrab detaching
+	if self:Alive() && self.VJ_IsBeingControlled && self.VJ_TheController:KeyDown(IN_JUMP) then
+		self.AnimTbl_Death = ACT_DIE_HEADSHOT
+		self:DropHeadcrab()
+		self:TakeDamage(self:Health() + 100, self, self)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:OnInput(key, activator, caller, data)
 	if key == "event_emit step" then
 		self:PlayFootstepSound()
-	end
-	if key == "event_mattack right" or key == "event_mattack left" or key == "event_mattack both" then
+	elseif key == "event_mattack right" or key == "event_mattack left" or key == "event_mattack both" then
 		self:ExecuteMeleeAttack()
-	end
-	if key == "mattack right" or key == "mattack left" or key == "mattack both" then
+	elseif key == "mattack right" or key == "mattack left" or key == "mattack both" then
 		self:ExecuteMeleeAttack()
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:MultipleMeleeAttacks()
-	if self.Crippled then
+	if self.Zombie_Crippled then
 		if math.random(1,2) == 1 then
 			self.AnimationTranslations[ACT_MELEE_ATTACK1] = {ACT_RANGE_ATTACK2}
 			self.MeleeAttackDamage = 10
@@ -165,130 +161,8 @@ function ENT:MultipleMeleeAttacks()
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:HandleGibOnDeath(dmginfo, hitgroup)
-	self.HasDeathSounds = false
-	if self.HasGibOnDeathEffects == true then
-		local bloodeffect = EffectData()
-		bloodeffect:SetOrigin(self:GetPos() +self:OBBCenter())
-		bloodeffect:SetColor(VJ.Color2Byte(Color(255,221,35)))
-		bloodeffect:SetScale(120)
-		util.Effect("VJ_Blood1",bloodeffect)
-		
-		local bloodspray = EffectData()
-		bloodspray:SetOrigin(self:GetPos() +self:OBBCenter())
-		bloodspray:SetScale(8)
-		bloodspray:SetFlags(3)
-		bloodspray:SetColor(1)
-		util.Effect("bloodspray",bloodspray)
-		util.Effect("bloodspray",bloodspray)
-		
-		local effectdata = EffectData()
-		effectdata:SetOrigin(self:GetPos() +self:OBBCenter())
-		effectdata:SetScale(1)
-		util.Effect("StriderBlood",effectdata)
-		util.Effect("StriderBlood",effectdata)
-	end
-	
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib1.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib2.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,20))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib3.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,30))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib4.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,35))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib5.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,50))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib6.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,55))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib7.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib8.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,45))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib9.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,25))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib10.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,15))})
-	self:PlaySoundSystem("Gib", "vj_base/gib/splat.wav")
-	return true -- Return to true if it gibbed!
-end
----------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:OnDeath(dmginfo, hitgroup, status)
-	if status == "DeathAnim" then
-		if self.Crippled then return end
-		if hitgroup == HITGROUP_HEAD then
-			self.AnimTbl_Death = {ACT_DIE_HEADSHOT}
-		else
-			self.AnimTbl_Death = {ACT_DIEBACKWARD,ACT_DIESIMPLE}
-		end
-	end
-end
----------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:OnBleed(dmginfo,hitgroup)
-	if !self.Crippled then
-		if hitgroup == 6 && !self.IsHEVZombie then
-			self.AnimationTranslations[ACT_WALK] = {ACT_STRAFE_LEFT}
-			self.AnimationTranslations[ACT_RUN] = {ACT_STRAFE_LEFT}
-		end
-		if hitgroup == 7 && !self.IsHEVZombie then
-			self.AnimationTranslations[ACT_WALK] = {ACT_STRAFE_RIGHT}
-			self.AnimationTranslations[ACT_RUN] = {ACT_STRAFE_RIGHT}
-		end
-		if self:Health() < 10 && self:Health() > 0 && hitgroup != 1 then
-			local headcrabdropchance = math.random(0,4)
-			if headcrabdropchance == 3 then
-				self.AnimTbl_Death = {ACT_DIE_HEADSHOT}
-				self:Dropheadcrab()
-				self:TakeDamage(self:Health() + 100,self,self)
-			end
-		end
-	end
-	if (hitgroup == 6 || hitgroup == 7) && !self.Crippled && !self.IsHEVZombie then
-		self.LegHealth = self.LegHealth -dmginfo:GetDamage()
-		if self.LegHealth <= 0 then
-			self:Cripple(true)
-		end
-	end
-end
-
-function ENT:Dropheadcrab()
-local headcrab = ents.Create("npc_vj_hlrze_headcrab")
-headcrab:SetPos(self:GetPos() + Vector(0,0,60))
-headcrab:SetAngles(self:GetAngles()) 
-headcrab:Spawn()
-if self.CanUseGrenade == true then self:SetBodygroup(0,3) end
-
-if self.IsHEVZombie == true then 
-	self:SetBodygroup(1,1)
-else self:SetBodygroup(1,4)
-end
-
-if self.VJ_IsBeingControlled == true then
-	local cameramode = self.VJ_TheControllerEntity.VJC_Camera_Mode -- copy the current first/thirdperson view
-	self.VJ_TheControllerEntity:SetControlledNPC(headcrab)
-	self.VJ_TheControllerEntity:StartControlling()
-	timer.Simple(0.01,function() 
-		self.VJ_TheControllerEntity.VJC_Camera_Mode = cameramode -- set the headcrab's view to what ours was set to
-	end )
-end
-		
-end
-
-function ENT:OnLeapAttack(status, enemy)
-	if self.VJ_IsBeingControlled == true then
-		self.AnimTbl_Death = {ACT_DIE_HEADSHOT}
-		self:Dropheadcrab()
-		self:TakeDamage(self:Health() + 100,self,self)
-	end
-	return false
-end
-
-function ENT:Controller_Initialize(ply) 
-	self.HasLeapAttack = true
---self.DisableLeapAttackAnimation = true
---self.LeapAttackUseCustomVelocity = true
-end
-
-function ENT:Controller_Initialize(ply, controlEnt)
-	ply:ChatPrint("JUMP: Detach Headcrab")
-end
-local gibs1 = {"models/vj_hlr/gibs/agib1.mdl", "models/vj_hlr/gibs/agib2.mdl", "models/vj_hlr/gibs/agib3.mdl", "models/vj_hlr/gibs/agib4.mdl","models/vj_hlr/gibs/agib5.mdl","models/vj_hlr/gibs/agib6.mdl","models/vj_hlr/gibs/agib7.mdl","models/vj_hlr/gibs/agib8.mdl","models/vj_hlr/gibs/agib9.mdl","models/vj_hlr/gibs/agib10.mdl"}
---
-function ENT:OnCreateDeathCorpse(dmginfo, hitgroup, corpse)
-	VJ.HLR_ApplyCorpseSystem(self, corpse, gibs1)
-end
-
 local vecZ50 = Vector(0, 0, -50)
+--
 function ENT:OnEat(status, statusInfo)
 	-- The following code is a ideal example based on Half-Life 1 Zombie
 	//print(self, "Eating Status: ", status, statusInfo)
@@ -327,9 +201,117 @@ function ENT:OnEat(status, statusInfo)
 	end
 	return 0
 end
-
-function ENT:BodyTarget( origin, noisy )
-	if self.Crippled then
-		return self:GetPos() + Vector(0,0,500)
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:OnBleed(dmginfo,hitgroup)
+	if !self.Zombie_Crippled then
+		-- Change movement animations to whichever leg was damaged last
+		if hitgroup == HITGROUP_LEFTLEG && !self.IsHEVZombie then
+			self.AnimationTranslations[ACT_WALK] = ACT_STRAFE_LEFT
+			self.AnimationTranslations[ACT_RUN] = ACT_STRAFE_LEFT
+		elseif hitgroup == HITGROUP_RIGHTLEG && !self.IsHEVZombie then
+			self.AnimationTranslations[ACT_WALK] = ACT_STRAFE_RIGHT
+			self.AnimationTranslations[ACT_RUN] = ACT_STRAFE_RIGHT
+		end
+		
+		-- 1 in 5 chance that headcrab drops when its health is low
+		if self:Health() < 10 && self:Health() > 0 && hitgroup != HITGROUP_HEAD && math.random(0, 4) == 0 then
+			self.AnimTbl_Death = ACT_DIE_HEADSHOT
+			self:DropHeadcrab()
+			self:TakeDamage(self:Health() + 100, self, self)
+		end
+		
+		-- If leg health is depleted, then cripple the zombie
+		if (hitgroup == HITGROUP_LEFTLEG || hitgroup == HITGROUP_RIGHTLEG) && !self.Zombie_Crippled && !self.IsHEVZombie then
+			self.Zombie_LegHP = self.Zombie_LegHP - dmginfo:GetDamage()
+			if self.Zombie_LegHP <= 0 then
+				self:Cripple(true)
+				self.Zombie_NextCrippleRegenT = CurTime() + 10
+			end
+		end
 	end
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:DropHeadcrab()
+	local headcrab = ents.Create("npc_vj_hlrze_headcrab")
+	headcrab:SetPos(self:GetPos() + self:GetUp() * 60)
+	headcrab:SetAngles(self:GetAngles())
+	headcrab:Spawn()
+	if self.Zombie_CanGrenade then
+		self:SetBodygroup(0, 3)
+	end
+
+	if self.IsHEVZombie then
+		self:SetBodygroup(1, 1)
+	else
+		self:SetBodygroup(1, 4)
+	end
+
+	if self.VJ_IsBeingControlled then
+		local cameramode = self.VJ_TheControllerEntity.VJC_Camera_Mode -- Copy the current camera view
+		local ply = self.VJ_TheController
+		self.VJ_TheControllerEntity:StopControlling(false)
+		
+		local ent_controller = ents.Create("obj_vj_controller")
+		ent_controller.VJCE_Player = ply
+		ent_controller:SetControlledNPC(headcrab)
+		ent_controller:Spawn()
+		ent_controller:StartControlling()
+		timer.Simple(0.01, function()
+			ent_controller:SetCameraMode(cameramode)
+		end )
+	end
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:HandleGibOnDeath(dmginfo, hitgroup)
+	self.HasDeathSounds = false
+	if self.HasGibOnDeathEffects == true then
+		local bloodeffect = EffectData()
+		bloodeffect:SetOrigin(self:GetPos() +self:OBBCenter())
+		bloodeffect:SetColor(VJ.Color2Byte(Color(255,221,35)))
+		bloodeffect:SetScale(120)
+		util.Effect("VJ_Blood1",bloodeffect)
+		
+		local bloodspray = EffectData()
+		bloodspray:SetOrigin(self:GetPos() +self:OBBCenter())
+		bloodspray:SetScale(8)
+		bloodspray:SetFlags(3)
+		bloodspray:SetColor(1)
+		util.Effect("bloodspray",bloodspray)
+		util.Effect("bloodspray",bloodspray)
+		
+		local effectdata = EffectData()
+		effectdata:SetOrigin(self:GetPos() +self:OBBCenter())
+		effectdata:SetScale(1)
+		util.Effect("StriderBlood",effectdata)
+		util.Effect("StriderBlood",effectdata)
+	end
+	
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib1.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,40))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib2.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,20))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib3.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,30))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib4.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,35))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib5.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,50))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib6.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,55))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib7.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,40))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib8.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,45))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib9.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,25))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib10.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,15))})
+	self:PlaySoundSystem("Gib", "vj_base/gib/splat.wav")
+	return true
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:OnDeath(dmginfo, hitgroup, status)
+	if status == "DeathAnim" && !self.Zombie_Crippled then
+		if hitgroup == HITGROUP_HEAD then
+			self.AnimTbl_Death = ACT_DIE_HEADSHOT
+		else
+			self.AnimTbl_Death = {ACT_DIEBACKWARD, ACT_DIESIMPLE}
+		end
+	end
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
+local gibs1 = {"models/vj_hlr/gibs/agib1.mdl", "models/vj_hlr/gibs/agib2.mdl", "models/vj_hlr/gibs/agib3.mdl", "models/vj_hlr/gibs/agib4.mdl","models/vj_hlr/gibs/agib5.mdl","models/vj_hlr/gibs/agib6.mdl","models/vj_hlr/gibs/agib7.mdl","models/vj_hlr/gibs/agib8.mdl","models/vj_hlr/gibs/agib9.mdl","models/vj_hlr/gibs/agib10.mdl"}
+--
+function ENT:OnCreateDeathCorpse(dmginfo, hitgroup, corpse)
+	VJ.HLR_ApplyCorpseSystem(self, corpse, gibs1)
 end

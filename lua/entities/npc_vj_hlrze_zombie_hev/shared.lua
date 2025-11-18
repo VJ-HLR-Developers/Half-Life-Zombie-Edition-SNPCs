@@ -1,4 +1,4 @@
-ENT.Base 			= "npc_vj_hlrze_zombie"
+ENT.Base 			= "npc_vj_creature_base"
 ENT.Type 			= "ai"
 ENT.PrintName 		= "Zombie Gordon Freeman"
 ENT.Author 			= "DrVrej"

@@ -5,51 +5,42 @@ include("shared.lua")
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 -----------------------------------------------*/
-ENT.Model = {"models/vj_hlr/hlze/crasher.mdl"}
+ENT.Model = "models/vj_hlr/hlze/crasher.mdl"
 ENT.StartHealth = 300
 ENT.HullType = HULL_HUMAN
+ENT.ControllerParams = {
+	ThirdP_Offset = Vector(30, 30, -60),
+	FirstP_Bone = "Bip01 Neck",
+	FirstP_Offset = Vector(5, 0, 8),
+}
 ---------------------------------------------------------------------------------------------------------------------------------------------
+ENT.VJ_NPC_Class = {"CLASS_ZOMBIE"}
 ENT.BloodColor = VJ.BLOOD_COLOR_YELLOW
 ENT.BloodParticle = {"vj_hlr_blood_yellow"}
 ENT.BloodDecal = {"VJ_HLR1_Blood_Yellow"}
 ENT.HasBloodPool = false
-ENT.VJ_NPC_Class = {"CLASS_ZOMBIE"}
 
+-- Melee attack
 ENT.HasMeleeAttack = true
-ENT.AnimTbl_MeleeAttack = {ACT_MELEE_ATTACK1}
+ENT.AnimTbl_MeleeAttack = ACT_MELEE_ATTACK1
 ENT.MeleeAttackDamage = 75
 ENT.TimeUntilMeleeAttackDamage = false
-ENT.MeleeAttackDistance = 50 -- How close does it have to be until it attacks?
-ENT.MeleeAttackDamageDistance = 80 -- How far does the damage go?
+ENT.MeleeAttackDistance = 60
+ENT.MeleeAttackDamageDistance = 80
 
-ENT.HasRangeAttack = true -- Should the SNPC have a range attack?
-ENT.RangeAttackProjectiles = "obj_vj_hlr1_gonomegut" -- The entity that is spawned when range attacking
-ENT.AnimTbl_RangeAttack = {ACT_RANGE_ATTACK1} -- Range Attack Animations
-ENT.RangeAttackMaxDistance = 600 -- This is how far away it can shoot
-ENT.RangeAttackMinDistance = 200 -- How close does it have to be until it uses melee?
-ENT.TimeUntilRangeAttackProjectileRelease = false -- How much time until the projectile code is ran?
-ENT.NextRangeAttackTime = 6 -- How much time until it can use a range attack?
-ENT.RangeAttackPos_Up = 60 -- Up/Down spawning position for range attack
-ENT.RangeAttackPos_Forward = 20 -- Forward/ Backward spawning position for range attack
-ENT.RangeAttackPos_Right = 0 -- Right/Left spawning position for range attack
+-- Range attack
+ENT.HasRangeAttack = true
+ENT.RangeAttackProjectiles = "obj_vj_hlr1_gonomegut"
+ENT.AnimTbl_RangeAttack = ACT_RANGE_ATTACK1
+ENT.RangeAttackMinDistance = 200
+ENT.RangeAttackMaxDistance = 600
+ENT.TimeUntilRangeAttackProjectileRelease = false
+ENT.NextRangeAttackTime = 6
 
-ENT.HasExtraMeleeAttackSounds = true -- Set to true to use the extra melee attack sounds
+ENT.HasExtraMeleeAttackSounds = true
 ENT.DisableFootStepSoundTimer = true
-ENT.AnimTbl_Walk = {ACT_WALK} -- Set the running animations | Put multiple to let the base pick a random animation when it moves
-ENT.AnimTbl_Run = {ACT_WALK} -- Set the running animations | Put multiple to let the base pick a random animation when it moves
+ENT.GibOnDeathFilter = false
 ENT.HasDeathAnimation = false
-//ENT.DeathAnimationTime = 0.8
-
-	-- ====== NPC Controller Data ====== --
-ENT.ControllerParams = {
-	CameraMode = 1, -- Sets the default camera mode | 1 = Third Person, 2 = First Person
-	ThirdP_Offset = Vector(30, 30, -60),
-	FirstP_Bone = "Bip01 Neck",
-	FirstP_Offset = Vector(5, 0, 8),
-	FirstP_ShrinkBone = true, -- Should the bone shrink? Useful if the bone is obscuring the player's view
-	FirstP_CameraBoneAng = 0, -- Should the camera's angle be affected by the bone's angle? | 0 = No, 1 = Pitch, 2 = Yaw, 3 = Roll
-	FirstP_CameraBoneAng_Offset = 0, -- How much should the camera's angle be rotated by? | Useful for weird bone angles
-}
 
 -- Sounds
 ENT.SoundTbl_FootStep = {"vj_hlr/gsrc/pl_step1.wav","vj_hlr/gsrc/pl_step2.wav","vj_hlr/gsrc/pl_step3.wav","vj_hlr/gsrc/pl_step4.wav"}
@@ -86,39 +77,40 @@ ENT.SoundTbl_Pain = {
 ENT.SoundTbl_Death = {
 	"vj_hlr/hlze/zombie/zombie_death3.wav"
 }
-ENT.SoundTbl_BeforeMeleeAttack = {"vj_hlr/hlze/zombie/zombie_melee2.wav"}
+ENT.SoundTbl_BeforeMeleeAttack = "vj_hlr/hlze/zombie/zombie_melee2.wav"
 ENT.SoundTbl_MeleeAttackExtra = {"vj_hlr/gsrc/npc/zombie/claw_strike1.wav","vj_hlr/gsrc/npc/zombie/claw_strike2.wav","vj_hlr/gsrc/npc/zombie/claw_strike3.wav"}
 ENT.SoundTbl_MeleeAttackMiss = {"vj_hlr/gsrc/npc/zombie/claw_miss1.wav","vj_hlr/gsrc/npc/zombie/claw_miss2.wav"}
 
 ENT.MainSoundPitch = 100
-ENT.FootstepSoundPitch1 = 70
-ENT.FootstepSoundPitch2 = 70
-ENT.GibOnDeathDamagesTable = {"All"}
+ENT.FootstepSoundPitch = 70
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:Init()
-	self:SetCollisionBounds(Vector(24,24,85),Vector(-24,-24,0))
+	self:SetCollisionBounds(Vector(24, 24, 85), Vector(-24, -24, 0))
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:OnInput(key, activator, caller, data)
 	//print(key)
 	if key == "event_emit step" then
 		self:PlayFootstepSound()
-	end
-	if key == "event_emit hand" then
-		VJ.EmitSound(self,"npc/zombie/foot_slide" .. math.random(1,3) .. ".wav",72)
-	end
-	if key == "event_mattack" then
+	elseif key == "event_emit hand" then
+		VJ.EmitSound(self, "npc/zombie/foot_slide" .. math.random(1, 3) .. ".wav", 72)
+	elseif key == "event_mattack" then
 		self:ExecuteMeleeAttack()
-	end
-	if key == "event_rattack" then
+	elseif key == "event_rattack" then
 		self:ExecuteRangeAttack()
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:RangeAttackProjVel(TheProjectile)
-	--print("bum")
-	--return self:CalculateProjectile("Curve",self:GetPos() +self:GetUp() *self.RangeAttackPos_Up +self:GetForward() *self.RangeAttackPos_Forward, self:GetEnemy():GetPos() +self:GetEnemy():OBBCenter() +self:GetEnemy():GetRight() *math.Rand(-90,90) +self:GetEnemy():GetForward() *math.Rand(-90,90) +self:GetEnemy():GetUp() *math.Rand(-90,90), 600)
-	return VJ.CalculateTrajectory(self, NULL, "Curve", self:GetPos() +self:GetUp() *self.RangeAttackPos_Up +self:GetForward() *self.RangeAttackPos_Forward, self:GetEnemy():GetPos() +self:GetEnemy():OBBCenter() +self:GetEnemy():GetRight() *math.Rand(-90,90) +self:GetEnemy():GetForward() *math.Rand(-90,90) +self:GetEnemy():GetUp() *math.Rand(-90,90), 1)
+function ENT:SetAnimationTranslations(wepHoldType)
+	self.AnimationTranslations[ACT_RUN] = ACT_WALK
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:RangeAttackProjPos(projectile)
+	return self:GetPos() + self:GetUp() * 60 + self:GetForward() * 20
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:RangeAttackProjVel(projectile)
+	return VJ.CalculateTrajectory(self, self:GetEnemy(), "Curve", projectile:GetPos(), 1, 10) + Vector(math.random(-120, 120), math.random(-120, 120), math.random(-120, 120))
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:HandleGibOnDeath(dmginfo, hitgroup)

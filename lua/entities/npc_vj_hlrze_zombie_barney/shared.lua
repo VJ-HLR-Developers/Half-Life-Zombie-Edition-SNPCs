@@ -1,6 +1,6 @@
-ENT.Base 			= "npc_vj_hlrze_zombie"
+ENT.Base 			= "npc_vj_creature_base"
 ENT.Type 			= "ai"
-ENT.PrintName 		= "Zombie Security Guard"
+ENT.PrintName 		= "Zombie Barney"
 ENT.Author 			= "DrVrej"
 ENT.Contact 		= "http://steamcommunity.com/groups/vrejgaming"
 ENT.Category		= "Half-Life: Resurgence"

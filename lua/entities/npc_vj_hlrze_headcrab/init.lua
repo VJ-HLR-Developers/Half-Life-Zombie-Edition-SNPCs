@@ -37,7 +37,7 @@ ENT.NextAnyAttackTime_Leap = 3
 ENT.LeapAttackStopOnHit = true
 
 ENT.HasDeathAnimation = true
-ENT.AnimTbl_Death = {ACT_DIESIMPLE}
+ENT.AnimTbl_Death = ACT_DIESIMPLE
 
 -- Sounds
 ENT.SoundTbl_Idle = {"vj_hlr/gsrc/npc/headcrab/hc_idle1.wav","vj_hlr/gsrc/npc/headcrab/hc_idle2.wav","vj_hlr/gsrc/npc/headcrab/hc_idle3.wav","vj_hlr/gsrc/npc/headcrab/hc_idle4.wav","vj_hlr/gsrc/npc/headcrab/hc_idle5.wav"}
@@ -94,8 +94,10 @@ function ENT:OnLeapAttackExecute(status, ent)
 		local playercontroller = self.VJ_TheControllerEntity
 		local cameramode = self.VJ_TheControllerEntity.VJC_Camera_Mode
 		if self.Headcrabbed then return end
+		if ent.Headcrabbed then return true end
 		if ent:IsNPC() && infectionClasses[ent:GetClass()] && ent:Health() > 0 then -- make sure our ent is a valid infection target
 			self.Headcrabbed = true
+			ent.Headcrabbed = true
 			ent.DeathAnimationTime = 60 --Stop corpse from despawning too soon
 			ent.AnimTbl_Death = {"zombify_begin"}
 			ent.TurningSpeed = 0
@@ -236,15 +238,12 @@ function ENT:HandleGibOnDeath(dmginfo, hitgroup)
 		util.Effect("StriderBlood",effectdata)
 	end
 	
-	if self:GetModel() != "models/vj_hlr/hl1/headcrab_baby.mdl" then
-		self:CreateGibEntity("obj_vj_gib",{"models/vj_hlr/gibs/agib1.mdl","models/vj_hlr/gibs/agib3.mdl"},{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
-	end
 	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib5.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
 	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib7.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
 	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib9.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
 	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib10.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
 	self:PlaySoundSystem("Gib", "vj_base/gib/splat.wav")
-	return true -- Return to true if it gibbed!
+	return true
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 local gibs1 = {"models/vj_hlr/gibs/agib1.mdl", "models/vj_hlr/gibs/agib2.mdl", "models/vj_hlr/gibs/agib3.mdl", "models/vj_hlr/gibs/agib4.mdl","models/vj_hlr/gibs/agib5.mdl","models/vj_hlr/gibs/agib6.mdl","models/vj_hlr/gibs/agib7.mdl","models/vj_hlr/gibs/agib8.mdl","models/vj_hlr/gibs/agib9.mdl","models/vj_hlr/gibs/agib10.mdl"}

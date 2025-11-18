@@ -7,22 +7,22 @@ ENT.EntitiesToNoCollide = {"npc_vj_hlr1_headcrab_baby"}
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ------ Range Attack Variables ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-ENT.HasRangeAttack = true -- Should the SNPC have a range attack?
+ENT.HasRangeAttack = true
 ENT.RangeAttackProjectiles = "obj_vj_hlrze_babybarnacle" -- Entities that it can spawn when range attacking | If set as a table, it picks a random entity
 	-- ====== Animation Variables ====== --
-ENT.AnimTbl_RangeAttack = ACT_SPECIAL_ATTACK2 -- Range Attack Animations
+ENT.AnimTbl_RangeAttack = ACT_SPECIAL_ATTACK2
 ENT.RangeAttackAnimationDelay = 0 -- It will wait certain amount of time before playing the animation
 ENT.RangeAttackAnimationFaceEnemy = true -- Should it face the enemy while playing the range attack animation?
 ENT.RangeAttackAnimationDecreaseLengthAmount = 0 -- This will decrease the time until starts chasing again. Use it to fix animation pauses until it chases the enemy.
 ENT.RangeAttackAnimationStopMovement = true -- Should it stop moving when performing a range attack?
 	-- ====== Distance Variables ====== --
-ENT.RangeAttackMaxDistance = 700 -- This is how far away it can shoot
-ENT.RangeAttackMinDistance = 200 -- How close does it have to be until it uses melee?
+ENT.RangeAttackMaxDistance = 700
+ENT.RangeAttackMinDistance = 200
 ENT.RangeAttackAngleRadius = 100 -- What is the attack angle radius? | 100 = In front of the SNPC | 180 = All around the SNPC
 	-- ====== Timer Variables ====== --
 	-- Set this to false to make the attack event-based:
 --ENT.TimeUntilRangeAttackProjectileRelease = 1.4166
-ENT.TimeUntilRangeAttackProjectileRelease = false -- How much time until the projectile code is ran?
+ENT.TimeUntilRangeAttackProjectileRelease = false
 ENT.NextRangeAttackTime = 4 -- How much time until it can use a range attack?
 ENT.NextRangeAttackTime_DoRand = 10 -- False = Don't use random time | Number = Picks a random number between the regular timer and this timer
 	-- To let the base automatically detect the attack duration, set this to false:
@@ -113,7 +113,7 @@ if wepHoldType == 0 then --normal zombie
 	self.AnimationTranslations[ACT_MELEE_ATTACK1] = {ACT_MELEE_ATTACK1}
 	self.MeleeAttackAnimationFaceEnemy = true -- Should it face the enemy while playing the melee attack animation?
 	self.MeleeAttackAnimationAllowOtherTasks = false -- If set to true, the animation will not stop other tasks from playing, such as chasing | Useful for gesture attacks!
-	self.HasRangeAttack = true -- Should the SNPC have a range attack?
+	self.HasRangeAttack = true
 	self.NextMeleeAttackTime = 0 -- How much time until it can use a melee attack?
 	self.NextMeleeAttackTime_DoRand = false -- False = Don't use random time
 	self.HasMeleeAttackSounds = true
@@ -208,7 +208,7 @@ function ENT:OnThink()
 	--Players detaching headcrabs is now done here instead of in leap attack
 	if (self:Alive() && self.VJ_IsBeingControlled == true && self.VJ_TheController:KeyDown(IN_JUMP)) then
 		self.AnimTbl_Death = {ACT_DIE_HEADSHOT}
-		self:Dropheadcrab()
+		self:DropHeadcrab()
 		self:TakeDamage(self:Health() + 100,self,self)
 	end
 	

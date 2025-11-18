@@ -19,10 +19,10 @@ ENT.HasMeleeAttack = true
 ENT.AnimTbl_MeleeAttack = {ACT_MELEE_ATTACK1}
 ENT.MeleeAttackDamage = 15
 ENT.TimeUntilMeleeAttackDamage = false
-ENT.MeleeAttackDistance = 50 -- How close does it have to be until it attacks?
-ENT.MeleeAttackDamageDistance = 80 -- How far does the damage go?
+ENT.MeleeAttackDistance = 50
+ENT.MeleeAttackDamageDistance = 80
 
-ENT.HasExtraMeleeAttackSounds = true -- Set to true to use the extra melee attack sounds
+ENT.HasExtraMeleeAttackSounds = true
 ENT.DisableFootStepSoundTimer = true
 ENT.AnimTbl_Run = {ACT_RUN} -- Set the running animations | Put multiple to let the base pick a random animation when it moves
 ENT.HasDeathAnimation = true
@@ -41,8 +41,8 @@ ENT.LeapAttackAnimationFaceEnemy = 2 -- 2 = Face the enemy UNTIL it jumps!
 ENT.LeapAttackAnimationDecreaseLengthAmount = 0 -- This will decrease the time until starts chasing again. Use it to fix animation pauses until it chases the enemy.
 	-- ====== Distance Variables ====== --
 ENT.LeapAttackMaxDistance = 2000 -- The distance of the leap
-ENT.LeapAttackMinDistance = 500 -- How close does it have to be until it uses melee?
-ENT.LeapAttackDamageDistance = 100 -- How far does the damage go?
+ENT.LeapAttackMinDistance = 500
+ENT.LeapAttackDamageDistance = 100
 ENT.LeapAttackAngleRadius = 60
 	-- ====== Timer Variables ====== --
 	-- Set this to false to make the attack event-based:
@@ -162,13 +162,13 @@ function ENT:OnBleed(dmginfo,hitgroup)
 			local headcrabdropchance = math.random(0,3)
 			if headcrabdropchance == 3 then
 				self.AnimTbl_Death = {ACT_DIE_HEADSHOT}
-				self:Dropheadcrab()
+				self:DropHeadcrab()
 				self:TakeDamage(self:Health() + 100,self,self)
 			end
 		end
 end
 
-function ENT:Dropheadcrab()
+function ENT:DropHeadcrab()
 local headcrab = ents.Create("npc_vj_hlrze_headcrab")
 headcrab:SetPos(self:GetPos() + Vector(0,0,60))
 headcrab:SetAngles(self:GetAngles()) 
