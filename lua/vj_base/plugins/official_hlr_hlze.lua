@@ -3,7 +3,7 @@
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 --------------------------------------------------*/
-VJ.AddPlugin("Half-Life Resurgence: Zombie Edition", "NPC", "2.2")
+VJ.AddPlugin("Half-Life Resurgence: Zombie Edition", "NPC", "2.2.0")
 
 local spawnCategory = "HL Resurgence: HLZE"
 VJ.AddCategoryInfo(spawnCategory, {Icon = "vj_hl/icons/hlze.png"})
@@ -38,3 +38,27 @@ VJ.AddNPCWeapon("Beretta (HL Zombie Edition)", "weapon_vj_hlrze_beretta", spawnC
 VJ.AddNPCWeapon("M16 (HL Zombie Edition)", "weapon_vj_hlrze_m16", spawnCategory)
 VJ.AddNPCWeapon("SPAS 12 (HL Zombie Edition)", "weapon_vj_hlrze_spas12", spawnCategory)
 VJ.AddNPCWeapon("M249 SAW (HL Zombie Edition)", "weapon_vj_hlrze_m249", spawnCategory)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------ Convars & Menu ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+VJ.AddConVar("vj_hlrze_latching", 1, FCVAR_ARCHIVE)
+VJ.AddConVar("vj_hlrze_breeder_maxcrab", 5, FCVAR_ARCHIVE)
+VJ.AddConVar("vj_hlrze_breeder_maxcrab_baby", 28, FCVAR_ARCHIVE)
+
+if CLIENT then
+	hook.Add("PopulateToolMenu", "VJ_ADDTOMENU_HLRZE", function()
+		spawnmenu.AddToolMenuOption("DrVrej", "SNPC Configures", "HLR - Zombie Edition", "HLR - Zombie Edition", "", "", function(panel)
+			if !game.SinglePlayer() && !LocalPlayer():IsAdmin() then
+				panel:Help("#vjbase.menu.general.admin.not")
+				panel:Help("#vjbase.menu.general.admin.only")
+				return
+			end
+			panel:Help("#vjbase.menu.general.admin.only")
+			panel:AddControl("Button", {Text = "#vjbase.menu.general.reset.everything", Command = "vj_hlrze_latching 1\nvj_hlrze_breeder_maxcrab 5\nvj_hlrze_breeder_maxcrab_baby 28"})
+			panel:CheckBox("Enable Headcrab Latching", "vj_hlrze_latching")
+			panel:ControlHelp("Disabling VJ Base death animations will also disable headcrab latching!")
+			panel:NumSlider("Breeder Max Headcrabs", "vj_hlrze_breeder_maxcrab", 0, 100, 0)
+			panel:NumSlider("Breeder Max Baby Headcrabs", "vj_hlrze_breeder_maxcrab_baby", 0, 100, 0)
+		end)
+	end)
+end

@@ -55,9 +55,15 @@ ENT.BreederMaxBabycrabCount = 28 --Max amount of babycrabs we are holding
 ENT.ShownFirstHint_Headcrabs = false
 ENT.ShownFirstHint_Babycrabs = false
 
+local vj_hlrze_breeder_maxcrab = GetConVar("vj_hlrze_breeder_maxcrab")
+local vj_hlrze_breeder_maxcrab_baby = GetConVar("vj_hlrze_breeder_maxcrab_baby")
+---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:Init()
 	self.Breeder_NextPullHeadcrabTime = CurTime() + math.Rand(4,15) --The next time that we're allowed to pull out a headcrab from our chest
 	self.Breeder_NextBabycrabTime = CurTime() + math.Rand(10,30) --The next time we can engage baby crab spew mode
+	
+	self.BreederHeadcrabCount = vj_hlrze_breeder_maxcrab:GetInt()
+	self.BreederMaxBabycrabCount = vj_hlrze_breeder_maxcrab_baby:GetInt()
 end
 
 function ENT:OnInput(key, activator, caller, data)

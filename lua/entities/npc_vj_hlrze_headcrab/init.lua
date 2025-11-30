@@ -48,14 +48,17 @@ ENT.SoundTbl_Pain = {"vj_hlr/gsrc/npc/headcrab/hc_pain1.wav","vj_hlr/gsrc/npc/he
 ENT.SoundTbl_Death = {"vj_hlr/gsrc/npc/headcrab/hc_die1.wav","vj_hlr/gsrc/npc/headcrab/hc_die2.wav"}
 
 ENT.MainSoundPitch = 100
+
+local vj_npc_anim_death = GetConVar("vj_npc_anim_death")
+local vj_hlrze_latching = GetConVar("vj_hlrze_latching")
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:Init()
-	self:SetCollisionBounds(Vector(10,10,18), Vector(-10,-10,0))
-	-- If death animations are disabled, then the headcrab transformation system is too
-	if GetConVar("vj_npc_anim_death"):GetInt() == 1 then
-		self.Headcrabbed = false
-	else
+	self:SetCollisionBounds(Vector(10, 10, 18), Vector(-10, -10, 0))
+	-- Is latching enabled?
+	if vj_npc_anim_death:GetInt() != 1 or vj_hlrze_latching:GetInt() != 1 then
 		self.Headcrabbed = true
+	else
+		self.Headcrabbed = false
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
