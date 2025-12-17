@@ -16,14 +16,10 @@ ENT.AnimTbl_MeleeAttack = ACT_MELEE_ATTACK1
 ENT.HasRangeAttack = true
 ENT.RangeAttackProjectiles = "obj_vj_hlrze_babybarnacle"
 ENT.AnimTbl_RangeAttack = ACT_SPECIAL_ATTACK2
-ENT.RangeAttackAnimationDelay = 0
-ENT.RangeAttackAnimationFaceEnemy = true
-ENT.RangeAttackAnimationDecreaseLengthAmount = 0
 ENT.RangeAttackMinDistance = 200
 ENT.RangeAttackMaxDistance = 700
 ENT.TimeUntilRangeAttackProjectileRelease = false
 ENT.NextRangeAttackTime = VJ.SET(4, 10)
-ENT.NextAnyAttackTime_Range = false
 
 -- Sounds
 ENT.SoundTbl_Idle = {"vj_hlr/hlze/zombie/zombie_idle1.wav","vj_hlr/hlze/zombie/zombie_voice_idle1.wav","vj_hlr/hlze/zombie/zombie_voice_idle2.wav","vj_hlr/hlze/zombie/zombie_voice_idle3.wav","vj_hlr/hlze/zombie/zombie_voice_idle4.wav","vj_hlr/hlze/zombie/zombie_voice_idle5.wav","vj_hlr/hlze/zombie/zombie_voice_idle6.wav","vj_hlr/hlze/zombie/zombie_voice_idle7.wav","vj_hlr/hlze/zombie/zombie_voice_idle8.wav","vj_hlr/hlze/zombie/zombie_voice_idle9.wav","vj_hlr/hlze/zombie/zombie_voice_idle10.wav","vj_hlr/hlze/zombie/zombie_voice_idle11.wav","vj_hlr/hlze/zombie/zombie_voice_idle12.wav","vj_hlr/hlze/zombie/zombie_voice_idle13.wav","vj_hlr/hlze/zombie/zombie_voice_idle14.wav"}
@@ -39,6 +35,7 @@ ENT.Breeder_HeadcrabCount = 5 -- Total amount of headcrabs we have stored in our
 //ENT.Breeder_ShotBabycrabCount = 0
 ENT.Breeder_MaxBabycrabCount = 28 --M ax amount of babycrabs we are holding
 
+-- NPC Controller hints
 ENT.Breeder_NoHintHeadcrab = false
 ENT.Breeder_NoHintBabycrab = false
 
@@ -90,7 +87,8 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:ChangeBreederAttackMode(wepHoldType)
 	self.Breeder_AttackMode = wepHoldType
-	if wepHoldType == 0 then --normal zombie
+	-- Normal zombie
+	if wepHoldType == 0 then
 		self.AnimationTranslations[ACT_IDLE] = ACT_IDLE
 		self.AnimationTranslations[ACT_WALK] = ACT_WALK
 		self.AnimationTranslations[ACT_RUN] = ACT_RUN
@@ -98,15 +96,14 @@ function ENT:ChangeBreederAttackMode(wepHoldType)
 		self.AnimationTranslations[ACT_TURN_LEFT] = ACT_TURN_LEFT
 		self.CanEat = true
 		self.CanFlinch = true
-		self.MeleeAttackDistance = 50 -- Distance to try melee attacking
+		self.MeleeAttackDistance = 50
 		self.AnimationTranslations[ACT_MELEE_ATTACK1] = ACT_MELEE_ATTACK1
-		self.MeleeAttackAnimationFaceEnemy = true -- Should it face the enemy while playing the melee attack animation?
-		self.MeleeAttackAnimationAllowOtherTasks = false -- If set to true, the animation will not stop other tasks from playing, such as chasing | Useful for gesture attacks!
-		self.HasRangeAttack = true
-		self.NextMeleeAttackTime = 0 -- How much time until it can use a melee attack?
-		self.NextMeleeAttackTime_DoRand = false -- False = Don't use random time
+		self.MeleeAttackAnimationFaceEnemy = true
+		self.NextMeleeAttackTime = 0
 		self.HasMeleeAttackSounds = true
-	elseif wepHoldType == 1 then -- holding headcrab
+		self.HasRangeAttack = true
+	-- Holding headcrab
+	elseif wepHoldType == 1 then
 		self.AnimationTranslations[ACT_IDLE] = ACT_IDLE_ANGRY_SHOTGUN
 		self.AnimationTranslations[ACT_WALK] = ACT_WALK_AIM_SHOTGUN
 		self.AnimationTranslations[ACT_RUN] = ACT_WALK_AIM_SHOTGUN
@@ -115,16 +112,15 @@ function ENT:ChangeBreederAttackMode(wepHoldType)
 		self.MeleeAttackDistance = 300
 		self.AnimationTranslations[ACT_MELEE_ATTACK1] = ACT_SPECIAL_ATTACK1
 		self.MeleeAttackAnimationFaceEnemy = true
-		self.MeleeAttackAnimationAllowOtherTasks = false
 		self.NextMeleeAttackTime = 0
-		self.NextMeleeAttackTime_DoRand = false
 		self.HasMeleeAttackSounds = false
 		self.HasRangeAttack = false
 		if self.VJ_IsBeingControlled && self.Breeder_NoHintHeadcrab == false then
 			self.VJ_TheController:ChatPrint("ATTACK1: Drop Held Headcrab")
 			self.Breeder_NoHintHeadcrab = true
 		end
-	elseif wepHoldType == 2 then -- shooting out baby headcrabs
+	-- Shooting out baby headcrabs
+	elseif wepHoldType == 2 then
 		self.AnimationTranslations[ACT_IDLE] = ACT_IDLE_RIFLE
 		self.AnimationTranslations[ACT_WALK] = ACT_WALK_AIM_RIFLE
 		self.AnimationTranslations[ACT_RUN] = ACT_WALK_AIM_RIFLE
@@ -133,18 +129,18 @@ function ENT:ChangeBreederAttackMode(wepHoldType)
 		self.MeleeAttackDistance = 200
 		self.AnimationTranslations[ACT_MELEE_ATTACK1] = ACT_IDLE_RIFLE
 		self.MeleeAttackAnimationFaceEnemy = false
-		self.MeleeAttackAnimationAllowOtherTasks = true
-		self.NextMeleeAttackTime = 0.1
-		self.NextMeleeAttackTime_DoRand = 1.1 -- Picks a random number between the regular timer and this timer
+		self.NextMeleeAttackTime = VJ.SET(0.1, 1.1)
 		self.HasMeleeAttackSounds = false
 		self.HasRangeAttack = false
-		self.Breeder_BabycrabCount = math.random(1, 8) -- Randomise how many babycrabs we will shoot
+		self.Breeder_BabycrabCount = math.random(1, 8) -- Randomize how many babycrabs we will shoot
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
+local posZN10 = Vector(0, 0, -10)
+--
 function ENT:Breeder_Dropheadcrab_hand()
 	local headcrab = ents.Create("npc_vj_hlrze_headcrab")
-	headcrab:SetPos(self:GetAttachment(1).Pos + Vector(0,0,-10))
+	headcrab:SetPos(self:GetAttachment(1).Pos + posZN10)
 	headcrab:SetAngles(self:GetAngles())
 	headcrab:Spawn()
 
@@ -152,13 +148,15 @@ function ENT:Breeder_Dropheadcrab_hand()
 	self:ChangeBreederAttackMode(0)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
+local noCollideList = {"npc_vj_hlr1_gonarch", "npc_vj_hlr1_headcrab_baby", "npc_vj_hlrze_zbreeder", "npc_vj_hlrze_headcrab"}
+--
 function ENT:Breeder_Shootbabycrab_hand()
 	local headcrab = ents.Create("npc_vj_hlr1_headcrab_baby")
 	headcrab:SetPos(self:GetAttachment(1).Pos)
 	headcrab:SetAngles(self:GetAngles())
 	headcrab:SetOwner(self)
-	headcrab:SetLocalVelocity(Vector(self:GetForward()* math.Rand(10,100),self:GetUp()* math.Rand(0,5),self:GetRight()* math.Rand(-5,5))) -- fly in a random direction
-	headcrab.EntitiesToNoCollide = {"npc_vj_hlr1_gonarch","npc_vj_hlr1_headcrab_baby","npc_vj_hlrze_zbreeder","npc_vj_hlrze_headcrab"}
+	headcrab:SetLocalVelocity(Vector(self:GetForward() * math.Rand(10, 100), self:GetUp() * math.Rand(0, 5), self:GetRight() * math.Rand(-5, 5))) -- fly in a random direction
+	headcrab.EntitiesToNoCollide = noCollideList
 	headcrab:Spawn()
 
 	VJ.EmitSound(self, "vj_hlr/gsrc/wep/sporelauncher/splauncher_fire.wav", 100)
@@ -185,11 +183,11 @@ function ENT:RangeAttackProjPos(projectile)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:OnThink()
-	-- Players detaching headcrabs is now done here instead of in leap attack
-	if (self:Alive() && self.VJ_IsBeingControlled == true && self.VJ_TheController:KeyDown(IN_JUMP)) then
+	-- NPC Controller headcrab detaching
+	if self:Alive() && self.VJ_IsBeingControlled && self.VJ_TheController:KeyDown(IN_JUMP) then
 		self.AnimTbl_Death = ACT_DIE_HEADSHOT
 		self:DropHeadcrab()
-		self:TakeDamage(self:Health() + 100,self,self)
+		self:TakeDamage(self:Health() + 100, self, self)
 	end
 	
 	if self.Breeder_AttackMode == 0 && !self:IsBusy() && self.Breeder_HeadcrabCount > 0 && CurTime() > self.Breeder_NextPullHeadcrabTime && ( (self.VJ_IsBeingControlled == false && IsValid(self:GetEnemy()) && (self:GetPos():Distance(self:GetEnemy():GetPos()) < 500) ) or (IsValid(self.VJ_TheController) && self.VJ_TheController:KeyDown(IN_RELOAD))) then
@@ -274,7 +272,7 @@ function ENT:OnEat(status, statusInfo)
 		local food = self.EatingData.Target
 		local damage = 15 -- How much damage food will receive
 		local foodHP = food:Health() -- Food's health
-		self:SetHealth(math.Clamp(self:Health() + ((damage > foodHP and foodHP) or damage), self:Health(), (self:GetMaxHealth() * 2))) -- Give health to the NPC, allow an overload of up to 2x max health.
+		self:SetHealth(math.Clamp(self:Health() + ((damage > foodHP and foodHP) or damage), self:Health(), self:GetMaxHealth() * 2)) -- Give health to the NPC, allow an overload of up to 2x max health.
 		food:SetHealth(foodHP - damage) -- Decrease corpse health
 		-- Blood effects
 		local bloodData = food.BloodData
@@ -301,7 +299,7 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:OnDeath(dmginfo, hitgroup, status)
 	if status == "Init" then
-		if self.Breeder_AttackMode == 1 then -- if we're holding a headcrab, drop it
+		if self.Breeder_AttackMode == 1 then -- If we're holding a headcrab, drop it
 			self:Breeder_Dropheadcrab_hand()
 		end
 		self:SetBodygroup(2,0)

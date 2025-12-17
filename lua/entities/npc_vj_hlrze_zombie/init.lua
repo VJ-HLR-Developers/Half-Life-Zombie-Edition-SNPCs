@@ -74,6 +74,16 @@ function ENT:Controller_Initialize(ply, controlEnt)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
+function ENT:OnInput(key, activator, caller, data)
+	if key == "event_emit step" then
+		self:PlayFootstepSound()
+	elseif key == "event_mattack right" or key == "event_mattack left" or key == "event_mattack both" then
+		self:ExecuteMeleeAttack()
+	elseif key == "mattack right" or key == "mattack left" or key == "mattack both" then
+		self:ExecuteMeleeAttack()
+	end
+end
+---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:Cripple(enable)
 	//print("Cripple", enable)
 	if enable then
@@ -128,16 +138,6 @@ function ENT:OnThink()
 		self.AnimTbl_Death = ACT_DIE_HEADSHOT
 		self:DropHeadcrab()
 		self:TakeDamage(self:Health() + 100, self, self)
-	end
-end
----------------------------------------------------------------------------------------------------------------------------------------------
-function ENT:OnInput(key, activator, caller, data)
-	if key == "event_emit step" then
-		self:PlayFootstepSound()
-	elseif key == "event_mattack right" or key == "event_mattack left" or key == "event_mattack both" then
-		self:ExecuteMeleeAttack()
-	elseif key == "mattack right" or key == "mattack left" or key == "mattack both" then
-		self:ExecuteMeleeAttack()
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
