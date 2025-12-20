@@ -4,3 +4,5 @@ ENT.PrintName 		= "Zombie Crasher"
 ENT.Author 			= "DrVrej"
 ENT.Contact 		= "http://steamcommunity.com/groups/vrejgaming"
 ENT.Category		= "Half-Life: Resurgence"
+
+ENT.VJ_ID_Undead = true
