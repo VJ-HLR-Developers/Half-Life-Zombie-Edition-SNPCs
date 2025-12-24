@@ -134,7 +134,7 @@ function ENT:OnLeapAttackExecute(status, ent)
 			ent.AnimTbl_WeaponAttack = {"zombify_continues"} 
 			if ent:GetClass() == "npc_vj_hlrze_barney" then
 				ent:SetSkin(1)
-				ent:CreateGibEntity("prop_physics","models/vj_hlr/hlze/barney_helmet.mdl",{Pos=ent:GetPos() + ent:GetUp() * 50})
+				ent:CreateGibEntity("prop_physics","models/vj_hlr/hlze/barney_helmet.mdl",{Pos = ent:GetPos() + ent:GetUp() * 50})
 				ent:DeathWeaponDrop(fakedamage,1)
 				ent:SetBodygroup(1,2)
 				ent:SetBodygroup(2,2)
@@ -241,10 +241,10 @@ function ENT:HandleGibOnDeath(dmginfo, hitgroup)
 		util.Effect("StriderBlood",effectdata)
 	end
 	
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib5.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR1_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib7.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR1_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib9.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR1_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib10.mdl",{BloodType="Yellow",CollisionDecal="VJ_HLR1_Blood_Yellow",Pos=self:LocalToWorld(Vector(0,0,5))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib5.mdl",{BloodType = "Yellow",CollisionDecal = "VJ_HLR1_Blood_Yellow",Pos = self:LocalToWorld(Vector(0,0,5))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib7.mdl",{BloodType = "Yellow",CollisionDecal = "VJ_HLR1_Blood_Yellow",Pos = self:LocalToWorld(Vector(0,0,5))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib9.mdl",{BloodType = "Yellow",CollisionDecal = "VJ_HLR1_Blood_Yellow",Pos = self:LocalToWorld(Vector(0,0,5))})
+	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib10.mdl",{BloodType = "Yellow",CollisionDecal = "VJ_HLR1_Blood_Yellow",Pos = self:LocalToWorld(Vector(0,0,5))})
 	self:PlaySoundSystem("Gib", "vj_base/gib/splat.wav")
 	return true
 end
