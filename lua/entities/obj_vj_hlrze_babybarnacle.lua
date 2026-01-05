@@ -1,5 +1,5 @@
 /*--------------------------------------------------
-	*** Copyright (c) 2025 by The One Epicplayer, All rights reserved. ***
+	*** Copyright (c) 2026 by The One Epicplayer, All rights reserved. ***
 --------------------------------------------------*/
 AddCSLuaFile()
 
