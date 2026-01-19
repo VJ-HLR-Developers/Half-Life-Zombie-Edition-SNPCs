@@ -80,9 +80,11 @@ local defaultWeapons = {
 function ENT:Init()
 	//self:SetBodygroup(1, 0)
 	local wepOverride = GetConVar("gmod_npcweapon"):GetString()
+	self.CanChatMessage = false
 	if wepOverride != "none" then
 		timer.Simple(0.12, function()
 			if IsValid(self) then
+				self.CanChatMessage = true
 				local wep = self:GetActiveWeapon()
 				if !IsValid(wep) then
 					self:DoChangeWeapon(VJ.PICK(defaultWeapons))

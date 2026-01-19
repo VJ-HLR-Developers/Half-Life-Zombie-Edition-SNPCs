@@ -93,8 +93,10 @@ function ENT:Init()
 	end
 
 	local wepOverride = GetConVar("gmod_npcweapon"):GetString()
+	self.CanChatMessage = false
 	timer.Simple(0.12, function()
 		if IsValid(self) then
+			self.CanChatMessage = true
 			if wepOverride != "none" then
 				local wep = self:GetActiveWeapon()
 				if !IsValid(wep) then
@@ -118,9 +120,9 @@ function ENT:SetAnimationTranslations(wepHoldType)
 	if !IsValid(wep) then return end
 	
 	if wepHoldType == "smg" or wepHoldType == "ar2" then
-		if wep:GetClass() == "weapon_vj_hlrze_m16" then 
+		if wep:GetClass() == "weapon_vj_hlrze_m16" then
 			self:SetBodygroup(3, 3)
-			wep.NPC_ReloadSound = {"vj_hlr/gsrc/npc/hgrunt_alpha/gr_reload1.wav"}
+			wep.NPC_ReloadSound = "vj_hlr/gsrc/npc/hgrunt_alpha/gr_reload1.wav"
 		end
 		self.AnimationTranslations[ACT_IDLE] = ACT_IDLE_RPG
 		self.AnimationTranslations[ACT_RANGE_ATTACK1] = ACT_RANGE_ATTACK_SMG1
@@ -132,7 +134,7 @@ function ENT:SetAnimationTranslations(wepHoldType)
 		self.AnimationTranslations[ACT_TURN_RIGHT] = ACT_IDLE_RPG
 		self.AnimationTranslations[ACT_TURN_LEFT] = ACT_IDLE_RPG
 	elseif wepHoldType == "shotgun" then
-		if wep:GetClass() == "weapon_vj_hlrze_spas12" then 
+		if wep:GetClass() == "weapon_vj_hlrze_spas12" then
 			self:SetBodygroup(3, 2)
 		end
 		self.AnimationTranslations[ACT_IDLE] = ACT_SHOTGUN_IDLE4
