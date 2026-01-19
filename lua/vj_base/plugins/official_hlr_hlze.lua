@@ -3,7 +3,7 @@
 	No parts of this code or any of its contents may be reproduced, copied, modified or adapted,
 	without the prior written consent of the author, unless otherwise indicated for stand-alone materials.
 --------------------------------------------------*/
-VJ.AddPlugin("Half-Life Resurgence: Zombie Edition", "NPC", "2.2.0")
+VJ.AddPlugin("Half-Life Resurgence: Zombie Edition", "NPC", "2.2.1")
 
 local spawnCategory = "HL Resurgence: HLZE"
 VJ.AddCategoryInfo(spawnCategory, {Icon = "vj_hl/icons/hlze.png"})
