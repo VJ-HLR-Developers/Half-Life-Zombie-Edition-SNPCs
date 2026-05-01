@@ -36,6 +36,9 @@ ENT.LeapAttackExtraTimers = {0.6, 0.8, 1, 1.2, 1.4}
 ENT.NextAnyAttackTime_Leap = 3
 ENT.LeapAttackStopOnHit = true
 
+ENT.LeapAttackVelocityForward = 100 -- Fixes player-possessed NPCs from having insane leap velocity when aiming far away - epicplayer
+ENT.LeapAttackVelocityUp = 210
+
 ENT.HasDeathAnimation = true
 ENT.AnimTbl_Death = ACT_DIESIMPLE
 
@@ -90,6 +93,16 @@ local infectionClasses = {
 	npc_vj_hlrze_scientist = true,
 	npc_vj_hlrze_barney = true,
 	npc_vj_hlrze_hgrunt = true,
+	npc_vj_hlr1_assassin_female = true,
+	npc_vj_hlrof_assassin_male = true,
+	npc_vj_hlr1_hgrunt = true,
+	npc_vj_hlrof_hgrunt = true,
+	npc_vj_hlrof_hgrunt_eng = true,
+	npc_vj_hlrof_hgrunt_med = true,
+	npc_vj_hlr1_securityguard = true,
+	npc_vj_hlrof_otis = true,
+	--npc_vj_hlr1_scientist = true,
+	--npc_vj_hlrbs_rosenberg = true,
 }
 --
 function ENT:OnLeapAttackExecute(status, ent)
@@ -112,7 +125,7 @@ function ENT:OnLeapAttackExecute(status, ent)
 					return orgThink(self)
 				end
 				
-				self.VJ_TheController:ChatPrint("Transforming ent in 30 seconds...")
+				self.VJ_TheController:ChatPrint("Transforming victim in 30 seconds...")
 				
 				playercontroller:SetControlledNPC(ent) -- Control the ent
 				playercontroller:StartControlling()
@@ -121,6 +134,7 @@ function ENT:OnLeapAttackExecute(status, ent)
 			SafeRemoveEntity(self) --Remove headcrab
 
 			local zClass = "npc_vj_hlrze_zombie" --Fallback class for the zombie NPC we will spawn
+			local zGetUpAnim = "getup" --Animation zombie uses to get up once fully transformed
 			local zOffset = 50
 			local zAnimT = 3.01 --Duration of the "I got crabbed!" animation
 			local zPos = ent:GetPos()
@@ -155,6 +169,30 @@ function ENT:OnLeapAttackExecute(status, ent)
 					zClass = "npc_vj_hlrze_zsoldier_grenade"
 				else ent:SetBodygroup(1,4) zClass = "npc_vj_hlrze_zsoldier"
 				end
+			elseif ent:GetClass() == "npc_vj_hlr1_assassin_female" then
+				zClass = "npc_vj_hlrze_zfassassin"
+				zOffset = 0
+				self:CustomHeadcrabTransformEffect(ent, ACT_DIESIMPLE, "models/vj_hlr/hlze/fastzombie.mdl", "Bone10")
+
+			elseif ent:GetClass() == "npc_vj_hlrof_assassin_male" then
+				zClass = "npc_vj_hlrze_zmassassin"
+				zOffset = 0
+				self:CustomHeadcrabTransformEffect(ent, ACT_DIEFORWARD, "models/vj_hlr/hlze/zombie.mdl", "")
+			elseif (ent:GetClass() == "npc_vj_hlr1_hgrunt" or ent:GetClass() == "npc_vj_hlrof_hgrunt" or ent:GetClass() == "npc_vj_hlrof_hgrunt_eng" or ent:GetClass() == "npc_vj_hlrof_hgrunt_med") then
+				zClass = "npc_vj_hlrof_zombie_soldier"
+				zOffset = 20
+				zGetUpAnim = "eatbodystand"
+				self:CustomHeadcrabTransformEffect(ent, ACT_DIEFORWARD, "models/vj_hlr/hlze/zombie.mdl", "")
+			elseif (ent:GetClass() == "npc_vj_hlr1_securityguard" or ent:GetClass() == "npc_vj_hlrof_otis") then
+				zClass = "npc_vj_hlrof_zombie_sec"
+				zOffset = 10
+				zGetUpAnim = "eatbodystand"
+				self:CustomHeadcrabTransformEffect(ent, {ACT_DIEFORWARD,ACT_DIE_GUTSHOT}, "models/vj_hlr/hlze/zombie.mdl", "")
+			elseif (ent:GetClass() == "npc_vj_hlr1_scientist" or ent:GetClass() == "npc_vj_hlrbs_rosenberg") then --Currently unused
+				zClass = "npc_vj_hlr1_zombie"
+				zOffset = 10
+				zGetUpAnim = "eatbodystand"
+				self:CustomHeadcrabTransformEffect(ent, ACT_DIEFORWARD, "models/vj_hlr/hlze/zombie.mdl", "Bip02 Head")
 			end
 
 			timer.Simple(1,function() -- random extra check
@@ -191,7 +229,7 @@ function ENT:OnLeapAttackExecute(status, ent)
 					zombie:SetColor(ent:GetColor())
 					zombie:SetMaterial(ent:GetMaterial())
 					zombie:Spawn()
-					zombie:PlayAnim("getup",true,false,false)
+					zombie:PlayAnim(zGetUpAnim,true,false,false)
 					zombie:AddEffects(32) -- hide zombie
 					if IsValid(ent) then
 						undo.ReplaceEntity(ent,zombie)
@@ -207,7 +245,7 @@ function ENT:OnLeapAttackExecute(status, ent)
 							
 							SafeRemoveEntity(ent)
 							zombie:SetPos(zPos)
-							zombie:PlayAnim("getup",true,false,false)
+							zombie:PlayAnim(zGetUpAnim,true,false,false)
 							zombie:RemoveEffects(32)
 						end
 					end)
@@ -253,4 +291,37 @@ local gibs1 = {"models/vj_hlr/gibs/agib1.mdl", "models/vj_hlr/gibs/agib2.mdl", "
 --
 function ENT:OnCreateDeathCorpse(dmginfo, hitgroup, corpse)
 	VJ.HLR_ApplyCorpseSystem(self, corpse, gibs1)
+end
+
+--Sets custom transformation parameters for non-standard headcrab victims
+function ENT:CustomHeadcrabTransformEffect(ent, deathanim, headcrabmodelname, extrabonename)
+	ent:PlayAnim(deathanim,true,false,false) --Death anim override
+	local headcrabmodel = ents.Create("cycler") --Headcrab zombie model to bonemerge onto the NPC, to give the effect that it's been 'crabbed
+	local headbone = ent:LookupBone( "Bip01 Head" ) --Hide the head bone
+	local extrabone = ent:LookupBone( extrabonename ) --Hide any other bones on the head that we don't want
+	headcrabmodel:SetModel(headcrabmodelname)
+	headcrabmodel:SetParent(ent)
+	headcrabmodel:AddEffects(EF_BONEMERGE) --Bonemerge zombie model to NPC, might need an alternate solution for HL1 scientists since they use Bip02
+	if headcrabmodelname == "models/vj_hlr/hlze/fastzombie.mdl" then --Horrible code but it works, don't look here!
+	headcrabmodel:SetSubMaterial(0,"models/hl_resurgence/hlze/scientist/scientist_glasschrome")
+	headcrabmodel:SetSubMaterial(1,"models/hl_resurgence/hlze/scientist/scientist_glasschrome")
+	headcrabmodel:SetSubMaterial(3,"models/hl_resurgence/hlze/scientist/scientist_glasschrome")
+	headcrabmodel:SetSubMaterial(4,"models/hl_resurgence/hlze/scientist/scientist_glasschrome")
+	headcrabmodel:SetSubMaterial(5,"models/hl_resurgence/hlze/scientist/scientist_glasschrome")	
+	elseif headcrabmodelname == "models/vj_hlr/hlze/zombie.mdl" then
+	headcrabmodel:SetSubMaterial(0,"models/hl_resurgence/hlze/scientist/scientist_glasschrome")
+	headcrabmodel:SetSubMaterial(1,"models/hl_resurgence/hlze/scientist/scientist_glasschrome")
+	headcrabmodel:SetSubMaterial(2,"models/hl_resurgence/hlze/scientist/scientist_glasschrome")
+	headcrabmodel:SetSubMaterial(3,"models/hl_resurgence/hlze/scientist/scientist_glasschrome")
+	headcrabmodel:SetSubMaterial(4,"models/hl_resurgence/hlze/scientist/scientist_glasschrome")
+	headcrabmodel:SetSubMaterial(5,"models/hl_resurgence/hlze/scientist/scientist_glasschrome")	
+	end
+	headcrabmodel:Spawn()		
+	if headbone then
+		ent:ManipulateBoneScale( headbone, Vector(0,0,0) )
+		end
+	if extrabone then
+		ent:ManipulateBoneScale( extrabone, Vector(0,0,0) )
+	end
+
 end

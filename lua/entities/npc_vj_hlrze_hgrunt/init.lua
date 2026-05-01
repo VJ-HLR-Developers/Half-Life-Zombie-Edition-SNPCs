@@ -34,6 +34,7 @@ ENT.AnimTbl_GrenadeAttack = ACT_SPECIAL_ATTACK2
 ENT.GrenadeAttackAttachment = "lhand"
 ENT.GrenadeAttackThrowTime = 1.3
 ENT.GrenadeAttackChance = 2
+ENT.CanRedirectGrenades = false
 
 -- Weapon
 ENT.Weapon_IgnoreSpawnMenu = true
