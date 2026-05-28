@@ -73,8 +73,7 @@ function ENT:OnInput(key, activator, caller, data)
 	//print(key)
 	if key == "event_emit step" then 
 		self:PlayFootstepSound()
-	end
-	if key == "event_mattack right" or key == "event_mattack left" or key == "event_mattack both" then
+	elseif key == "event_mattack right" or key == "event_mattack left" or key == "event_mattack both" then
 		self:ExecuteMeleeAttack()
 	end
 end
