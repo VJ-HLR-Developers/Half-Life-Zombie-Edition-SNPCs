@@ -3,13 +3,13 @@
 --------------------------------------------------*/
 AddCSLuaFile()
 
-ENT.Type 			= "anim"
-ENT.Base 			= "obj_vj_hlr1_toxicspit"
-ENT.PrintName		= "Baby Barnacle"
-ENT.Author 			= "The One Epicplayer"
-ENT.Contact 		= "http://steamcommunity.com/groups/vrejgaming"
-ENT.Information		= "Projectile, usually used for NPCs & Weapons"
-ENT.Category		= "Half-Life Resurgence"
+ENT.Type = "anim"
+ENT.Base = "obj_vj_hlr1_toxicspit"
+ENT.PrintName = "Baby Barnacle"
+ENT.Author = "The One Epicplayer"
+ENT.Contact = "http://steamcommunity.com/groups/vrejgaming"
+ENT.Information = "Projectile, usually used for NPCs & Weapons"
+ENT.Category = "Half-Life Resurgence"
 
 if CLIENT then
 	VJ.AddKillIcon("obj_vj_hlrze_babybarnacle", ENT.PrintName, VJ.KILLICON_PROJECTILE)

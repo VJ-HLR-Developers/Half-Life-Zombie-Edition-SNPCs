@@ -1,11 +1,11 @@
 AddCSLuaFile()
 
-ENT.Base 			= "obj_vj_spawner_base"
-ENT.Type 			= "anim"
-ENT.PrintName 		= "Random Zombie (Military)"
-ENT.Author 			= "The One Epicplayer"
-ENT.Contact 		= "http://steamcommunity.com/groups/vrejgaming"
-ENT.Category		= "Half-Life Resurgence"
+ENT.Base = "obj_vj_spawner_base"
+ENT.Type = "anim"
+ENT.PrintName = "Random Zombie (Military)"
+ENT.Author = "The One Epicplayer"
+ENT.Contact = "http://steamcommunity.com/groups/vrejgaming"
+ENT.Category = "Half-Life Resurgence"
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 if !SERVER then return end
 
