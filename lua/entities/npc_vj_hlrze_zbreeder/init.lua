@@ -22,10 +22,10 @@ ENT.TimeUntilRangeAttackProjectileRelease = false
 ENT.NextRangeAttackTime = VJ.SET(4, 10)
 
 -- Sounds
-ENT.SoundTbl_Idle = {"vj_hlr/hlze/zombie/zombie_idle1.wav","vj_hlr/hlze/zombie/zombie_voice_idle1.wav","vj_hlr/hlze/zombie/zombie_voice_idle2.wav","vj_hlr/hlze/zombie/zombie_voice_idle3.wav","vj_hlr/hlze/zombie/zombie_voice_idle4.wav","vj_hlr/hlze/zombie/zombie_voice_idle5.wav","vj_hlr/hlze/zombie/zombie_voice_idle6.wav","vj_hlr/hlze/zombie/zombie_voice_idle7.wav","vj_hlr/hlze/zombie/zombie_voice_idle8.wav","vj_hlr/hlze/zombie/zombie_voice_idle9.wav","vj_hlr/hlze/zombie/zombie_voice_idle10.wav","vj_hlr/hlze/zombie/zombie_voice_idle11.wav","vj_hlr/hlze/zombie/zombie_voice_idle12.wav","vj_hlr/hlze/zombie/zombie_voice_idle13.wav","vj_hlr/hlze/zombie/zombie_voice_idle14.wav"}
-ENT.SoundTbl_Alert = {"vj_hlr/hlze/zombie/zombie_alert1.wav","vj_hlr/hlze/zombie/zombie_pain1.wav","vj_hlr/hlze/zombie/zombie_pain4.wav"}
-ENT.SoundTbl_Pain = {"vj_hlr/hlze/zombie/zombie_pain2.wav","vj_hlr/hlze/zombie/zombie_pain3.wav","vj_hlr/hlze/zombie/zombie_pain4.wav","vj_hlr/hlze/zombie/zombie_pain5.wav","vj_hlr/hlze/zombie/zombie_pain6.wav"}
-ENT.SoundTbl_Death = {"vj_hlr/gsrc/npc/zombie/zo_pain1.wav","vj_hlr/gsrc/npc/zombie/zo_pain2.wav"}
+ENT.SoundTbl_Idle = {"vj_hlr/hlze/zombie/zombie_idle1.wav", "vj_hlr/hlze/zombie/zombie_voice_idle1.wav", "vj_hlr/hlze/zombie/zombie_voice_idle2.wav", "vj_hlr/hlze/zombie/zombie_voice_idle3.wav", "vj_hlr/hlze/zombie/zombie_voice_idle4.wav", "vj_hlr/hlze/zombie/zombie_voice_idle5.wav", "vj_hlr/hlze/zombie/zombie_voice_idle6.wav", "vj_hlr/hlze/zombie/zombie_voice_idle7.wav", "vj_hlr/hlze/zombie/zombie_voice_idle8.wav", "vj_hlr/hlze/zombie/zombie_voice_idle9.wav", "vj_hlr/hlze/zombie/zombie_voice_idle10.wav", "vj_hlr/hlze/zombie/zombie_voice_idle11.wav", "vj_hlr/hlze/zombie/zombie_voice_idle12.wav", "vj_hlr/hlze/zombie/zombie_voice_idle13.wav", "vj_hlr/hlze/zombie/zombie_voice_idle14.wav"}
+ENT.SoundTbl_Alert = {"vj_hlr/hlze/zombie/zombie_alert1.wav", "vj_hlr/hlze/zombie/zombie_pain1.wav", "vj_hlr/hlze/zombie/zombie_pain4.wav"}
+ENT.SoundTbl_Pain = {"vj_hlr/hlze/zombie/zombie_pain2.wav", "vj_hlr/hlze/zombie/zombie_pain3.wav", "vj_hlr/hlze/zombie/zombie_pain4.wav", "vj_hlr/hlze/zombie/zombie_pain5.wav", "vj_hlr/hlze/zombie/zombie_pain6.wav"}
+ENT.SoundTbl_Death = {"vj_hlr/gsrc/npc/zombie/zo_pain1.wav", "vj_hlr/gsrc/npc/zombie/zo_pain2.wav"}
 ENT.SoundTbl_CallForHelp = "vj_hlr/hlze/zombie/zombie_alert2.wav"
 
 -- Custom
@@ -67,7 +67,7 @@ function ENT:OnInput(key, activator, caller, data)
 		self:ChangeBreederAttackMode(1) -- Switch to headcrab attack mode
 	elseif key == "event_dropcrab" then
 		self:Breeder_Dropheadcrab_hand()
-		if self.VJ_IsBeingControlled == true then
+		if self.VJ_IsBeingControlled then
 			self.Breeder_NextPullHeadcrabTime = CurTime() + 2 --Players get a faster cooldown than NPCs
 		else
 			self.Breeder_NextPullHeadcrabTime = CurTime() + math.Rand(10, 30)
@@ -78,7 +78,7 @@ function ENT:OnInput(key, activator, caller, data)
 		timer.Simple(2, function() if IsValid(self) then self:SetBodygroup(2, 0) self.CanFlinch = true end end)
 	elseif key == "event_throwbarnacle" then
 		self:ExecuteRangeAttack()
-		self:SetBodygroup(2,0) --hide barnacle bodygroup
+		self:SetBodygroup(2, 0) --hide barnacle bodygroup
 		self.CanFlinch = true
 	elseif key == "event_shootbabycrab" then
 		self:Breeder_Shootbabycrab_hand()
@@ -115,7 +115,7 @@ function ENT:ChangeBreederAttackMode(wepHoldType)
 		self.NextMeleeAttackTime = 0
 		self.HasMeleeAttackSounds = false
 		self.HasRangeAttack = false
-		if self.VJ_IsBeingControlled && self.Breeder_NoHintHeadcrab == false then
+		if self.VJ_IsBeingControlled && !self.Breeder_NoHintHeadcrab then
 			self.VJ_TheController:ChatPrint("ATTACK1: Drop Held Headcrab")
 			self.Breeder_NoHintHeadcrab = true
 		end
@@ -144,7 +144,7 @@ function ENT:Breeder_Dropheadcrab_hand()
 	headcrab:SetAngles(self:GetAngles())
 	headcrab:Spawn()
 
-	self:SetBodygroup(2,0)
+	self:SetBodygroup(2, 0)
 	self:ChangeBreederAttackMode(0)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -189,54 +189,54 @@ function ENT:OnThink()
 		self:DropHeadcrab()
 		self:TakeDamage(self:Health() + 100, self, self)
 	end
-	
-	if self.Breeder_AttackMode == 0 && !self:IsBusy() && self.Breeder_HeadcrabCount > 0 && CurTime() > self.Breeder_NextPullHeadcrabTime && ( (self.VJ_IsBeingControlled == false && IsValid(self:GetEnemy()) && (self:GetPos():Distance(self:GetEnemy():GetPos()) < 500) ) or (IsValid(self.VJ_TheController) && self.VJ_TheController:KeyDown(IN_RELOAD))) then
-		--make sure we're available to pull out a crab, or if the player controller pressed R
+
+	if self.Breeder_AttackMode == 0 && !self:IsBusy() && self.Breeder_HeadcrabCount > 0 && CurTime() > self.Breeder_NextPullHeadcrabTime && ((!self.VJ_IsBeingControlled && IsValid(self:GetEnemy()) && (self:GetPos():Distance(self:GetEnemy():GetPos()) < 500) ) or (IsValid(self.VJ_TheController) && self.VJ_TheController:KeyDown(IN_RELOAD))) then
+		-- Make sure we're available to pull out a crab, or if the player controller pressed R
 		self:Breeder_PulloutHeadcrab()
 	end
-	
-	if self.Breeder_AttackMode == 0 && !self:IsBusy(Activities) && self.Breeder_BabycrabCount == 0 && self.Breeder_MaxBabycrabCount > 0 && CurTime() > self.Breeder_NextBabycrabTime && ( (self.VJ_IsBeingControlled == false && IsValid(self:GetEnemy()) && (self:GetPos():Distance(self:GetEnemy():GetPos()) < 950) ) or (IsValid(self.VJ_TheController) && self.VJ_TheController:KeyDown(IN_DUCK))) then
-		--begin the spewing when valid, or if the player controller pressed crouch
+
+	if self.Breeder_AttackMode == 0 && !self:IsBusy(Activities) && self.Breeder_BabycrabCount == 0 && self.Breeder_MaxBabycrabCount > 0 && CurTime() > self.Breeder_NextBabycrabTime && ((!self.VJ_IsBeingControlled && IsValid(self:GetEnemy()) && (self:GetPos():Distance(self:GetEnemy():GetPos()) < 950) ) or (IsValid(self.VJ_TheController) && self.VJ_TheController:KeyDown(IN_DUCK))) then
+		-- Begin the spewing when valid, or if the player controller pressed crouch
 		self:Breeder_BeginCrabSpew()
 	end
-	
+
 	-- Active spewing code
 	if self.Breeder_AttackMode == 2 && self.Breeder_BabycrabCount > 0 && CurTime() > self.Breeder_NextBabycrabTime then
 		--self:PlayAnim(ACT_GESTURE_RANGE_ATTACK_AR2, false, 0, false, 0, {AlwaysUseGesture = true})
 		--self:PlayAnim("vjges_babycrab_shoot_gesture", false, 0, false, 0)
-		--self:AddGesture(ACT_GESTURE_RANGE_ATTACK_AR2, true )
-		
+		--self:AddGesture(ACT_GESTURE_RANGE_ATTACK_AR2, true)
+
 		--self.Breeder_ShotBabycrabCount = self.Breeder_ShotBabycrabCount + 1
 		self.Breeder_MaxBabycrabCount = self.Breeder_MaxBabycrabCount - 1
-		
+
 		self:AddLayeredSequence(self:LookupSequence("babycrab_shoot_gesture"), self.Breeder_BabycrabCount + 1)
 		VJ.EmitSound(self, "vj_hlr/gsrc/npc/gonarch/gon_birth1.wav", 50)
-		
-		--self:SetLayerSequence( self.Breeder_BabycrabCount + 1, self:LookupSequence("babycrab_shoot_gesture") )
-		--self:SetLayerPriority( self.Breeder_BabycrabCount + 1, self.Breeder_BabycrabCount )
-		--self:SetLayerPriority( self.Breeder_BabycrabCount + 1, 1 )
-		
+
+		--self:SetLayerSequence(self.Breeder_BabycrabCount + 1, self:LookupSequence("babycrab_shoot_gesture"))
+		--self:SetLayerPriority(self.Breeder_BabycrabCount + 1, self.Breeder_BabycrabCount)
+		--self:SetLayerPriority(self.Breeder_BabycrabCount + 1, 1)
+
 		if self.Breeder_BabycrabCount > 1 then nextcrabdelay = math.Rand(0.1, 1.1) else nextcrabdelay = 1.2 end
-		self.Breeder_NextBabycrabTime = CurTime() + nextcrabdelay --time until shooting next babycrab
-		self.Breeder_BabycrabCount = self.Breeder_BabycrabCount - 1 --decrease crab from total burst max
-		
+		self.Breeder_NextBabycrabTime = CurTime() + nextcrabdelay -- Time until shooting next babycrab
+		self.Breeder_BabycrabCount = self.Breeder_BabycrabCount - 1 -- Decrease crab from total burst max
+
 		--print("headcrabs left: ", self.Breeder_BabycrabCount, "delay: ", nextcrabdelay)
 
 	-- Attack has ended, stop spewing
 	elseif self.Breeder_AttackMode == 2 && self.Breeder_BabycrabCount <= 0 && CurTime() > self.Breeder_NextBabycrabTime then
 		self:StopMoving()
-		self:RemoveAllGestures() --This fixes baby crab shooting from breaking after being called 14 times
-		self:PlayAnim(ACT_RELOAD_SMG1_LOW,true,false,false) --hand lower anim
+		self:RemoveAllGestures() -- This fixes baby crab shooting from breaking after being called 14 times
+		self:PlayAnim(ACT_RELOAD_SMG1_LOW, true, false, false) -- Hand lower anim
 		--self.Breeder_ShotBabycrabCount = 0
 		self:ChangeBreederAttackMode(0)
-		if self.VJ_IsBeingControlled == true then
+		if self.VJ_IsBeingControlled then
 			self.Breeder_NextBabycrabTime = CurTime() + 5
 		else
-			self.Breeder_NextBabycrabTime = CurTime() + math.Rand(15, 40) --big cooldown
+			self.Breeder_NextBabycrabTime = CurTime() + math.Rand(15, 40) -- Big cooldown
 		end
 	end
-	
-	if self.VJ_IsBeingControlled && self.Breeder_AttackMode == 0 && self.VJ_TheController:KeyDown(IN_RELOAD) && self.Breeder_HeadcrabCount <= 0 && CurTime() > self.Breeder_NextPullHeadcrabTime then 
+
+	if self.VJ_IsBeingControlled && self.Breeder_AttackMode == 0 && self.VJ_TheController:KeyDown(IN_RELOAD) && self.Breeder_HeadcrabCount <= 0 && CurTime() > self.Breeder_NextPullHeadcrabTime then
 		self.VJ_TheController:ChatPrint("Out of Headcrabs!")
 		self.Breeder_NextPullHeadcrabTime = CurTime() + 2
 	end
@@ -259,7 +259,7 @@ local vecZ50 = Vector(0, 0, -50)
 --
 function ENT:OnEat(status, statusInfo)
 	if status == "CheckFood" then
-		if self.Breeder_AttackMode == 1 then -- if we're hungry, drop the crab we're holding
+		if self.Breeder_AttackMode == 1 then -- If we're hungry, drop the crab we're holding
 			self:PlayAnim(ACT_SPECIAL_ATTACK1, true, false, false)
 		end
 		return (statusInfo.owner.BloodData && statusInfo.owner.BloodData.Color == VJ.BLOOD_COLOR_RED && self.Breeder_AttackMode == 0) -- only start eating if the corpse is a human, and we're not at full health - epicplayer
@@ -267,7 +267,7 @@ function ENT:OnEat(status, statusInfo)
 		self.AnimationTranslations[ACT_IDLE] = ACT_GESTURE_RANGE_ATTACK1
 		return select(2, self:PlayAnim(ACT_ARM, true, false))
 	elseif status == "Eat" then
-		VJ.EmitSound(self, "vj_hlr/gsrc/npc/bullchicken/bc_bite"..math.random(1, 3)..".wav", 100) --more accurate to the mod - epicplayer
+		VJ.EmitSound(self, "vj_hlr/gsrc/npc/bullchicken/bc_bite"..math.random(1, 3)..".wav", 100) -- More accurate to the mod - epicplayer
 		-- Health changes
 		local food = self.EatingData.Target
 		local damage = 15 -- How much damage food will receive
@@ -299,10 +299,15 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:OnDeath(dmginfo, hitgroup, status)
 	if status == "Init" then
+		if GetConVar("vj_hlr1_corpse_static"):GetInt() == 1 && VJ_CVAR_AI_ENABLED && self.HasDeathAnimation then
+			self.DeathAnimationDecreaseLengthAmount = -1
+			self.DeathCorpseEntityClass = "prop_vj_animatable"
+			VJ.HLR_StaticCorpseCheck(self)
+		end
 		if self.Breeder_AttackMode == 1 then -- If we're holding a headcrab, drop it
 			self:Breeder_Dropheadcrab_hand()
 		end
-		self:SetBodygroup(2,0)
+		self:SetBodygroup(2, 0)
 
 		if hitgroup == HITGROUP_HEAD then
 			self.AnimTbl_Death = ACT_DIE_HEADSHOT

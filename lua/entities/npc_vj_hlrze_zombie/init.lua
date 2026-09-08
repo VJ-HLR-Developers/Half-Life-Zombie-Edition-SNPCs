@@ -16,8 +16,8 @@ ENT.ControllerParams = {
 ---------------------------------------------------------------------------------------------------------------------------------------------
 ENT.VJ_NPC_Class = {"CLASS_ZOMBIE"}
 ENT.BloodColor = VJ.BLOOD_COLOR_YELLOW
-ENT.BloodParticle = {"vj_hlr_blood_yellow"}
-ENT.BloodDecal = {"VJ_HLR1_Blood_Yellow"}
+ENT.BloodParticle = "vj_hlr_blood_yellow"
+ENT.BloodDecal = "VJ_HLR1_Blood_Yellow"
 ENT.HasBloodPool = false
 ENT.BringFriendsOnDeath = false
 ENT.CallForHelp = false
@@ -33,10 +33,10 @@ ENT.MeleeAttackDamageDistance = 80
 ENT.CanFlinch = true
 ENT.AnimTbl_Flinch = "vjseq_flinch"
 ENT.FlinchHitGroupMap = {
-	{HitGroup={HITGROUP_LEFTARM}, Animation={ACT_FLINCH_LEFTARM}},
-	{HitGroup={HITGROUP_LEFTLEG}, Animation={ACT_FLINCH_LEFTLEG}},
-	{HitGroup={HITGROUP_RIGHTARM}, Animation={ACT_FLINCH_RIGHTARM}},
-	{HitGroup={HITGROUP_RIGHTLEG}, Animation={ACT_FLINCH_RIGHTLEG}}
+	{HitGroup = HITGROUP_LEFTARM, Animation = ACT_FLINCH_LEFTARM},
+	{HitGroup = HITGROUP_LEFTLEG, Animation = ACT_FLINCH_LEFTLEG},
+	{HitGroup = HITGROUP_RIGHTARM, Animation = ACT_FLINCH_RIGHTARM},
+	{HitGroup = HITGROUP_RIGHTLEG, Animation = ACT_FLINCH_RIGHTLEG}
 }
 
 ENT.HasExtraMeleeAttackSounds = true
@@ -44,14 +44,14 @@ ENT.DisableFootStepSoundTimer = true
 ENT.HasDeathAnimation = true
 
 -- Sounds
-ENT.SoundTbl_FootStep = {"vj_hlr/gsrc/pl_step1.wav","vj_hlr/gsrc/pl_step2.wav","vj_hlr/gsrc/pl_step3.wav","vj_hlr/gsrc/pl_step4.wav"}
-ENT.SoundTbl_Idle = {"vj_hlr/gsrc/npc/zombie/zo_idle1.wav","vj_hlr/gsrc/npc/zombie/zo_idle2.wav","vj_hlr/gsrc/npc/zombie/zo_idle3.wav","vj_hlr/gsrc/npc/zombie/zo_idle4.wav"}
-ENT.SoundTbl_Alert = {"vj_hlr/gsrc/npc/zombie/zo_alert10.wav","vj_hlr/gsrc/npc/zombie/zo_alert20.wav","vj_hlr/gsrc/npc/zombie/zo_alert30.wav"}
-ENT.SoundTbl_BeforeMeleeAttack = {"vj_hlr/gsrc/npc/zombie/zo_attack1.wav","vj_hlr/gsrc/npc/zombie/zo_attack2.wav"}
-ENT.SoundTbl_MeleeAttackExtra = {"vj_hlr/gsrc/npc/zombie/claw_strike1.wav","vj_hlr/gsrc/npc/zombie/claw_strike2.wav","vj_hlr/gsrc/npc/zombie/claw_strike3.wav"}
-ENT.SoundTbl_MeleeAttackMiss = {"vj_hlr/gsrc/npc/zombie/claw_miss1.wav","vj_hlr/gsrc/npc/zombie/claw_miss2.wav"}
-ENT.SoundTbl_Pain = {"vj_hlr/gsrc/npc/zombie/zo_pain1.wav","vj_hlr/gsrc/npc/zombie/zo_pain2.wav"}
-ENT.SoundTbl_Death = {"vj_hlr/gsrc/npc/zombie/zo_pain1.wav","vj_hlr/gsrc/npc/zombie/zo_pain2.wav"}
+ENT.SoundTbl_FootStep = {"vj_hlr/gsrc/pl_step1.wav", "vj_hlr/gsrc/pl_step2.wav", "vj_hlr/gsrc/pl_step3.wav", "vj_hlr/gsrc/pl_step4.wav"}
+ENT.SoundTbl_Idle = {"vj_hlr/gsrc/npc/zombie/zo_idle1.wav", "vj_hlr/gsrc/npc/zombie/zo_idle2.wav", "vj_hlr/gsrc/npc/zombie/zo_idle3.wav", "vj_hlr/gsrc/npc/zombie/zo_idle4.wav"}
+ENT.SoundTbl_Alert = {"vj_hlr/gsrc/npc/zombie/zo_alert10.wav", "vj_hlr/gsrc/npc/zombie/zo_alert20.wav", "vj_hlr/gsrc/npc/zombie/zo_alert30.wav"}
+ENT.SoundTbl_BeforeMeleeAttack = {"vj_hlr/gsrc/npc/zombie/zo_attack1.wav", "vj_hlr/gsrc/npc/zombie/zo_attack2.wav"}
+ENT.SoundTbl_MeleeAttackExtra = {"vj_hlr/gsrc/npc/zombie/claw_strike1.wav", "vj_hlr/gsrc/npc/zombie/claw_strike2.wav", "vj_hlr/gsrc/npc/zombie/claw_strike3.wav"}
+ENT.SoundTbl_MeleeAttackMiss = {"vj_hlr/gsrc/npc/zombie/claw_miss1.wav", "vj_hlr/gsrc/npc/zombie/claw_miss2.wav"}
+ENT.SoundTbl_Pain = {"vj_hlr/gsrc/npc/zombie/zo_pain1.wav", "vj_hlr/gsrc/npc/zombie/zo_pain2.wav"}
+ENT.SoundTbl_Death = {"vj_hlr/gsrc/npc/zombie/zo_pain1.wav", "vj_hlr/gsrc/npc/zombie/zo_pain2.wav"}
 
 ENT.MainSoundPitch = 100
 
@@ -90,8 +90,8 @@ function ENT:Cripple(enable)
 		self.Zombie_Crippled = true
 		self.Zombie_RecoveryHP = self:Health() + 20
 		self.AnimationTranslations[ACT_IDLE] = ACT_COMBAT_IDLE
-		self.AnimationTranslations[ACT_WALK] = VJ.SequenceToActivity(self,"limp_leg_walk")
-		self.AnimationTranslations[ACT_RUN] = VJ.SequenceToActivity(self,"limp_leg_run")
+		self.AnimationTranslations[ACT_WALK] = VJ.SequenceToActivity(self, "limp_leg_walk")
+		self.AnimationTranslations[ACT_RUN] = VJ.SequenceToActivity(self, "limp_leg_run")
 		self.AnimationTranslations[ACT_TURN_RIGHT] = ACT_COMBAT_IDLE
 		self.AnimationTranslations[ACT_TURN_LEFT] = ACT_COMBAT_IDLE
 		self.JumpParams.Enabled = false
@@ -132,7 +132,7 @@ function ENT:OnThink()
 			self:Cripple(false)
 		end
 	end
-	
+
 	-- NPC Controller headcrab detaching
 	if self:Alive() && self.VJ_IsBeingControlled && self.VJ_TheController:KeyDown(IN_JUMP) then
 		self.AnimTbl_Death = ACT_DIE_HEADSHOT
@@ -213,14 +213,14 @@ function ENT:OnBleed(dmginfo,hitgroup)
 			self.AnimationTranslations[ACT_WALK] = ACT_STRAFE_RIGHT
 			self.AnimationTranslations[ACT_RUN] = ACT_STRAFE_RIGHT
 		end
-		
+
 		-- 1 in 5 chance that headcrab drops when its health is low
-		if self:Health() < 10 && self:Health() > 0 && hitgroup != HITGROUP_HEAD && math.random(0, 4) == 0 then
+		if self:Health() <= 10 && self:Health() > 0 && hitgroup != HITGROUP_HEAD && math.random(0, 4) == 0 then
 			self.AnimTbl_Death = ACT_DIE_HEADSHOT
 			self:DropHeadcrab()
 			self:TakeDamage(self:Health() + 100, self, self)
 		end
-		
+
 		-- If leg health is depleted, then cripple the zombie
 		if (hitgroup == HITGROUP_LEFTLEG || hitgroup == HITGROUP_RIGHTLEG) && !self.Zombie_Crippled && !self.IsHEVZombie then
 			self.Zombie_LegHP = self.Zombie_LegHP - dmginfo:GetDamage()
@@ -251,58 +251,64 @@ function ENT:DropHeadcrab()
 		local cameramode = self.VJ_TheControllerEntity.VJC_Camera_Mode -- Copy the current camera view
 		local ply = self.VJ_TheController
 		self.VJ_TheControllerEntity:StopControlling(false)
-		
+
 		local ent_controller = ents.Create("obj_vj_controller")
 		ent_controller.VJCE_Player = ply
 		ent_controller:SetControlledNPC(headcrab)
 		ent_controller:Spawn()
 		ent_controller:StartControlling()
 		timer.Simple(0.01, function()
-			ent_controller:SetCameraMode(cameramode)
-		end )
+			if IsValid(headcrab) then
+				ent_controller:SetCameraMode(cameramode)
+			end
+		end)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:HandleGibOnDeath(dmginfo, hitgroup)
 	self.HasDeathSounds = false
-	if self.HasGibOnDeathEffects == true then
+	if self.HasGibOnDeathEffects then
 		local bloodeffect = EffectData()
-		bloodeffect:SetOrigin(self:GetPos() +self:OBBCenter())
-		bloodeffect:SetColor(VJ.Color2Byte(Color(255,221,35)))
+		bloodeffect:SetOrigin(self:GetPos() + self:OBBCenter())
+		bloodeffect:SetColor(VJ.Color2Byte(Color(255, 221, 35)))
 		bloodeffect:SetScale(120)
-		util.Effect("VJ_Blood1",bloodeffect)
-		
+		util.Effect("VJ_Blood1", bloodeffect)
+
 		local bloodspray = EffectData()
-		bloodspray:SetOrigin(self:GetPos() +self:OBBCenter())
+		bloodspray:SetOrigin(self:GetPos() + self:OBBCenter())
 		bloodspray:SetScale(8)
 		bloodspray:SetFlags(3)
 		bloodspray:SetColor(1)
-		util.Effect("bloodspray",bloodspray)
-		util.Effect("bloodspray",bloodspray)
-		
+		util.Effect("bloodspray", bloodspray)
+		util.Effect("bloodspray", bloodspray)
+
 		local effectdata = EffectData()
-		effectdata:SetOrigin(self:GetPos() +self:OBBCenter())
+		effectdata:SetOrigin(self:GetPos() + self:OBBCenter())
 		effectdata:SetScale(1)
-		util.Effect("StriderBlood",effectdata)
-		util.Effect("StriderBlood",effectdata)
+		util.Effect("StriderBlood", effectdata)
+		util.Effect("StriderBlood", effectdata)
 	end
-	
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib1.mdl",{BloodType = "Yellow",CollisionDecal = "VJ_HLR1_Blood_Yellow",Pos = self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib2.mdl",{BloodType = "Yellow",CollisionDecal = "VJ_HLR1_Blood_Yellow",Pos = self:LocalToWorld(Vector(0,0,20))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib3.mdl",{BloodType = "Yellow",CollisionDecal = "VJ_HLR1_Blood_Yellow",Pos = self:LocalToWorld(Vector(0,0,30))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib4.mdl",{BloodType = "Yellow",CollisionDecal = "VJ_HLR1_Blood_Yellow",Pos = self:LocalToWorld(Vector(0,0,35))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib5.mdl",{BloodType = "Yellow",CollisionDecal = "VJ_HLR1_Blood_Yellow",Pos = self:LocalToWorld(Vector(0,0,50))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib6.mdl",{BloodType = "Yellow",CollisionDecal = "VJ_HLR1_Blood_Yellow",Pos = self:LocalToWorld(Vector(0,0,55))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib7.mdl",{BloodType = "Yellow",CollisionDecal = "VJ_HLR1_Blood_Yellow",Pos = self:LocalToWorld(Vector(0,0,40))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib8.mdl",{BloodType = "Yellow",CollisionDecal = "VJ_HLR1_Blood_Yellow",Pos = self:LocalToWorld(Vector(0,0,45))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib9.mdl",{BloodType = "Yellow",CollisionDecal = "VJ_HLR1_Blood_Yellow",Pos = self:LocalToWorld(Vector(0,0,25))})
-	self:CreateGibEntity("obj_vj_gib","models/vj_hlr/gibs/agib10.mdl",{BloodType = "Yellow",CollisionDecal = "VJ_HLR1_Blood_Yellow",Pos = self:LocalToWorld(Vector(0,0,15))})
+
+	self:CreateGibEntity("obj_vj_gib", "models/vj_hlr/gibs/agib1.mdl", {BloodType = "Yellow", CollisionDecal = "VJ_HLR1_Blood_Yellow", Pos = self:LocalToWorld(Vector(0, 0, 40))})
+	self:CreateGibEntity("obj_vj_gib", "models/vj_hlr/gibs/agib2.mdl", {BloodType = "Yellow", CollisionDecal = "VJ_HLR1_Blood_Yellow", Pos = self:LocalToWorld(Vector(0, 0, 20))})
+	self:CreateGibEntity("obj_vj_gib", "models/vj_hlr/gibs/agib3.mdl", {BloodType = "Yellow", CollisionDecal = "VJ_HLR1_Blood_Yellow", Pos = self:LocalToWorld(Vector(0, 0, 30))})
+	self:CreateGibEntity("obj_vj_gib", "models/vj_hlr/gibs/agib4.mdl", {BloodType = "Yellow", CollisionDecal = "VJ_HLR1_Blood_Yellow", Pos = self:LocalToWorld(Vector(0, 0, 35))})
+	self:CreateGibEntity("obj_vj_gib", "models/vj_hlr/gibs/agib5.mdl", {BloodType = "Yellow", CollisionDecal = "VJ_HLR1_Blood_Yellow", Pos = self:LocalToWorld(Vector(0, 0, 50))})
+	self:CreateGibEntity("obj_vj_gib", "models/vj_hlr/gibs/agib6.mdl", {BloodType = "Yellow", CollisionDecal = "VJ_HLR1_Blood_Yellow", Pos = self:LocalToWorld(Vector(0, 0, 55))})
+	self:CreateGibEntity("obj_vj_gib", "models/vj_hlr/gibs/agib7.mdl", {BloodType = "Yellow", CollisionDecal = "VJ_HLR1_Blood_Yellow", Pos = self:LocalToWorld(Vector(0, 0, 40))})
+	self:CreateGibEntity("obj_vj_gib", "models/vj_hlr/gibs/agib8.mdl", {BloodType = "Yellow", CollisionDecal = "VJ_HLR1_Blood_Yellow", Pos = self:LocalToWorld(Vector(0, 0, 45))})
+	self:CreateGibEntity("obj_vj_gib", "models/vj_hlr/gibs/agib9.mdl", {BloodType = "Yellow", CollisionDecal = "VJ_HLR1_Blood_Yellow", Pos = self:LocalToWorld(Vector(0, 0, 25))})
+	self:CreateGibEntity("obj_vj_gib", "models/vj_hlr/gibs/agib10.mdl", {BloodType = "Yellow", CollisionDecal = "VJ_HLR1_Blood_Yellow", Pos = self:LocalToWorld(Vector(0, 0, 15))})
 	self:PlaySoundSystem("Gib", "vj_base/gib/splat.wav")
 	return true
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:OnDeath(dmginfo, hitgroup, status)
-	if status == "DeathAnim" && !self.Zombie_Crippled then
+	if status == "Init" && GetConVar("vj_hlr1_corpse_static"):GetInt() == 1 && VJ_CVAR_AI_ENABLED && self.HasDeathAnimation then
+		self.DeathAnimationDecreaseLengthAmount = -1
+		self.DeathCorpseEntityClass = "prop_vj_animatable"
+		VJ.HLR_StaticCorpseCheck(self)
+	elseif status == "DeathAnim" && !self.Zombie_Crippled then
 		if hitgroup == HITGROUP_HEAD then
 			self.AnimTbl_Death = ACT_DIE_HEADSHOT
 		else
@@ -311,7 +317,7 @@ function ENT:OnDeath(dmginfo, hitgroup, status)
 	end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
-local gibs1 = {"models/vj_hlr/gibs/agib1.mdl", "models/vj_hlr/gibs/agib2.mdl", "models/vj_hlr/gibs/agib3.mdl", "models/vj_hlr/gibs/agib4.mdl","models/vj_hlr/gibs/agib5.mdl","models/vj_hlr/gibs/agib6.mdl","models/vj_hlr/gibs/agib7.mdl","models/vj_hlr/gibs/agib8.mdl","models/vj_hlr/gibs/agib9.mdl","models/vj_hlr/gibs/agib10.mdl"}
+local gibs1 = {"models/vj_hlr/gibs/agib1.mdl", "models/vj_hlr/gibs/agib2.mdl", "models/vj_hlr/gibs/agib3.mdl", "models/vj_hlr/gibs/agib4.mdl", "models/vj_hlr/gibs/agib5.mdl", "models/vj_hlr/gibs/agib6.mdl", "models/vj_hlr/gibs/agib7.mdl", "models/vj_hlr/gibs/agib8.mdl", "models/vj_hlr/gibs/agib9.mdl", "models/vj_hlr/gibs/agib10.mdl"}
 --
 function ENT:OnCreateDeathCorpse(dmginfo, hitgroup, corpse)
 	VJ.HLR_ApplyCorpseSystem(self, corpse, gibs1)

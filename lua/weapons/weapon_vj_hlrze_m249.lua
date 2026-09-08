@@ -8,7 +8,7 @@ SWEP.Category = "Half-Life Resurgence"
 	-- NPC Settings ---------------------------------------------------------------------------------------------------------------------------------------------
 SWEP.NPC_NextPrimaryFire = false
 SWEP.NPC_CustomSpread = 2.5
-SWEP.NPC_ReloadSound = {"vj_hlr/gsrc/wep/saw/saw_reload2.wav"}
+SWEP.NPC_ReloadSound = "vj_hlr/gsrc/wep/saw/saw_reload2.wav"
 SWEP.NPC_CanBePickedUp = false
 	-- Main Settings ---------------------------------------------------------------------------------------------------------------------------------------------
 SWEP.MadeForNPCsOnly = true
@@ -16,8 +16,8 @@ SWEP.WorldModel = "models/vj_hlr/weapons/w_saw.mdl"
 SWEP.HoldType = "ar2"
 	-- World Model ---------------------------------------------------------------------------------------------------------------------------------------------
 SWEP.WorldModel_UseCustomPosition = true
-SWEP.WorldModel_CustomPositionAngle = Vector(-10,94,2)
-SWEP.WorldModel_CustomPositionOrigin = Vector(-6.5,0,-2)
+SWEP.WorldModel_CustomPositionAngle = Vector(-10, 94, 2)
+SWEP.WorldModel_CustomPositionOrigin = Vector(-6.5, 0, -2)
 SWEP.WorldModel_CustomPositionBone = "Bip01 R Hand"
 	-- Primary Fire ---------------------------------------------------------------------------------------------------------------------------------------------
 SWEP.Primary.Damage = 5
@@ -30,7 +30,7 @@ SWEP.Primary.DistantSound = "vj_hlr/gsrc/wep/saw/saw_distant.wav"
 local validModels = {
     ["models/vj_hlr/hlze/hgrunt.mdl"] = true,
     ["models/vj_hlr/hlze/barney.mdl"] = true,
-    ["models/vj_hlr/hlze/scientist.mdl"] = true,
+    ["models/vj_hlr/hlze/scientist.mdl"] = true
 }
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function SWEP:Init()
@@ -52,21 +52,21 @@ end
 function SWEP:PrimaryAttackEffects(owner)
 	self.PrimaryEffects_MuzzleFlash = false
 	muz = ents.Create("env_sprite")
-	muz:SetKeyValue("model","vj_hl/sprites/muzzleflash1.vmt")
-	muz:SetKeyValue("scale",""..math.Rand(0.45,0.6))
-	muz:SetKeyValue("GlowProxySize","2.0") -- Size of the glow to be rendered for visibility testing.
-	muz:SetKeyValue("HDRColorScale","1.0")
-	muz:SetKeyValue("renderfx","14")
-	muz:SetKeyValue("rendermode","3") -- Set the render mode to "3" (Glow)
-	muz:SetKeyValue("renderamt","255") -- Transparency
-	muz:SetKeyValue("disablereceiveshadows","0") -- Disable receiving shadows
-	muz:SetKeyValue("framerate","10.0") -- Rate at which the sprite should animate, if at all.
-	muz:SetKeyValue("spawnflags","0")
+	muz:SetKeyValue("model", "vj_hl/sprites/muzzleflash1.vmt")
+	muz:SetKeyValue("scale", "" .. math.Rand(0.45, 0.6))
+	muz:SetKeyValue("GlowProxySize", "2.0") -- Size of the glow to be rendered for visibility testing.
+	muz:SetKeyValue("HDRColorScale", "1.0")
+	muz:SetKeyValue("renderfx", "14")
+	muz:SetKeyValue("rendermode", "3") -- Set the render mode to "3" (Glow)
+	muz:SetKeyValue("renderamt", "255") -- Transparency
+	muz:SetKeyValue("disablereceiveshadows", "0") -- Disable receiving shadows
+	muz:SetKeyValue("framerate", "10.0") -- Rate at which the sprite should animate, if at all.
+	muz:SetKeyValue("spawnflags", "0")
 	muz:SetParent(self)
-	muz:Fire("SetParentAttachment",self.PrimaryEffects_MuzzleAttachment)
-	muz:SetAngles(Angle(math.random(-100,100),math.random(-100,100),math.random(-100,100)))
+	muz:Fire("SetParentAttachment", self.PrimaryEffects_MuzzleAttachment)
+	muz:SetAngles(Angle(math.random(-100, 100), math.random(-100, 100), math.random(-100, 100)))
 	muz:Spawn()
 	muz:Activate()
-	muz:Fire("Kill","",0.08)
+	muz:Fire("Kill", "", 0.08)
 	self.BaseClass.PrimaryAttackEffects(self, owner)
 end

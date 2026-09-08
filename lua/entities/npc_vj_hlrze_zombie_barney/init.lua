@@ -17,11 +17,11 @@ end
 //function ENT:OnDamaged(dmginfo, hitgroup, status)
 //	if hitgroup == HITGROUP_STOMACH && status == "PreDamage" then
 //		dmginfo:ScaleDamage(0.5)
-//		--VJ.EmitSound(self,"vj_hlr/fx/ric" .. math.random(1,5) .. ".wav",88,100)
+//		--VJ.EmitSound(self, "vj_hlr/fx/ric" .. math.random(1, 5) .. ".wav", 88, 100)
 //		local rico = EffectData()
 //		rico:SetOrigin(dmginfo:GetDamagePosition())
 //		rico:SetScale(4) -- Size
 //		rico:SetMagnitude(2) -- Effect type | 1 = Animated | 2 = Basic
-//		util.Effect("VJ_HLR_Rico",rico)
+//		util.Effect("VJ_HLR_Rico", rico)
 //	end
 //end

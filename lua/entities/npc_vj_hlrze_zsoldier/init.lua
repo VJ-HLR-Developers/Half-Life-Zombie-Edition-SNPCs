@@ -48,7 +48,7 @@ function ENT:Zombie_ActivateGrenade()
 			timer.Simple(5, function()
 				if IsValid(self) then
 					self.Zombie_GrenadePulled = false
-					
+
 					-- Grenade a grenade entity and make it explode instantly
 					local grenade = ents.Create("obj_vj_hlr1_grenade")
 					grenade:SetPos(self:GetPos() + self:OBBCenter())
@@ -58,7 +58,7 @@ function ENT:Zombie_ActivateGrenade()
 					grenade.PrintName = "Zombie Grenade"
 					grenade:Spawn()
 					grenade:Activate()
-					
+
 					-- Force kill the NPC
 					local dmg = DamageInfo()
 					dmg:SetDamage(self:Health() + 100)
@@ -81,7 +81,7 @@ end
 local funcOnDeath = ENT.OnDeath
 --
 function ENT:OnDeath(dmginfo, hitgroup, status)
-	if status == "Init" && self.Zombie_GrenadePulled == true then
+	if status == "Init" && self.Zombie_GrenadePulled then
 		self:SetBodygroup(2, 0)
 		local grenade = ents.Create("obj_vj_hlr1_grenade")
 		grenade:SetPos(self:GetPos() + self:OBBCenter())
