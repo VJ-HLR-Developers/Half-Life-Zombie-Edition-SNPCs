@@ -11,7 +11,7 @@ ENT.HullType = HULL_HUMAN
 ENT.ControllerParams = {
 	ThirdP_Offset = Vector(30, 20, -30),
 	FirstP_Bone = "Bip01 Neck",
-	FirstP_Offset = Vector(2, 0, 8),
+	FirstP_Offset = Vector(2, 0, 8)
 }
 ---------------------------------------------------------------------------------------------------------------------------------------------
 ENT.BloodColor = VJ.BLOOD_COLOR_YELLOW
@@ -148,15 +148,15 @@ function ENT:DropHeadcrab()
 	headcrab:SetPos(self:GetPos() + Vector(0, 0, 60))
 	headcrab:SetAngles(self:GetAngles())
 	headcrab:Spawn()
-	self:SetBodygroup(1,1)
+	self:SetBodygroup(1, 1)
 
 	if self.VJ_IsBeingControlled then
-		local cameramode = self.VJ_TheControllerEntity.VJC_Camera_Mode -- copy the current first/thirdperson view
+		local cameramode = self.VJ_TheControllerEntity.VJC_Camera_Mode -- Copy the current first/thirdperson view
 		self.VJ_TheControllerEntity:SetControlledNPC(headcrab)
 		self.VJ_TheControllerEntity:StartControlling()
 		timer.Simple(0.01, function()
 			if IsValid(headcrab) then
-				self.VJ_TheControllerEntity.VJC_Camera_Mode = cameramode -- set the headcrab's view to what ours was set to
+				self.VJ_TheControllerEntity.VJC_Camera_Mode = cameramode -- Set the headcrab's view to what ours was set to
 			end
 		end)
 	end

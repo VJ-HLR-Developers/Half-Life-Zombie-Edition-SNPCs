@@ -68,17 +68,17 @@ function ENT:OnInput(key, activator, caller, data)
 	elseif key == "event_dropcrab" then
 		self:Breeder_Dropheadcrab_hand()
 		if self.VJ_IsBeingControlled then
-			self.Breeder_NextPullHeadcrabTime = CurTime() + 2 --Players get a faster cooldown than NPCs
+			self.Breeder_NextPullHeadcrabTime = CurTime() + 2 -- Players get a faster cooldown than NPCs
 		else
 			self.Breeder_NextPullHeadcrabTime = CurTime() + math.Rand(10, 30)
 		end
-	elseif key == "event_pulloutbarnacle" then --barnacle code is handled in the range attack stuff
-		self:SetBodygroup(2, 2) --show barnacle bodygroup
-		self.CanFlinch = false --Don't interrupt
+	elseif key == "event_pulloutbarnacle" then -- Barnacle code is handled in the range attack stuff
+		self:SetBodygroup(2, 2) -- Show barnacle bodygroup
+		self.CanFlinch = false -- Don't interrupt
 		timer.Simple(2, function() if IsValid(self) then self:SetBodygroup(2, 0) self.CanFlinch = true end end)
 	elseif key == "event_throwbarnacle" then
 		self:ExecuteRangeAttack()
-		self:SetBodygroup(2, 0) --hide barnacle bodygroup
+		self:SetBodygroup(2, 0) -- Hide barnacle bodygroup
 		self.CanFlinch = true
 	elseif key == "event_shootbabycrab" then
 		self:Breeder_Shootbabycrab_hand()

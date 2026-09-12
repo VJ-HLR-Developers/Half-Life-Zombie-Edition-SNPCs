@@ -11,7 +11,7 @@ ENT.HullType = HULL_TINY
 ENT.ControllerParams = {
 	ThirdP_Offset = Vector(0, 0, 0),
 	FirstP_Bone = "Bip01 Spine",
-	FirstP_Offset = Vector(2, 0, 1),
+	FirstP_Offset = Vector(2, 0, 1)
 }
 ENT.EntitiesToNoCollide = {"npc_vj_hlr1_gonarch", "npc_vj_hlrze_headcrab", "npc_vj_hlrze_zombie", "npc_vj_hlrze_zombie_barney", "npc_vj_hlrze_zfassassin", "npc_vj_hlrze_zombie_hev", "npc_vj_hlrze_zmassassin", "npc_vj_hlrze_zrusher", "npc_vj_hlrze_zrusher_scientist", "npc_vj_hlrze_zsoldier", "npc_vj_hlrze_zsoldier_grenade", "npc_vj_hlrze_zcrasher", "npc_vj_hlrze_zbreeder"}
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ function ENT:OnLeapAttackExecute(status, ent)
 				playercontroller:SetControlledNPC(ent) -- Control the ent
 				playercontroller:StartControlling()
 			end
-			SafeRemoveEntity(self) --Remove headcrab
+			SafeRemoveEntity(self) -- Remove headcrab
 
 			local zClass = "npc_vj_hlrze_zombie" -- Fallback class for the zombie NPC we will spawn
 			local zGetUpAnim = "getup" -- Animation zombie uses to get up once fully transformed
@@ -168,7 +168,7 @@ function ENT:OnLeapAttackExecute(status, ent)
 				zAnimT = 1.61
 				zOffset = 30
 				zClass = "npc_vj_hlrze_zsoldier"
-				if ent:GetBodygroup(1) == 0 then --If ent has a mask then make a grenade zombie
+				if ent:GetBodygroup(1) == 0 then -- If ent has a mask then make a grenade zombie
 					ent:SetBodygroup(1, 5)
 					zClass = "npc_vj_hlrze_zsoldier_grenade"
 				else
@@ -201,22 +201,22 @@ function ENT:OnLeapAttackExecute(status, ent)
 				self:CustomHeadcrabTransformEffect(ent, ACT_DIEFORWARD, "models/vj_hlr/hlze/zombie.mdl", "Bip02 Head")
 			end
 
-			timer.Simple(1,function() -- random extra check
+			timer.Simple(1, function() -- Random extra check
 				if IsValid(ent) then
 					ent.CanTurnWhileStationary = false
 					ent:DoChangeMovementType(VJ_MOVETYPE_STATIONARY)
 				end
 			end)
-			timer.Simple(zAnimT,function()
+			timer.Simple(zAnimT, function()
 				if IsValid(ent) then
 					ent:PlayAnim("zombify_continues", true, false, false)
 				end
 			end)
-			timer.Simple(30,function() -- Overridden to 30 seconds because Barney's infection animation loops instead of lasting a long time.
+			timer.Simple(30, function() -- Overridden to 30 seconds because Barney's infection animation loops instead of lasting a long time.
 				if IsValid(ent) then
 					local tr = util.TraceHull{ -- Trace forwards and make sure the zombie doesn't spawn into a wall
 						start = ent:GetPos() + ent:GetUp() * 5,
-						endpos = ent:GetPos() + ent:GetUp() * 5 +ent:GetForward() * zOffset,
+						endpos = ent:GetPos() + ent:GetUp() * 5 + ent:GetForward() * zOffset,
 						mins = ent:GetCollisionBounds().mins,
 						maxs = ent:GetCollisionBounds().maxs,
 						ignoreworld = false,
@@ -224,9 +224,9 @@ function ENT:OnLeapAttackExecute(status, ent)
 					}
 
 					if tr.Hit then
-						zPos = tr.HitPos +ent:GetForward() *-14
+						zPos = tr.HitPos + ent:GetForward() * -14
 					else
-						zPos = ent:GetPos() +ent:GetForward() * zOffset
+						zPos = ent:GetPos() + ent:GetForward() * zOffset
 					end
 
 					local zombie = ents.Create(zClass)
@@ -235,10 +235,10 @@ function ENT:OnLeapAttackExecute(status, ent)
 					zombie:SetColor(ent:GetColor())
 					zombie:SetMaterial(ent:GetMaterial())
 					zombie:Spawn()
-					zombie:PlayAnim(zGetUpAnim,true, false, false)
+					zombie:PlayAnim(zGetUpAnim, true, false, false)
 					zombie:AddEffects(32) -- Hide zombie
 					if IsValid(ent) then
-						undo.ReplaceEntity(ent,zombie)
+						undo.ReplaceEntity(ent, zombie)
 					end
 					timer.Simple(0.2, function() -- The zombie actually spawns in early and is hidden, this is to move the getup animation in place before showing the zombie model
 						if IsValid(zombie) then
