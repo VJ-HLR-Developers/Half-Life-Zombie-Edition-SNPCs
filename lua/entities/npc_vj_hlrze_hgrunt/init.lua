@@ -54,7 +54,7 @@ ENT.AnimTbl_TakingCover = ACT_CROUCHIDLE
 ENT.DropDeathLoot = false
 ENT.HasDeathAnimation = true
 ENT.AnimTbl_Death = {ACT_DIEBACKWARD, ACT_DIE_GUTSHOT, ACT_DIE_HEADSHOT, ACT_DIESIMPLE}
-ENT.DeathAnimationTime = 0.8
+//ENT.DeathAnimationTime = 0.8
 ENT.DisableFootStepSoundTimer = true
 
 -- Flinching
@@ -124,6 +124,8 @@ function ENT:Init()
 	if math.random(0, 2) == 2 then
 		self.HECU_WillBecomeBloody = true
 	end
+
+	VJ.HLR_ApplyFactionOptions(self)
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------
 function ENT:Controller_Initialize(ply, controlEnt)

@@ -308,9 +308,11 @@ function ENT:OnDeath(dmginfo, hitgroup, status)
 		self.DeathAnimationDecreaseLengthAmount = -1
 		self.DeathCorpseEntityClass = "prop_vj_animatable"
 		VJ.HLR_StaticCorpseCheck(self)
-	elseif status == "DeathAnim" && !self.Zombie_Crippled then
-		if hitgroup == HITGROUP_HEAD then
+	elseif status == "DeathAnim" then
+		if hitgroup == HITGROUP_HEAD && !self.Zombie_Crippled then
 			self.AnimTbl_Death = ACT_DIE_HEADSHOT
+		elseif self.Zombie_Crippled then
+			self.AnimTbl_Death = ACT_RANGE_ATTACK2
 		else
 			self.AnimTbl_Death = {ACT_DIEBACKWARD, ACT_DIESIMPLE}
 		end
