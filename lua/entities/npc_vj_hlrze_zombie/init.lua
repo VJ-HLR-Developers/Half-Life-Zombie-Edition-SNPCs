@@ -253,7 +253,7 @@ function ENT:DropHeadcrab()
 		self.VJ_TheControllerEntity:StopControlling(false)
 
 		local ent_controller = ents.Create("obj_vj_controller")
-		ent_controller.VJCE_Player = ply
+		ent_controller:GetPlayer() = ply
 		ent_controller:SetControlledNPC(headcrab)
 		ent_controller:Spawn()
 		ent_controller:StartControlling()
